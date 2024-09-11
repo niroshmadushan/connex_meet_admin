@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Modal, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-    TextField, Grid, MenuItem, Select, InputLabel, FormControl, Fade, InputAdornment, Divider, Avatar
+    TextField, Grid, MenuItem, Select, InputLabel, FormControl, Fade, InputAdornment, Divider
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
 import { styled } from '@mui/system';
 import CountUp from 'react-countup'; // For animated counters
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // For chart rendering
+import AddSessionForm from '../components/AddSessionForm'; // Import AddSessionForm component
 
 // Sample session data
 const sessionsData = [
@@ -27,7 +29,6 @@ const sessionsData = [
                 fullName: 'John Doe',
                 email: 'john@xyz.com',
                 contact: '123-456-7890',
-                imageUrl: '/path-to-image1.jpg'
             },
             {
                 id: 'V002',
@@ -35,72 +36,7 @@ const sessionsData = [
                 fullName: 'Jane Smith',
                 email: 'jane@abc.com',
                 contact: '987-654-3210',
-                imageUrl: '/path-to-image2.jpg'
-            },
-            {
-                id: 'V003',
-                companyName: 'XYZ Inc.',
-                fullName: 'John Doe',
-                email: 'john@xyz.com',
-                contact: '123-456-7890',
-                imageUrl: '/path-to-image1.jpg'
-            },
-            {
-                id: 'V004',
-                companyName: 'ABC Corp.',
-                fullName: 'Jane Smith',
-                email: 'jane@abc.com',
-                contact: '987-654-3210',
-                imageUrl: '/path-to-image2.jpg'
-            },
-            {
-                id: 'V005',
-                companyName: 'XYZ Inc.',
-                fullName: 'John Doe',
-                email: 'john@xyz.com',
-                contact: '123-456-7890',
-                imageUrl: '/path-to-image1.jpg'
-            },
-            {
-                id: 'V006',
-                companyName: 'ABC Corp.',
-                fullName: 'Jane Smith',
-                email: 'jane@abc.com',
-                contact: '987-654-3210',
-                imageUrl: '/path-to-image2.jpg'
-            },
-            {
-                id: 'V007',
-                companyName: 'XYZ Inc.',
-                fullName: 'John Doe',
-                email: 'john@xyz.com',
-                contact: '123-456-7890',
-                imageUrl: '/path-to-image1.jpg'
-            },
-            {
-                id: 'V008',
-                companyName: 'ABC Corp.',
-                fullName: 'Jane Smith',
-                email: 'jane@abc.com',
-                contact: '987-654-3210',
-                imageUrl: '/path-to-image2.jpg'
-            },
-            {
-                id: 'V009',
-                companyName: 'XYZ Inc.',
-                fullName: 'John Doe',
-                email: 'john@xyz.com',
-                contact: '123-456-7890',
-                imageUrl: '/path-to-image1.jpg'
-            },
-            {
-                id: 'V010',
-                companyName: 'ABC Corp.',
-                fullName: 'Jane Smith',
-                email: 'jane@abc.com',
-                contact: '987-654-3210',
-                imageUrl: '/path-to-image2.jpg'
-            },
+            }
         ],
         status: 'Ongoing',
     },
@@ -118,10 +54,27 @@ const sessionsData = [
                 fullName: 'Alex Johnson',
                 email: 'alex@def.com',
                 contact: '234-567-8901',
-                imageUrl: '/path-to-image3.jpg'
-            },
+            }
         ],
         status: 'Upcoming',
+    },
+    {
+        id: 3,
+        name: 'Session C',
+        date: '2024-09-10',
+        startTime: '14:00',
+        endTime: '15:00',
+        location: 'Room 303',
+        visitorTeams: [
+            {
+                id: 'V004',
+                companyName: 'PQR Ltd.',
+                fullName: 'Emily Brown',
+                email: 'emily@pqr.com',
+                contact: '345-678-9012',
+            }
+        ],
+        status: 'Finished',
     },
 ];
 
@@ -143,14 +96,33 @@ const Sessions = () => {
     const [selectedSession, setSelectedSession] = useState(null);
     const [selectedVisitor, setSelectedVisitor] = useState(null); // Store selected visitor data
     const [filteredVisitors, setFilteredVisitors] = useState([]);
+    const [filteredSessions, setFilteredSessions] = useState(sessionsData);
     const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const [visitorSearch, setVisitorSearch] = useState(''); // State for searching visitor teams
+    const [newSessionModalOpen, setNewSessionModalOpen] = useState(false); // Modal state for Add Session Form
 
     // Calculate session statistics
     const totalSessions = sessionsData.length;
     const ongoingSessions = sessionsData.filter(session => session.status === 'Ongoing').length;
     const upcomingSessions = sessionsData.filter(session => session.status === 'Upcoming').length;
     const finishedSessions = sessionsData.filter(session => session.status === 'Finished').length;
+
+    // Filter sessions by search term and status
+    useEffect(() => {
+        let filtered = sessionsData.filter((session) =>
+            session.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            session.visitorTeams.some((visitor) =>
+                visitor.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+
+        if (statusFilter) {
+            filtered = filtered.filter((session) => session.status === statusFilter);
+        }
+
+        setFilteredSessions(filtered);
+    }, [searchTerm, statusFilter]);
 
     // Handle row click to open the session modal
     const handleRowClick = (params) => {
@@ -161,35 +133,23 @@ const Sessions = () => {
 
     const handleClose = () => {
         setOpen(false);
-        setSelectedVisitor(null);
         setVisitorModalOpen(false);
     };
 
-    // Handle visitor row click to open detailed visitor modal
-    const handleVisitorRowClick = (visitor) => {
-        setSelectedVisitor(visitor);
-        setVisitorModalOpen(true);
+    const handleAddSessionClick = () => {
+        setNewSessionModalOpen(true);
     };
 
-    // Handle search for visitor teams inside the modal
-    useEffect(() => {
-        if (selectedSession) {
-            let filtered = selectedSession.visitorTeams.filter(visitor =>
-                visitor.companyName.toLowerCase().includes(visitorSearch.toLowerCase()) ||
-                visitor.fullName.toLowerCase().includes(visitorSearch.toLowerCase()) ||
-                visitor.email.toLowerCase().includes(visitorSearch.toLowerCase()) ||
-                visitor.contact.includes(visitorSearch)
-            );
-            setFilteredVisitors(filtered);
-        }
-    }, [visitorSearch, selectedSession]);
+    const handleNewSessionClose = () => {
+        setNewSessionModalOpen(false);
+    };
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'name', headerName: 'Session Name', width: 150 },
         { field: 'date', headerName: 'Date', width: 120 },
-        { field: 'startTime', headerName: 'Start Time', width: 120, renderCell: (params) => formatTime(params.value) },
-        { field: 'endTime', headerName: 'End Time', width: 120, renderCell: (params) => formatTime(params.value) },
+        { field: 'startTime', headerName: 'Start Time', width: 120 },
+        { field: 'endTime', headerName: 'End Time', width: 120 },
         { field: 'location', headerName: 'Location', width: 150 },
         {
             field: 'status',
@@ -212,63 +172,111 @@ const Sessions = () => {
         return `${formattedHour}:${minute} ${period}`;
     };
 
-    // Chart.js data for sessions status (Ensure datasets always exist)
     const chartData = {
         labels: ['Ongoing', 'Upcoming', 'Finished'],
-        datasets: ongoingSessions || upcomingSessions || finishedSessions ? [
+        datasets: [
             {
                 label: 'Sessions Status',
                 data: [ongoingSessions, upcomingSessions, finishedSessions],
                 backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
             },
-        ] : [{ label: 'No Data', data: [], backgroundColor: [] }]
+        ],
     };
 
     return (
         <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-            <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-                Sessions Overview
-            </Typography>
+            {/* Page Title with "Add New Session" Button */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 4 }}>
+                    Sessions Overview
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddSessionClick}
+                    startIcon={<AddIcon />}
+                    sx={{ backgroundColor: '#007aff', ':hover': { backgroundColor: '#005bb5' } }}
+                >
+                    Add New Session
+                </Button>
+            </Box>
 
             {/* Animated Counters */}
             <Grid container spacing={4} sx={{ marginBottom: 4 }}>
                 <Grid item xs={12} sm={3}>
-                    <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
+                    <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
                         <Typography variant="h6">Total Sessions</Typography>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#007aff' }}>
                             <CountUp end={totalSessions} duration={1.5} />
                         </Typography>
-                    </Paper>
+                    </Grid>
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                    <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 2 }}>
+                    <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
                         <Typography variant="h6">Upcoming Sessions</Typography>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
                             <CountUp end={upcomingSessions} duration={1.5} />
                         </Typography>
-                    </Paper>
+                    </Grid>
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                    <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
+                    <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
                         <Typography variant="h6">Ongoing Sessions</Typography>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
                             <CountUp end={ongoingSessions} duration={1.5} />
                         </Typography>
-                    </Paper>
+                    </Grid>
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                    <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
+                    <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
                         <Typography variant="h6">Finished Sessions</Typography>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f44336' }}>
                             <CountUp end={finishedSessions} duration={1.5} />
                         </Typography>
-                    </Paper>
+                    </Grid>
                 </Grid>
             </Grid>
 
+            {/* Search Bar and Filter by Status */}
+            <Box sx={{ marginBottom: 3, backgroundColor: '#fff', padding: 2, borderRadius: 2}}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={9}>
+                        <TextField
+                            label="Search by Session Name or Company"
+                            variant="outlined"
+                            fullWidth
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <FormControl fullWidth variant="outlined">
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                label="Status"
+                            >
+                                <MenuItem value="">All</MenuItem>
+                                <MenuItem value="Ongoing">Ongoing</MenuItem>
+                                <MenuItem value="Upcoming">Upcoming</MenuItem>
+                                <MenuItem value="Finished">Finished</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+            </Box>
+
             {/* Sessions DataGrid */}
             <DataGrid
-                rows={sessionsData}
+                rows={filteredSessions}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
@@ -278,14 +286,14 @@ const Sessions = () => {
 
             {/* Session Status Chart */}
             <Box sx={{ marginTop: 4 }}>
-                <Paper sx={{ padding: 3, backgroundColor: '#fff', borderRadius: 2 }}>
+                <Grid sx={{ padding: 3, backgroundColor: '#fff', borderRadius: 2 }}>
                     <Typography variant="h6" gutterBottom>
                         Sessions Status Overview
                     </Typography>
                     <Box sx={{ height: '250px', width: '100%' }}>
                         <Line data={chartData} />
                     </Box>
-                </Paper>
+                </Grid>
             </Box>
 
             {/* Session Details Modal */}
@@ -347,7 +355,7 @@ const Sessions = () => {
                                     </TableHead>
                                     <TableBody>
                                         {filteredVisitors.map((visitor) => (
-                                            <TableRow key={visitor.id} onClick={() => handleVisitorRowClick(visitor)} hover>
+                                            <TableRow key={visitor.id}>
                                                 <TableCell>{visitor.id}</TableCell>
                                                 <TableCell>{visitor.companyName}</TableCell>
                                                 <TableCell>{visitor.fullName}</TableCell>
@@ -368,62 +376,15 @@ const Sessions = () => {
                     </Fade>
                 </Modal>
             )}
-            {/* Detailed Visitor Modal */}
-            {selectedVisitor && (
-                <Modal open={visitorModalOpen} onClose={() => setVisitorModalOpen(false)} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Fade in={visitorModalOpen}>
-                        <Paper sx={{ padding: 4, width: '90%', maxHeight: '80vh', overflowY: 'auto', maxWidth: '500px' }}>
-                            <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                                Visitor Information
-                            </Typography>
-                            <Divider sx={{ marginBottom: 2 }} />
 
-                            {/* Visitor Information */}
-                            <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
-                                <Avatar alt={selectedVisitor.fullName} src={selectedVisitor.imageUrl} sx={{ width: 80, height: 80, margin: 'auto' }} />
-                            </Box>
-
-                            {/* Two-column layout using Grid */}
-                            <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <Typography><strong>Full Name:</strong></Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>{selectedVisitor.fullName}</Typography>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <Typography><strong>Company Name:</strong></Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>{selectedVisitor.companyName}</Typography>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <Typography><strong>Email:</strong></Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>{selectedVisitor.email}</Typography>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                    <Typography><strong>Phone No:</strong></Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>{selectedVisitor.contact}</Typography>
-                                </Grid>
-                            </Grid>
-
-                            <Box sx={{ textAlign: 'right', marginTop: 2 }}>
-                                <Button onClick={() => setVisitorModalOpen(false)} variant="contained" color="primary">
-                                    Close
-                                </Button>
-                            </Box>
-                        </Paper>
-                    </Fade>
-                </Modal>
-            )}
-
+            {/* Add New Session Modal */}
+            <Modal open={newSessionModalOpen} onClose={handleNewSessionClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Fade in={newSessionModalOpen}>
+                    <Box sx={{ width: '600px', maxWidth: '100%', height: '800px', overflowY: 'scroll', backgroundColor: 'white', borderRadius: '10px' }}>
+                        <AddSessionForm />
+                    </Box>
+                </Fade>
+            </Modal>
         </Box>
     );
 };

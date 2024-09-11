@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem, Box, TextField, Button, Divider } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, IconButton, Avatar, Menu, MenuItem, Box, TextField, Button, Divider, Typography } from '@mui/material';
+import ReactTypingEffect from 'react-typing-effect';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -13,6 +14,16 @@ const Header = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update time every second
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(intervalId); // Cleanup on component unmount
+  }, []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,14 +44,12 @@ const Header = () => {
   };
 
   const handleSaveProfile = () => {
-    // Save profile logic here (e.g., API call)
     setEditMode(false);
     setPasswordMode(false);
     handleMenuClose();
   };
 
   const handleProfileImageChange = (event) => {
-    // Handle profile image change (e.g., upload logic)
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -48,14 +57,52 @@ const Header = () => {
     }
   };
 
+  // Format date and time together in one line
+  const formatDateTime = (date) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString(undefined, options);
+
+    const hours = date.getHours() % 12 || 12;
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+
+    return `${formattedDate}, ${hours}:${minutes}:${seconds} ${ampm}`;
+  };
+
   return (
     <>
-      {/* Make the AppBar sticky to stay at the top during scrolling */}
-      <AppBar position="sticky" sx={{borderRadius:'20px'}}>
+      <AppBar 
+        position="sticky" 
+        sx={{ 
+          borderRadius: '20px', 
+          background: 'linear-gradient(to right, #0d47a1, #1976d2, #64b5f6)', // Dark Blue Gradient
+        }}
+      >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Admin Dashboard
-          </Typography>
+          {/* Typing Effect in Left Corner */}
+          <Box sx={{ flexGrow: 1 }}>
+            <ReactTypingEffect
+              text={["Welcome TO Connex Digital World", "Introducing New Visitor Management Platform"]}
+              speed={100}
+              eraseSpeed={50}
+              eraseDelay={1500}
+              typingDelay={500}
+              cursor={"|"}
+              displayTextRenderer={(text, i) => (
+                <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                  {text}
+                </Typography>
+              )}
+            />
+          </Box>
+
+          {/* Live Time and Date on a Single Line */}
+          <Box sx={{ textAlign: 'right', marginRight: 4, color: 'white' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              {formatDateTime(currentTime)}
+            </Typography>
+          </Box>
 
           {/* Profile Icon */}
           <IconButton onClick={handleMenuOpen} color="inherit">
@@ -67,10 +114,10 @@ const Header = () => {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
-            sx={{ mt: '45px', borderRadius: 2 }} // Added borderRadius for rounded corners
+            sx={{ mt: '45px', borderRadius: 2 }}
             PaperProps={{
               sx: {
-                borderRadius: '16px', // Rounded corners for the entire menu
+                borderRadius: '16px',
               },
             }}
           >
@@ -81,7 +128,6 @@ const Header = () => {
                   src={profileData.profileImage}
                   sx={{ width: 100, height: 100, marginBottom: 2 }}
                 />
-                {/* Profile Image Change */}
                 <Button
                   variant="outlined"
                   component="label"
@@ -104,7 +150,7 @@ const Header = () => {
                     label="Full Name"
                     variant="outlined"
                     defaultValue={profileData.name}
-                    sx={{ marginBottom: 2, borderRadius: '8px' }} // Rounded corners for input
+                    sx={{ marginBottom: 2, borderRadius: '8px' }}
                   />
                   <TextField
                     fullWidth
@@ -132,7 +178,7 @@ const Header = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleSaveProfile}
-                    sx={{ marginTop: 2, borderRadius: '8px' }} // Rounded corners for button
+                    sx={{ marginTop: 2, borderRadius: '8px' }}
                   >
                     Save Changes
                   </Button>
@@ -199,7 +245,7 @@ const Header = () => {
                     variant="outlined"
                     color="secondary"
                     onClick={handlePasswordClick}
-                    sx={{ borderRadius: '8px' }} // Rounded corners for the button
+                    sx={{ borderRadius: '8px' }}
                   >
                     Change Password
                   </Button>

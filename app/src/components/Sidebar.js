@@ -22,7 +22,7 @@ const SidebarContainer = styled(Drawer)(({ theme }) => ({
     background: 'linear-gradient(180deg, #001f3f, #003366, #00509E)', // Dark blue gradient
     color: '#ffffff',
     paddingTop: theme.spacing(2),
-    boxShadow: '5px 0 30px rgba(0, 0, 0, 0.4)', // Dark shadow for depth
+    // boxShadow: '5px 0 30px rgba(0, 0, 0, 0.4)', // Dark shadow for depth
     borderRight: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border for definition
     position: 'relative', // For the developer logo at the bottom
     overflow: 'hidden', // Ensure content stays within the sidebar
@@ -38,12 +38,7 @@ const ShineEffect = styled(Box)(({ theme }) => ({
   height: '200%',
   background: 'linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1))',
   transform: 'rotate(45deg)',
-  animation: 'shine 4s infinite ease-in-out',
-  '@keyframes shine': {
-    '0%': { left: '-75%' },
-    '50%': { left: '75%' },
-    '100%': { left: '-75%' },
-  },
+ 
 }));
 
 const Sidebar = () => {

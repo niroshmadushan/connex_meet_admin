@@ -5,17 +5,18 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import SearchIcon from '@mui/icons-material/Search'; // Import the search icon
+import SearchIcon from '@mui/icons-material/Search';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { styled } from '@mui/system';
-import CountUp from 'react-countup'; // For animated counters
+import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto'; // For chart rendering
+import 'chart.js/auto';
+import AddMeetingSession from '../components/AddMeetingSession';  // Import the new meeting form component
 
 const meetingsData = [
   { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
   { id: 2, name: 'Meeting B', date: '2024-09-15', startTime: '10:30', endTime: '11:30', location: 'Room 202', visitorCompany: 'ABC Corp.', participant: 'Jane Smith', status: 'Upcoming' },
   { id: 3, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
-  { id: 4, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
 ];
 
 const visitorsData = [
@@ -23,10 +24,9 @@ const visitorsData = [
   { id: 'V002', name: 'Jane Smith', phone: '987-654-3210' },
 ];
 
-// Custom styles for the status dot
 const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
   color: status === 'Ongoing' ? '#4caf50' : status === 'Finished' ? '#f44336' : '#ff9800',
-  fontSize: '14px', // Reduced dot size
+  fontSize: '14px',
   animation: 'blinking 0.3s infinite',
   '@keyframes blinking': {
     '0%': { opacity: 0 },
@@ -37,18 +37,17 @@ const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
 
 const Meetings = () => {
   const [open, setOpen] = useState(false);
+  const [newMeetingOpen, setNewMeetingOpen] = useState(false); // For the new meeting modal
   const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [filteredData, setFilteredData] = useState(meetingsData);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  // For animated counters
   const totalMeetings = meetingsData.length;
   const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
   const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
   const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
 
-  // Handle row click to open the modal
   const handleRowClick = (params) => {
     setSelectedMeeting(params.row);
     setOpen(true);
@@ -56,14 +55,10 @@ const Meetings = () => {
 
   const handleClose = () => setOpen(false);
 
-  // Handle search/filter logic
-  useEffect(() => {
-    let filtered = meetingsData.filter(meeting =>
-      (meeting.name.toLowerCase().includes(searchTerm.toLowerCase()) || meeting.visitorCompany.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (statusFilter === '' || meeting.status === statusFilter)
-    );
-    setFilteredData(filtered);
-  }, [searchTerm, statusFilter]);
+  const handleNewMeetingOpen = () => setNewMeetingOpen(true); // Open the new meeting modal
+  const handleNewMeetingClose = () => setNewMeetingOpen(false); // Close the new meeting modal
+
+  
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -87,7 +82,6 @@ const Meetings = () => {
     },
   ];
 
-  // Format time to AM/PM
   const formatTime = (time) => {
     const [hour, minute] = time.split(':');
     const formattedHour = hour % 12 || 12;
@@ -95,7 +89,6 @@ const Meetings = () => {
     return `${formattedHour}:${minute} ${period}`;
   };
 
-  // Chart.js data for meetings status
   const chartData = {
     labels: ['Ongoing', 'Upcoming', 'Finished'],
     datasets: [
@@ -109,49 +102,61 @@ const Meetings = () => {
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-      {/* Page Title */}
-      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-        Meetings Overview
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          Meetings Overview
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={handleNewMeetingOpen}
+          sx={{
+            backgroundColor: '#007aff',
+            ':hover': {
+              backgroundColor: '#005bb5',
+            },
+          }}
+        >
+          Add New Meeting
+        </Button>
+      </Box>
 
-      {/* Animated Counters */}
       <Grid container spacing={4} sx={{ marginBottom: 4 }}>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
             <Typography variant="h6">Total Meetings</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#007aff' }}>
               <CountUp end={totalMeetings} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
             <Typography variant="h6">Upcoming Meetings</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
               <CountUp end={upcomingMeetings} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
             <Typography variant="h6">Ongoing Meetings</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
               <CountUp end={ongoingMeetings} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
             <Typography variant="h6">Finished Meetings</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f44336' }}>
               <CountUp end={finishedMeetings} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
       </Grid>
 
-      {/* Meeting Filters */}
-      <Box sx={{ marginBottom: 3, backgroundColor: '#fff', padding: 2, borderRadius: 2, boxShadow: 1 }}>
+      <Box sx={{ marginBottom: 3, backgroundColor: '#fff', padding: 2, borderRadius: 2, boxShadow: 0 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={9}>
             <TextField
@@ -187,7 +192,6 @@ const Meetings = () => {
         </Grid>
       </Box>
 
-      {/* Meetings DataGrid */}
       <DataGrid
         rows={filteredData}
         columns={columns}
@@ -197,7 +201,6 @@ const Meetings = () => {
         sx={{ height: 400, backgroundColor: '#fff', borderRadius: 2 }}
       />
 
-      {/* Meeting Status Chart */}
       <Box sx={{ marginTop: 4 }}>
         <Paper sx={{ padding: 3, backgroundColor: '#fff', borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
@@ -209,7 +212,7 @@ const Meetings = () => {
         </Paper>
       </Box>
 
-      {/* Popup Modal */}
+      {/* Meeting Details Modal */}
       {selectedMeeting && (
         <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Fade in={open}>
@@ -273,7 +276,6 @@ const Meetings = () => {
                 Visitor Team Information
               </Typography>
 
-              {/* Visitor Team Information Table */}
               <TableContainer component={Paper}>
                 <Table>
                   <TableHead>
@@ -304,6 +306,15 @@ const Meetings = () => {
           </Fade>
         </Modal>
       )}
+
+      {/* New Meeting Form Modal */}
+      <Modal open={newMeetingOpen} onClose={handleNewMeetingClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Fade in={newMeetingOpen}>
+          <Box sx={{ width: '600px', maxWidth: '100%',height:'800px',overflowY:'scroll' ,backgroundColor:'white',borderRadius:'10px'}}>
+            <AddMeetingSession  />
+          </Box>
+        </Fade>
+      </Modal>
     </Box>
   );
 };

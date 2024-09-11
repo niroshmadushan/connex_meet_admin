@@ -5,11 +5,13 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import SearchIcon from '@mui/icons-material/Search'; // Import the search icon
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add'; // Icon for new service button
 import { styled } from '@mui/system';
-import CountUp from 'react-countup'; // For animated counters
+import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // For chart rendering
+import AddServiceForm from '../components/AddServiceForm'; // Import the AddServiceForm component
 
 // Sample service data
 const servicesData = [
@@ -64,7 +66,8 @@ const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
 }));
 
 const Services = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Modal for service details
+  const [addServiceOpen, setAddServiceOpen] = useState(false); // Modal for Add Service form
   const [selectedService, setSelectedService] = useState(null);
   const [filteredData, setFilteredData] = useState(servicesData);
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,13 +79,17 @@ const Services = () => {
   const ongoingServices = servicesData.filter(service => service.status === 'Ongoing').length;
   const finishedServices = servicesData.filter(service => service.status === 'Finished').length;
 
-  // Handle row click to open the modal
+  // Handle row click to open the service details modal
   const handleRowClick = (params) => {
     setSelectedService(params.row);
     setOpen(true);
   };
 
   const handleClose = () => setOpen(false);
+
+  // Handle Add Service form modal open/close
+  const handleAddServiceOpen = () => setAddServiceOpen(true);
+  const handleAddServiceClose = () => setAddServiceOpen(false);
 
   // Handle search/filter logic
   useEffect(() => {
@@ -114,7 +121,6 @@ const Services = () => {
     },
   ];
 
-  // Chart.js data for services status
   const chartData = {
     labels: ['Ongoing', 'Upcoming', 'Finished'],
     datasets: [
@@ -128,49 +134,68 @@ const Services = () => {
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-      {/* Page Title */}
-      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-        Services Overview
-      </Typography>
+      {/* Page Title with Add New Service Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          Services Overview
+        </Typography>
+        {/* Add New Service Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleAddServiceOpen}
+          sx={{
+            backgroundColor: '#007aff',
+            ':hover': {
+              backgroundColor: '#005bb5',
+            },
+            padding: '10px 20px',
+            fontWeight: 'bold',
+          }}
+        >
+          Add New Service
+        </Button>
+      </Box>
 
       {/* Animated Counters */}
       <Grid container spacing={4} sx={{ marginBottom: 4 }}>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
             <Typography variant="h6">Total Services</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#007aff' }}>
               <CountUp end={totalServices} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 2 }}>
             <Typography variant="h6">Upcoming Services</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
               <CountUp end={upcomingServices} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
             <Typography variant="h6">Ongoing Services</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
               <CountUp end={ongoingServices} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
+          <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
             <Typography variant="h6">Finished Services</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f44336' }}>
               <CountUp end={finishedServices} duration={1.5} />
             </Typography>
-          </Paper>
+          </Grid>
         </Grid>
       </Grid>
 
       {/* Service Filters */}
-      <Box sx={{ marginBottom: 3, backgroundColor: '#fff', padding: 2, borderRadius: 2, boxShadow: 1 }}>
+      <Box sx={{ marginBottom: 3, backgroundColor: '#fff', padding: 2, borderRadius: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={9}>
             <TextField
@@ -228,7 +253,7 @@ const Services = () => {
         </Paper>
       </Box>
 
-      {/* Popup Modal */}
+      {/* Service Details Modal */}
       {selectedService && (
         <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Fade in={open}>
@@ -316,6 +341,20 @@ const Services = () => {
           </Fade>
         </Modal>
       )}
+
+      {/* Add Service Modal */}
+      <Modal open={addServiceOpen} onClose={handleAddServiceClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Fade in={addServiceOpen}>
+          <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
+            <AddServiceForm />
+            <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+              <Button onClick={handleAddServiceClose} variant="contained" color="primary">
+                Close
+              </Button>
+            </Box>
+          </Paper>
+        </Fade>
+      </Modal>
     </Box>
   );
 };
