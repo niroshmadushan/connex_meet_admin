@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/connex_meet_admin/static/css/main.9ea3b094.css",
+    "main.js": "/connex_meet_admin/static/js/main.81a3c4c3.js",
+    "static/js/453.5565870f.chunk.js": "/connex_meet_admin/static/js/453.5565870f.chunk.js",
+    "static/media/developer-logo.png": "/connex_meet_admin/static/media/developer-logo.a7d8a471142ffa30defc.png",
+    "index.html": "/connex_meet_admin/index.html",
+    "main.9ea3b094.css.map": "/connex_meet_admin/static/css/main.9ea3b094.css.map",
+    "main.81a3c4c3.js.map": "/connex_meet_admin/static/js/main.81a3c4c3.js.map",
+    "453.5565870f.chunk.js.map": "/connex_meet_admin/static/js/453.5565870f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9ea3b094.css",
+    "static/js/main.81a3c4c3.js"
+  ]
+}
