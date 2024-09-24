@@ -7,6 +7,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Meetings from './pages/Meetings';
 import Sessions from './pages/Sessions';
+import Location from './pages/ManageLocations.js'
 import Events from './pages/Events';
 import Interviews from './pages/Interviews';
 import Services from './pages/Services';
@@ -45,8 +46,9 @@ function App() {
                 <Route path="/events" element={<Events />} />
                 <Route path="/interviews" element={<Interviews />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/location" element={<Location />} />
                 <Route path="/users" element={<Users />} />
-                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/" element={<Analytics />} />
 
                 {/* Form Routes */}
                 <Route path="/create-event" element={<EventForm />} />

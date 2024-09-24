@@ -45,11 +45,12 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null); // Track which item is clicked
   
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/analytics' },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Meetings', icon: <ScheduleIcon />, path: '/meetings' },
     { text: 'Sessions', icon: <EventIcon />, path: '/sessions' },
     { text: 'Interviews', icon: <GroupIcon />, path: '/interviews' },
     { text: 'Services', icon: <PersonIcon />, path: '/services' },
+    { text: 'Location', icon: <PersonIcon />, path: '/Location' },
     { text: 'Users', icon: <PersonIcon />, path: '/users' },
   ];
 
