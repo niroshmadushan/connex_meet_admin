@@ -7,7 +7,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PersonIcon from '@mui/icons-material/Person';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import RoomIcon from '@mui/icons-material/Room'; // New icon for Location
+import PeopleIcon from '@mui/icons-material/People'; // New icon for Users
 import { styled } from '@mui/system';
 import AdminLogo from '../assets/admin-logo.png'; // Assuming you have a logo image
 import DeveloperLogo from '../assets/developer-logo.png'; // Assuming you have a developer logo image
@@ -22,7 +23,6 @@ const SidebarContainer = styled(Drawer)(({ theme }) => ({
     background: 'linear-gradient(180deg, #001f3f, #003366, #00509E)', // Dark blue gradient
     color: '#ffffff',
     paddingTop: theme.spacing(2),
-    // boxShadow: '5px 0 30px rgba(0, 0, 0, 0.4)', // Dark shadow for depth
     borderRight: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border for definition
     position: 'relative', // For the developer logo at the bottom
     overflow: 'hidden', // Ensure content stays within the sidebar
@@ -38,7 +38,6 @@ const ShineEffect = styled(Box)(({ theme }) => ({
   height: '200%',
   background: 'linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1))',
   transform: 'rotate(45deg)',
- 
 }));
 
 const Sidebar = () => {
@@ -46,12 +45,12 @@ const Sidebar = () => {
   
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Meetings', icon: <ScheduleIcon />, path: '/meetings' },
-    { text: 'Sessions', icon: <EventIcon />, path: '/sessions' },
+    { text: 'Meetings', icon: <EventIcon />, path: '/meetings' },
+    { text: 'Sessions', icon: <EventAvailableIcon />, path: '/sessions' },
     { text: 'Interviews', icon: <GroupIcon />, path: '/interviews' },
     { text: 'Services', icon: <PersonIcon />, path: '/services' },
-    { text: 'Location', icon: <PersonIcon />, path: '/Location' },
-    { text: 'Users', icon: <PersonIcon />, path: '/users' },
+    { text: 'Location', icon: <RoomIcon />, path: '/location' }, // Updated Location Icon
+    { text: 'Users', icon: <PeopleIcon />, path: '/users' }, // Updated Users Icon
   ];
 
   const handleClick = (index) => {

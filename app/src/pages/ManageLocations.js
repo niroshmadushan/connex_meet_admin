@@ -5,10 +5,8 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import CountUp from 'react-countup';
 import { styled } from '@mui/system';
 
@@ -32,7 +30,7 @@ const locationsData = [
     address: 'Building 1 - Floor 2',
     availableFrom: '08:00 AM',
     availableTo: '04:00 PM',
-    status: 'Open', // New status field
+    status: 'Open',
     bookings: [
       { time: '09:00 - 10:00 AM', event: 'Team Meeting' },
       { time: '11:00 - 12:00 PM', event: 'Interview' },
@@ -44,7 +42,7 @@ const locationsData = [
     address: 'Building 2 - Floor 1',
     availableFrom: '09:00 AM',
     availableTo: '05:00 PM',
-    status: 'Open', // New status field
+    status: 'Open',
     bookings: [],
   },
   {
@@ -53,7 +51,7 @@ const locationsData = [
     address: 'Building 3 - Floor 5',
     availableFrom: '10:00 AM',
     availableTo: '06:00 PM',
-    status: 'Closed', // New status field
+    status: 'Closed',
     bookings: [
       { time: '10:00 - 11:30 AM', event: 'Client Presentation' },
       { time: '01:00 - 02:00 PM', event: 'Strategy Meeting' },
@@ -102,12 +100,11 @@ const ManageLocations = () => {
   const handleAddLocationClose = () => setOpen(false);
 
   // Open the edit modal
-  const handleEditOpen = (location) => {
-    setSelectedLocation(location);
+  const handleEditOpen = () => {
     setEditLocation({
-      status: location.status,
-      availableFrom: { hour: location.availableFrom.split(':')[0], minute: location.availableFrom.split(':')[1].slice(0, 2), period: location.availableFrom.includes('AM') ? 'AM' : 'PM' },
-      availableTo: { hour: location.availableTo.split(':')[0], minute: location.availableTo.split(':')[1].slice(0, 2), period: location.availableTo.includes('AM') ? 'AM' : 'PM' },
+      status: selectedLocation.status,
+      availableFrom: { hour: selectedLocation.availableFrom.split(':')[0], minute: selectedLocation.availableFrom.split(':')[1].slice(0, 2), period: selectedLocation.availableFrom.includes('AM') ? 'AM' : 'PM' },
+      availableTo: { hour: selectedLocation.availableTo.split(':')[0], minute: selectedLocation.availableTo.split(':')[1].slice(0, 2), period: selectedLocation.availableTo.includes('AM') ? 'AM' : 'PM' },
     });
     setEditOpen(true);
   };
@@ -197,16 +194,6 @@ const ManageLocations = () => {
           </Box>
         );
       },
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      renderCell: (params) => (
-        <IconButton onClick={() => handleEditOpen(params.row)}>
-          <EditIcon />
-        </IconButton>
-      ),
     },
   ];
 
@@ -343,7 +330,7 @@ const ManageLocations = () => {
                   fullWidth
                   variant="outlined"
                   value={newLocation.address}
-                  onChange={(e) => setNewLocation({ ...newLocation, address: e.target.value })}
+                  onChange={(e) => setNewLocation({ ...newLocation, address: e.target.value })} 
                 />
               </Grid>
 
@@ -689,6 +676,10 @@ const ManageLocations = () => {
               </TableContainer>
 
               <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+                {/* Edit Button */}
+                <Button onClick={handleEditOpen} sx={{ marginRight: 2 }} variant="contained" color="secondary">
+                  Edit Location
+                </Button>
                 <Button onClick={handleCloseDetails} variant="contained" color="primary">
                   Close
                 </Button>
