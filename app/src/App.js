@@ -41,6 +41,7 @@ function App() {
             <Box sx={{ flexGrow: 1, mt: 2 }}>
               <Routes> {/* Updated from Switch to Routes */}
                 {/* Page Routes */}
+                <Route path="/" element={<Analytics />} />
                 <Route path="/meetings" element={<Meetings />} />
                 <Route path="/sessions" element={<Sessions />} />
                 <Route path="/events" element={<Events />} />
@@ -48,7 +49,7 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/location" element={<Location />} />
                 <Route path="/users" element={<Users />} />
-                <Route path="/" element={<Analytics />} />
+                
 
                 {/* Form Routes */}
                 <Route path="/create-event" element={<EventForm />} />
