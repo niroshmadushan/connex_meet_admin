@@ -297,8 +297,6 @@ const Meetings = () => {
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
     { field: 'location', headerName: 'Location', width: 150 },
-    { field: 'visitorCompany', headerName: 'Visitor Company', width: 180 },
-    { field: 'participant', headerName: 'Participants', width: 200 },
     {
       field: 'status',
       headerName: 'Status',
@@ -847,7 +845,7 @@ const Meetings = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Visitor ID</TableCell>
+                      <TableCell>Company Name</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Phone Number</TableCell>
                     </TableRow>
@@ -855,8 +853,9 @@ const Meetings = () => {
                   <TableBody>
                     {selectedMeeting.participants.map((participant) => (
                       <TableRow key={participant.id}>
-                        <TableCell>{participant.full_name}</TableCell>
+                       
                         <TableCell>{participant.company_name}</TableCell>
+                        <TableCell>{participant.full_name}</TableCell>
                         <TableCell>{participant.contact_no || 'N/A'}</TableCell>
                       </TableRow>
                     ))}
