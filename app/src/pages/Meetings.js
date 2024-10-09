@@ -340,7 +340,7 @@ const Meetings = () => {
       width: 150,
       renderCell: (params) => {
         const statusColor =
-          params.value === '4' ? 'green' : params.value === '3' ? '#f44336' : '#ff9800'; // Set color based on type
+          params.value === 'Active' ? 'green' : params.value === 'Deactive' ? '#f44336' : '#ff9800'; // Set color based on type
   
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
