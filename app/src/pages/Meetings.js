@@ -299,7 +299,7 @@ const Meetings = () => {
       );
     }
     if (statusFilter) {
-      filtered = filtered.filter((meeting) => meeting.status === statusFilter);
+      filtered = filtered.filter((meeting) => meeting.type === statusFilter);
     }
     setFilteredData(filtered);
   }, [searchTerm, statusFilter, meetingsData]);
