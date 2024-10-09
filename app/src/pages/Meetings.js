@@ -58,13 +58,10 @@ const Meetings = () => {
   const [newMeetingOpen, setNewMeetingOpen] = useState(false); // For the new meeting modal
   const [selectedMeetingType, setSelectedMeetingType] = useState(null); // Track selected meeting type
   const [selectedMeeting, setSelectedMeeting] = useState(null);
-  const [filteredData, setFilteredData] = useState(meetingsData);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const totalMeetings = meetingsData.length;
-  const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
-  const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
-  const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
+  
   const [rooms, setRooms] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([])
   const [bookings, setBookings] = useState([]);
@@ -75,10 +72,10 @@ const Meetings = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [login2ModalOpen, setLogin2ModalOpen] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [meetingsData,setMeetingsData] =useState([meetingsData]);
-  const [visitorsData,setvisitorsData] =useState([visitorsData])
+  const [meetingsData,setMeetingsData] =useState([]);
+  const [visitorsData,setvisitorsData] =useState([])
 
-  
+  const [filteredData, setFilteredData] = useState([meetingsData]);
   const getemailscnapi = APIConnection.getallorgemails;
   const [formData, setFormData] = useState({
     title: '',
@@ -100,7 +97,11 @@ const Meetings = () => {
     id: '',
     orgId: '',
   });
-
+  const totalMeetings = meetingsData.length;
+  const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
+  const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
+  const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
+  
   // Function to open the new meeting modal
  const handleLoginOpen = () => setLoginModalOpen(true);
   const handleLoginClose = () => setLoginModalOpen(false);
