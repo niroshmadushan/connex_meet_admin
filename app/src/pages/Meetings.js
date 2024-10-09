@@ -318,7 +318,7 @@ const Meetings = () => {
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
     { field: 'location', headerName: 'Location', width: 150 },
-    { field: 'Type', headerName: 'type', width: 150 },
+    { field: 'type', headerName: 'Type', width: 150 },
     { field: 'status', headerName: 'status', width: 150 },
 
   ];
