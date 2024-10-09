@@ -218,35 +218,54 @@ const Meetings = () => {
         // Make the API request and log the full response
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
         console.log("API Response:", response);
-
+  
         // Extract the array from the API response
         const data = response.data;
-
+  
         // Check if the response data is a valid array
         if (!Array.isArray(data)) {
           console.error('Invalid API response structure:', data);
           return;
         }
-
+  
+        // Get the current time for comparison
+        const currentTime = new Date();
+  
         // Map over the array to extract meeting details and participants
         const meetings = data.map((item, index) => {
           const booking = item.bookingDetails;
           const participants = item.participants || [];
-
+  
+          // Convert meeting date, startTime, and endTime to Date objects
+          const meetingDate = new Date(booking.date);
+          const startTime = new Date(`${booking.date} ${booking.start_time}`);
+          const endTime = new Date(`${booking.date} ${booking.end_time}`);
+  
+          // Determine the meeting type: "Upcoming", "Ongoing", or "Finished"
+          let type = '';
+          if (currentTime < startTime) {
+            type = 'Upcoming';
+          } else if (currentTime >= startTime && currentTime <= endTime) {
+            type = 'Ongoing';
+          } else {
+            type = 'Finished';
+          }
+  
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,
-            date: booking.date,
-            startTime: booking.start_time,
-            endTime: booking.end_time,
+            date: format(meetingDate, 'yyyy-MM-dd'), // Format the date as 'YYYY-MM-DD'
+            startTime: format(startTime, 'hh:mm a'), // Format startTime (e.g., '08:30 AM')
+            endTime: format(endTime, 'hh:mm a'), // Format endTime (e.g., '10:00 AM')
             location: `Room ID: ${booking.place_id}`,
             visitorCompany: participants.length > 0 ? participants[0].company_name : 'N/A',
             participant: participants.map((p) => p.full_name).join(', ') || 'N/A',
             status: getStatusLabel(booking.status),
             participants, // Keep the full participants array for modal display
+            type, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
           };
         });
-
+  
         // Set the meetings data to the formatted array
         setMeetingsData(meetings);
         setFilteredData(meetings); // Initialize filtered data for the table
@@ -254,17 +273,18 @@ const Meetings = () => {
         console.error('Failed to fetch data:', error);
       }
     };
-
+  
     fetchData();
   }, []);
-
+  
 
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case 1: return 'Upcoming';
-      case 2: return 'Ongoing';
-      case 4: return 'Finished';
+      case 1: return 'Pending';
+      case 2: return 'Approved';
+      case 3: return 'Deactive';
+      case 4: return 'Active';
       default: return 'Unknown';
     }
   };
@@ -297,17 +317,9 @@ const Meetings = () => {
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
     { field: 'location', headerName: 'Location', width: 150 },
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 120,
-      renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <BlinkingDot status={params.value} />
-          <Typography sx={{ marginLeft: 1 }}>{params.value}</Typography>
-        </Box>
-      ),
-    },
+    { field: 'Type', headerName: 'type', width: 150 },
+    { field: 'status', headerName: 'status', width: 150 },
+
   ];
 
   const handleClose = () => setOpen(false);
@@ -831,8 +843,6 @@ const Meetings = () => {
                 <Grid item xs={6}><Typography>{selectedMeeting.endTime}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Location:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.location}</Typography></Grid>
-                <Grid item xs={6}><Typography><strong>Visitor Company:</strong></Typography></Grid>
-                <Grid item xs={6}><Typography>{selectedMeeting.visitorCompany}</Typography></Grid>
                 <Grid item xs={12}><Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>Participants</Typography></Grid>
 
               </Grid>
