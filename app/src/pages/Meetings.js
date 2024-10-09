@@ -216,7 +216,7 @@ const Meetings = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
-        const meetings = response.data.bookingDetails.map((booking) => ({
+        const meetings = response.data.bookingDetails.map((booking,index) => ({
           id: booking.id || index,
           name: booking.title,
           date: booking.date,
