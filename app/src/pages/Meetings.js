@@ -31,16 +31,16 @@ const themeColor = {
 };
 
 
-// const meetingsData = [
-//   { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
-//   { id: 2, name: 'Meeting B', date: '2024-09-15', startTime: '10:30', endTime: '11:30', location: 'Room 202', visitorCompany: 'ABC Corp.', participant: 'Jane Smith', status: 'Upcoming' },
-//   { id: 3, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
-// ];
+const meetingsData = [
+  { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
+  { id: 2, name: 'Meeting B', date: '2024-09-15', startTime: '10:30', endTime: '11:30', location: 'Room 202', visitorCompany: 'ABC Corp.', participant: 'Jane Smith', status: 'Upcoming' },
+  { id: 3, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
+];
 
-// const visitorsData = [
-//   { id: 'V001', name: 'John Doe', phone: '123-456-7890' },
-//   { id: 'V002', name: 'Jane Smith', phone: '987-654-3210' },
-// ];
+const visitorsData = [
+  { id: 'V001', name: 'John Doe', phone: '123-456-7890' },
+  { id: 'V002', name: 'Jane Smith', phone: '987-654-3210' },
+];
 
 const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
   color: status === 'Ongoing' ? '#4caf50' : status === 'Finished' ? '#f44336' : '#ff9800',
@@ -75,7 +75,7 @@ const Meetings = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [login2ModalOpen, setLogin2ModalOpen] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [meetingsData,setmeetingsData] =useState([]);
+  const [meetingsData,setMeetingsData] =useState([]);
   const [visitorsData,setvisitorsData] =useState([])
 
   
@@ -231,19 +231,21 @@ useEffect(() => {
       setBookings(bookingsResponse.data);
 
       const bookingsallResponse = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
-  setmeetingsData(bookingsallResponse.bookingDetails);
-  setvisitorsData(bookingsallResponse.data.participant);
+      setMeetingsData(bookingsallResponse.data.bookingDetails); // Correct use of state update
+      setvisitorsData(bookingsallResponse.data.participant); // Assign participants
 
-      const emailsResponse = await axios.get(getemailscnapi, { withCredentials: true });
-      setEmployeeEmailscn(emailsResponse.data)
-      
+      console.log(meetingsData);
+      const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
+      setEmployeeEmailscn(emailsResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   };
-
   fetchData();
 }, []);
+
+
+
 
 useEffect(() => {
   if (formData.date) {
@@ -361,6 +363,9 @@ const handleAddParticipant2 = () => {
   }
 };
 
+useEffect(() => {
+  setFilteredData(meetingsData); // Initialize filteredData with meetingsData
+}, [meetingsData]);
 
 const handleAddParticipant = () => {
   if (formData.employeeEmail.trim()) {
