@@ -101,7 +101,7 @@ const Meetings = () => {
   const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
   const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
   const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
-  
+
   // Function to open the new meeting modal
  const handleLoginOpen = () => setLoginModalOpen(true);
   const handleLoginClose = () => setLoginModalOpen(false);
@@ -741,7 +741,7 @@ const getAvailableTimeSlots = (room) => {
             Meetings Status Overview
           </Typography>
           <Box sx={{ height: '250px', width: '100%' }}>
-            <Line data={chartData} />
+            
           </Box>
         </Paper>
       </Box>
