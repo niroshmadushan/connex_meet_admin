@@ -31,16 +31,16 @@ const themeColor = {
 };
 
 
-const meetingsData = [
-  { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
-  { id: 2, name: 'Meeting B', date: '2024-09-15', startTime: '10:30', endTime: '11:30', location: 'Room 202', visitorCompany: 'ABC Corp.', participant: 'Jane Smith', status: 'Upcoming' },
-  { id: 3, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
-];
+// const meetingsData = [
+//   { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
+//   { id: 2, name: 'Meeting B', date: '2024-09-15', startTime: '10:30', endTime: '11:30', location: 'Room 202', visitorCompany: 'ABC Corp.', participant: 'Jane Smith', status: 'Upcoming' },
+//   { id: 3, name: 'Meeting C', date: '2024-09-10', startTime: '14:00', endTime: '15:00', location: 'Room 303', visitorCompany: 'PQR Ltd.', participant: 'Alex Johnson', status: 'Finished' },
+// ];
 
-const visitorsData = [
-  { id: 'V001', name: 'John Doe', phone: '123-456-7890' },
-  { id: 'V002', name: 'Jane Smith', phone: '987-654-3210' },
-];
+// const visitorsData = [
+//   { id: 'V001', name: 'John Doe', phone: '123-456-7890' },
+//   { id: 'V002', name: 'Jane Smith', phone: '987-654-3210' },
+// ];
 
 const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
   color: status === 'Ongoing' ? '#4caf50' : status === 'Finished' ? '#f44336' : '#ff9800',
@@ -75,6 +75,8 @@ const Meetings = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [login2ModalOpen, setLogin2ModalOpen] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [meetingsData,setmeetingsData] =useState([]);
+  const [visitorsData,setvisitorsData] =useState([])
 
   
   const getemailscnapi = APIConnection.getallorgemails;
@@ -207,7 +209,7 @@ useEffect(() => {
 
   if (empId) {
     axios
-      .get(`http://192.168.12.68:3001/email/${empId}`, { withCredentials: true })
+      .get(`http://192.168.13.150:3001/email/${empId}`, { withCredentials: true })
       .then((response) => {
         // Extract the email values from the response and set the employeeEmails state
         const emails = response.data.map((item) => item.email);
@@ -222,11 +224,15 @@ useEffect(() => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const roomsResponse = await axios.get('http://192.168.12.68:3001/place', { withCredentials: true });
+      const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
       setRooms(roomsResponse.data);
 
-      const bookingsResponse = await axios.get('http://192.168.12.68:3001/bookings', { withCredentials: true });
+      const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
       setBookings(bookingsResponse.data);
+
+      const bookingsallResponse = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
+  setmeetingsData(bookingsallResponse.bookingDetails);
+  setvisitorsData(bookingsallResponse.data.participant);
 
       const emailsResponse = await axios.get(getemailscnapi, { withCredentials: true });
       setEmployeeEmailscn(emailsResponse.data)
@@ -303,7 +309,7 @@ const handleChangecon =(e)=>{
   const empId =e.target.value;
   if (empId) {
     axios
-      .get(`http://192.168.12.68:3001/email/${empId}`, { withCredentials: true })
+      .get(`http://192.168.13.150:3001/email/${empId}`, { withCredentials: true })
       .then((response) => {
         // Extract the email values from the response and set the employeeEmails state
         const emails = response.data.map((item) => item.email);
@@ -415,7 +421,7 @@ const handleSubmit2 = async (e) => {
 
   try {
     // Send the booking data to the API endpoint
-    await axios.post('http://192.168.12.68:3001/add-booking', bookingData, {
+    await axios.post('http://192.168.13.150:3001/add-booking', bookingData, {
       withCredentials: true,
     });
     handleLogin2Close();
@@ -491,7 +497,7 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    await axios.post('http://192.168.12.68:3001/add-booking-int', bookingData, { withCredentials: true });
+    await axios.post('http://192.168.13.150:3001/add-booking-int', bookingData, { withCredentials: true });
     handleLoginClose();
     Swal.fire('Success!', 'The meeting has been added successfully.', 'success');
      
