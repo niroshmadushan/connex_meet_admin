@@ -218,21 +218,21 @@ const Meetings = () => {
         // Make the API request and log the full response
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
         console.log("API Response:", response);
-  
+
         // Extract the array from the API response
         const data = response.data;
-  
+
         // Check if the response data is a valid array
         if (!Array.isArray(data)) {
           console.error('Invalid API response structure:', data);
           return;
         }
-  
+
         // Map over the array to extract meeting details and participants
         const meetings = data.map((item, index) => {
           const booking = item.bookingDetails;
           const participants = item.participants || [];
-  
+
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,
@@ -246,7 +246,7 @@ const Meetings = () => {
             participants, // Keep the full participants array for modal display
           };
         });
-  
+
         // Set the meetings data to the formatted array
         setMeetingsData(meetings);
         setFilteredData(meetings); // Initialize filtered data for the table
@@ -254,11 +254,11 @@ const Meetings = () => {
         console.error('Failed to fetch data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
-  
+
+
 
   const getStatusLabel = (status) => {
     switch (status) {
@@ -848,15 +848,20 @@ const Meetings = () => {
                       <TableCell>Company Name</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Phone Number</TableCell>
+                      <TableCell>Status</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {selectedMeeting.participants.map((participant) => (
                       <TableRow key={participant.id}>
-                       
+
                         <TableCell>{participant.company_name}</TableCell>
                         <TableCell>{participant.full_name}</TableCell>
                         <TableCell>{participant.contact_no || 'N/A'}</TableCell>
+                        <TableCell>
+                          {participant.status === 2 ? 'Approved' : participant.status === 3 ? 'Rejected' : 'N/A'}
+                        </TableCell>
+
                       </TableRow>
                     ))}
                   </TableBody>
