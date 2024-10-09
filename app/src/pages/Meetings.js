@@ -95,8 +95,8 @@ const Meetings = () => {
     orgId: '',
   });
   const totalMeetings = meetingsData.length;
-  const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
-  const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
+  const upcomingMeetings = meetingsData.filter(meeting => meeting.type === 'Upcoming').length;
+  const ongoingMeetings = meetingsData.filter(meeting => meeting.type === 'Ongoing').length;
   const finishedMeetings = meetingsData.filter(meeting => meeting.type === 'Finished').length;
   // Function to open the new meeting modal
   const handleLoginOpen = () => setLoginModalOpen(true);
@@ -318,11 +318,25 @@ const Meetings = () => {
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
     { field: 'location', headerName: 'Location', width: 150 },
-    { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'status', headerName: 'status', width: 150 },
-
+    {
+      field: 'type',
+      headerName: 'Type',
+      width: 150,
+      renderCell: (params) => {
+        const statusColor =
+          params.value === 'Ongoing' ? '#4caf50' : params.value === 'Finished' ? '#f44336' : '#ff9800'; // Set color based on type
+  
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <BlinkingDot status={params.value} sx={{ color: statusColor, marginRight: '8px' }} />
+            <Typography sx={{ color: statusColor, fontWeight: 'bold' }}>{params.value}</Typography>
+          </Box>
+        );
+      },
+    },
+    { field: 'status', headerName: 'Status', width: 150 },
   ];
-
+  
   const handleClose = () => setOpen(false);
   useEffect(() => {
     if (formData.date) {
