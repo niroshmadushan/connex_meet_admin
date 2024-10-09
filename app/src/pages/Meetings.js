@@ -55,26 +55,20 @@ const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
 
 const Meetings = () => {
   const [open, setOpen] = useState(false);
-  const [newMeetingOpen, setNewMeetingOpen] = useState(false); // For the new meeting modal
-  const [selectedMeetingType, setSelectedMeetingType] = useState(null); // Track selected meeting type
   const [selectedMeeting, setSelectedMeeting] = useState(null);
-  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  
   const [rooms, setRooms] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([])
   const [bookings, setBookings] = useState([]);
   const [employeeEmails, setEmployeeEmails] = useState([]);
   const [employeeEmailscn, setEmployeeEmailscn] = useState([]);
   const [empid,setempid]=useState();
-  const [showModal, setShowModal] = useState();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [login2ModalOpen, setLogin2ModalOpen] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [meetingsData,setMeetingsData] =useState([]);
   const [visitorsData,setvisitorsData] =useState([])
-
   const [filteredData, setFilteredData] = useState([meetingsData]);
   const getemailscnapi = APIConnection.getallorgemails;
   const [formData, setFormData] = useState({
@@ -97,11 +91,10 @@ const Meetings = () => {
     id: '',
     orgId: '',
   });
-  const totalMeetings = meetingsData.length;
+const totalMeetings = meetingsData.length;
   const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
   const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
   const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
-
   // Function to open the new meeting modal
  const handleLoginOpen = () => setLoginModalOpen(true);
   const handleLoginClose = () => setLoginModalOpen(false);
@@ -134,15 +127,11 @@ const Meetings = () => {
   };
 
 
-  const handleRowClick = (params) => {
-    setSelectedMeeting(params.row);
-    setOpen(true);
-  };
   const handleSuccessClose = () => {
     // Close the modal after successful meeting addition
     setNewMeetingOpen(false);
   };
-  const handleClose = () => setOpen(false);
+ 
 
   const handleNewMeetingOpen = () => {
     setSelectedMeetingType(null); // Reset meeting type
@@ -152,27 +141,7 @@ const Meetings = () => {
 
 
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Meeting Name', width: 150 },
-    { field: 'date', headerName: 'Date', width: 120 },
-    { field: 'startTime', headerName: 'Start Time', width: 120, renderCell: (params) => formatTime(params.value) },
-    { field: 'endTime', headerName: 'End Time', width: 120, renderCell: (params) => formatTime(params.value) },
-    { field: 'location', headerName: 'Location', width: 150 },
-    { field: 'visitorCompany', headerName: 'Visitor Company', width: 180 },
-    { field: 'participant', headerName: 'Participants', width: 200 },
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 120,
-      renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <BlinkingDot status={params.value} />
-          <Typography sx={{ marginLeft: 1 }}>{params.value}</Typography>
-        </Box>
-      ),
-    },
-  ];
+ 
 
   const formatTime = (time) => {
     const [hour, minute] = time.split(':');
@@ -223,7 +192,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  const fetchData = async () => {
+  const fetchData2 = async () => {
     try {
       const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
       setRooms(roomsResponse.data);
@@ -231,23 +200,94 @@ useEffect(() => {
       const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
       setBookings(bookingsResponse.data);
 
-      const bookingsallResponse = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
-      setMeetingsData(bookingsallResponse.data.bookingDetails); // Correct use of state update
-      setvisitorsData(bookingsallResponse.data.participant); // Assign participants
-
-      console.log(meetingsData);
       const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
       setEmployeeEmailscn(emailsResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   };
+  fetchData2();
+}, []);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
+      const meetings = response.data.bookingDetails.map((booking) => ({
+        id: booking.id,
+        name: booking.title,
+        date: booking.date,
+        startTime: booking.start_time,
+        endTime: booking.end_time,
+        location: `Room ID: ${booking.place_id}`,
+        visitorCompany: booking.participants?.[0]?.company_name || 'N/A',
+        participant: booking.participants?.map((p) => p.full_name).join(', ') || 'N/A',
+        status: getStatusLabel(booking.status), // Convert status to a readable label
+        participants: booking.participants || [],
+      }));
+      setMeetingsData(meetings);
+      setFilteredData(meetings); // Initialize filtered data
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+
   fetchData();
 }, []);
 
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 1: return 'Upcoming';
+    case 2: return 'Ongoing';
+    case 4: return 'Finished';
+    default: return 'Unknown';
+  }
+};
+
+useEffect(() => {
+  let filtered = [...meetingsData];
+  if (searchTerm) {
+    filtered = filtered.filter((meeting) =>
+      meeting.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      meeting.visitorCompany.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+  if (statusFilter) {
+    filtered = filtered.filter((meeting) => meeting.status === statusFilter);
+  }
+  setFilteredData(filtered);
+}, [searchTerm, statusFilter, meetingsData]);
+
+// Modal handlers
+const handleRowClick = (params) => {
+  setSelectedMeeting(params.row);
+  setOpen(true);
+};
 
 
+const columns = [
+  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'name', headerName: 'Meeting Name', width: 150 },
+  { field: 'date', headerName: 'Date', width: 120 },
+  { field: 'startTime', headerName: 'Start Time', width: 120 },
+  { field: 'endTime', headerName: 'End Time', width: 120 },
+  { field: 'location', headerName: 'Location', width: 150 },
+  { field: 'visitorCompany', headerName: 'Visitor Company', width: 180 },
+  { field: 'participant', headerName: 'Participants', width: 200 },
+  {
+    field: 'status',
+    headerName: 'Status',
+    width: 120,
+    renderCell: (params) => (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <BlinkingDot status={params.value} />
+        <Typography sx={{ marginLeft: 1 }}>{params.value}</Typography>
+      </Box>
+    ),
+  },
+];
 
+const handleClose = () => setOpen(false);
 useEffect(() => {
   if (formData.date) {
     updateAvailableRooms();
@@ -741,7 +781,7 @@ const getAvailableTimeSlots = (room) => {
             Meetings Status Overview
           </Typography>
           <Box sx={{ height: '250px', width: '100%' }}>
-            
+            <Line data={chartData} />
           </Box>
         </Paper>
       </Box>
@@ -756,54 +796,20 @@ const getAvailableTimeSlots = (room) => {
               </Typography>
               <Divider sx={{ marginBottom: 2 }} />
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography><strong>Meeting Name:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.name}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>Date:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.date}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>Start Time:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.startTime}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>End Time:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.endTime}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>Location:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.location}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>Visitor Company:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.visitorCompany}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography><strong>Participants:</strong></Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{selectedMeeting.participant}</Typography>
-                </Grid>
+              <Grid item xs={6}><Typography><strong>Meeting Name:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.name}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Date:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.date}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Start Time:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.startTime}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>End Time:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.endTime}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Location:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.location}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Visitor Company:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.visitorCompany}</Typography></Grid>
+                <Grid item xs={12}><Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>Participants</Typography></Grid>
+               
               </Grid>
 
               <Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>
@@ -820,14 +826,14 @@ const getAvailableTimeSlots = (room) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {visitorsData.map((visitor) => (
-                      <TableRow key={visitor.id}>
-                        <TableCell>{visitor.id}</TableCell>
-                        <TableCell>{visitor.name}</TableCell>
-                        <TableCell>{visitor.phone}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
+                      {selectedMeeting.participants.map((participant) => (
+                        <TableRow key={participant.id}>
+                          <TableCell>{participant.full_name}</TableCell>
+                          <TableCell>{participant.company_name}</TableCell>
+                          <TableCell>{participant.contact_no || 'N/A'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
                 </Table>
               </TableContainer>
 
