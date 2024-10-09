@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://192.168.12.68:3001';
+const BACKEND_URL = 'http://192.168.13.150:3001';
 
 const config = {
     becomeapartnerapi:` ${BACKEND_URL}/becomePartner`,
