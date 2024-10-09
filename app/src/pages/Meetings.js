@@ -188,6 +188,7 @@ const Meetings = () => {
       },
     ],
   };
+  
 // this modal function area
 
 const navigate = useNavigate();
@@ -339,6 +340,22 @@ const updateAvailableRooms = () => {
   }
 };
 
+const handleAddParticipant2 = () => {
+  if (formData.companyName.trim() && formData.employeeName.trim()) {
+    const newParticipant = {
+      companyName: formData.companyName,
+      employeeName: formData.employeeName,
+    };
+    setFormData((prevData) => ({
+      ...prevData,
+      participantList: [...prevData.participantList, newParticipant],
+      companyName: '',
+      employeeName: '',
+    }));
+  }
+};
+
+
 const handleAddParticipant = () => {
   if (formData.employeeEmail.trim()) {
     const newParticipant = {
@@ -360,6 +377,88 @@ const handleDeleteParticipant = (index) => {
     participantList: updatedList,
   });
 };
+
+
+const handleSubmit2 = async (e) => {
+  e.preventDefault();
+
+  // Check if the participant list is empty before proceeding
+  if (formData.participantList.length === 0) {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Please add at least one participant before submitting the meeting.',
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+    return; // Prevent form submission if no participants
+  }
+
+  const formattedDate = formData.date ? format(new Date(formData.date), 'MM/dd/yyyy') : '';
+
+  // Prepare the data for the API request
+  const bookingData = {
+    title: formData.title,
+    date: formattedDate,
+    startTime: formData.startTime,
+    endTime: formData.endTime,
+    type: formData.type,
+    specialNote: formData.specialNote,
+    refreshment: formData.refreshment,
+    selectedRoomId: formData.selectedRoomId,
+    companyName: formData.companyName,
+    employeeName: formData.employeeName,
+    participantList: formData.participantList,
+    type:'meeting',
+    id: empid,// ID from local storage
+    orgId: formData.orgId, // Org ID from local storage
+  };
+
+  try {
+    // Send the booking data to the API endpoint
+    await axios.post('http://192.168.12.68:3001/add-booking', bookingData, {
+      withCredentials: true,
+    });
+    handleLogin2Close();
+    // Show success message and reset the form
+    Swal.fire({
+      title: 'Success!',
+      text: 'The meeting has been added successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    }).then(() => {
+      setFormData({
+        title: '',
+        date: '',
+        availableRooms: [],
+        selectedRoom: '',
+        selectedRoomId: '',
+        availableSlots: [],
+        selectedSlot: '',
+        startTime: '',
+        endTime: '',
+        companyName: '',
+        employeeName: '',
+        participantList: [],
+        type: 'meeting',
+        specialNote: '',
+        refreshment: '',
+        id: '',
+        orgId: '',
+      });
+      navigate('/connex_meet_emp/dash');
+    });
+  } catch (error) {
+    // Handle the error if the POST request fails
+    Swal.fire({
+      title: 'Error!',
+      text: 'There was a problem adding the meeting. Please try again.',
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+    console.error('Error adding booking:', error);
+  }
+};
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -524,7 +623,7 @@ const getAvailableTimeSlots = (room) => {
         },
       }}
     >
-      Add New Meeting
+      Add New Internal Meeting
     </Button>
     
     <Button
@@ -538,7 +637,7 @@ const getAvailableTimeSlots = (room) => {
         },
       }}
     >
-      Add New Meeting
+      Add New External Meeting
     </Button>
   </Box>
 </Box>
@@ -1050,10 +1149,11 @@ const getAvailableTimeSlots = (room) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              {/* Conducted By Selector */}
-              <Grid item xs={12}>
+          <form onSubmit={handleSubmit2}>
+
+          <Grid container spacing={3}>
+            {/* Title, Date, Room, Time Slots, Start and End Time */}
+            <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Conducted By</InputLabel>
                   <Select
@@ -1071,92 +1171,91 @@ const getAvailableTimeSlots = (room) => {
                   </Select>
                 </FormControl>
               </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <TitleIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Date"
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EventIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  inputProps: {
+                    min: format(new Date(), 'yyyy-MM-dd'), // Set the minimum date to today's date
+                  },
+                }}
+                required
+              />
+            </Grid>
 
-              {/* Meeting Title Field */}
+            {/* Room Selection and Available Slots */}
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Select Room</InputLabel>
+                <Select
+                  label="Select Room"
+                  name="selectedRoomId"
+                  value={formData.selectedRoomId}
+                  onChange={handleChange}
+                  required
+                >
+                  {rooms.map((room) => (
+                    <MenuItem key={room.id} value={room.id}>
+                      {room.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {/* Available Slots Dropdown */}
+            {formData.availableSlots.length > 0 && (
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <TitleIcon color="primary" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  required
-                />
-              </Grid>
-
-              {/* Date Picker and Room Selector */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Date"
-                  name="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EventIcon color="primary" />
-                      </InputAdornment>
-                    ),
-                    inputProps: {
-                      min: format(new Date(), 'yyyy-MM-dd'),  // Set the minimum date to today's date
-                    },
-                  }}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel>Select Room</InputLabel>
+                  <InputLabel>Select Time Slot</InputLabel>
                   <Select
-                    label="Select Room"
-                    name="selectedRoomId"
-                    value={formData.selectedRoomId}
+                    label="Select Time Slot"
+                    name="selectedSlot"
+                    value={formData.selectedSlot}
                     onChange={handleChange}
                     required
                   >
-                    {availableRooms.map((room) => (
-                      <MenuItem key={room.id} value={room.id}>
-                        {room.name}
+                    {formData.availableSlots.map((slot, index) => (
+                      <MenuItem key={index} value={slot}>
+                        {slot}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
+            )}
 
-              {/* Available Time Slot Selector */}
-              {formData.availableSlots.length > 0 && (
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel>Select Time Slot</InputLabel>
-                    <Select
-                      label="Select Time Slot"
-                      name="selectedSlot"
-                      value={formData.selectedSlot}
-                      onChange={handleChange}
-                      required
-                    >
-                      {formData.availableSlots.map((slot, index) => (
-                        <MenuItem key={index} value={slot}>
-                          {slot}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              )}
-
-              {/* Start and End Time Selectors */}
+            {/* Start and End Time Options */}
+            {/* {formData.startTimeOptions.length > 0 && ( */}
+            <>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1192,109 +1291,140 @@ const getAvailableTimeSlots = (room) => {
                   ))}
                 </TextField>
               </Grid>
+            </>
+            {/* )} */}
 
-              {/* Participant Email Selector */}
-              <Grid item xs={12}>
-                <Autocomplete
-                  options={employeeEmails}
-                  value={formData.employeeEmail}
-                  onChange={handleEmailChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Employee Email"
-                      InputProps={{
-                        ...params.InputProps,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <EventIcon color="primary" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-
-              {/* Add Participant Button */}
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  onClick={handleAddParticipant}
-                  sx={{ backgroundColor: themeColor.primary, color: '#fff', ':hover': { backgroundColor: themeColor.primaryDark } }}
-                  fullWidth
-                >
-                  Add Participant
-                </Button>
-              </Grid>
-
-              {/* Participant List */}
-              {formData.participantList.length > 0 && (
-                <Grid item xs={12}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>#</TableCell>
-                        <TableCell>Employee Email</TableCell>
-                        <TableCell>Action</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {formData.participantList.map((participant, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{participant.employeeEmail}</TableCell>
-                          <TableCell>
-                            <IconButton onClick={() => handleDeleteParticipant(index)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </Grid>
-              )}
-
-              {/* Special Note and Refreshment Details */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Special Note"
-                  name="specialNote"
-                  value={formData.specialNote}
-                  onChange={handleChange}
-                  multiline
-                  rows={3}
-                  placeholder="Enter any special notes regarding the event"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Refreshment"
-                  name="refreshment"
-                  value={formData.refreshment}
-                  onChange={handleChange}
-                  multiline
-                  rows={2}
-                  placeholder="Enter refreshment details if any"
-                />
-              </Grid>
-
-              {/* Submit Button */}
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{ backgroundColor: themeColor.primary, color: '#fff', ':hover': { backgroundColor: themeColor.primaryDark } }}
-                >
-                  Add Meeting
-                </Button>
-              </Grid>
+            {/* Participant Fields */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Company Name"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+              />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Employee Name"
+                name="employeeName"
+                value={formData.employeeName}
+                onChange={handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                onClick={handleAddParticipant2}
+                sx={{
+                  backgroundColor: themeColor.primary,
+                  color: '#fff',
+                  ':hover': {
+                    backgroundColor: themeColor.primaryDark,
+                  },
+                }}
+              >
+                Add Participant
+              </Button>
+            </Grid>
+
+            {/* Participant Table */}
+            {formData.participantList.length > 0 && (
+              <Grid item xs={12}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>#</TableCell>
+                      <TableCell>Company Name</TableCell>
+                      <TableCell>Employee Name</TableCell>
+                      <TableCell>Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {formData.participantList.map((participant, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{participant.companyName}</TableCell>
+                        <TableCell>{participant.employeeName}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => handleDeleteParticipant(index)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Grid>
+            )}
+
+            {/* Special Note and Refreshment */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Special Note"
+                name="specialNote"
+                value={formData.specialNote}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                placeholder="Enter any special notes regarding the event"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <NotesIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+                required
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Refreshment"
+                name="refreshment"
+                value={formData.refreshment}
+                onChange={handleChange}
+                multiline
+                rows={2}
+                placeholder="Enter refreshment details if any"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <RefreshIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+                required
+              />
+            </Grid>
+
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  backgroundColor: themeColor.primary,
+                  color: '#fff',
+                  ':hover': {
+                    backgroundColor: themeColor.primaryDark,
+                  },
+                  transition: 'background-color 0.3s ease',
+                  padding: '10px',
+                  fontWeight: 'bold',
+                }}
+                fullWidth
+              >
+                Add Meeting
+              </Button>
+            </Grid>
+          </Grid>
           </form>
 
           <Box sx={{ textAlign: 'right', mt: 3 }}>
