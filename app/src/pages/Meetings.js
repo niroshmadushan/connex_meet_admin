@@ -217,7 +217,7 @@ const Meetings = () => {
       try {
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
         const meetings = response.data.bookingDetails.map((booking) => ({
-          id: booking.id,
+          id: booking.id || index,
           name: booking.title,
           date: booking.date,
           startTime: booking.start_time,
@@ -774,9 +774,11 @@ const Meetings = () => {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        getRowId={(row) => row.id || `row-${Math.random()}`}  // Provide a unique `id` for each row
         onRowClick={handleRowClick}
         sx={{ height: 400, backgroundColor: '#fff', borderRadius: 2 }}
       />
+
 
       <Box sx={{ marginTop: 4 }}>
         <Paper sx={{ padding: 3, backgroundColor: '#fff', borderRadius: 2 }}>
