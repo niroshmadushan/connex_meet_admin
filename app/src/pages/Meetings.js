@@ -75,8 +75,8 @@ const Meetings = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [login2ModalOpen, setLogin2ModalOpen] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [meetingsData,setMeetingsData] =useState([]);
-  const [visitorsData,setvisitorsData] =useState([])
+  const [meetingsData,setMeetingsData] =useState([meetingsData]);
+  const [visitorsData,setvisitorsData] =useState([visitorsData])
 
   
   const getemailscnapi = APIConnection.getallorgemails;
