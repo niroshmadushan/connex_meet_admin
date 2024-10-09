@@ -215,9 +215,23 @@ const Meetings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Make the API request
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
-        const meetings = response.data.bookingDetails.map((booking,index) => ({
-          id: booking.id || index,
+        
+        // Log the response to inspect its structure
+        console.log("API Response:", response);
+  
+        // Safely access `response.data` using optional chaining and log the structure
+        const bookingDetails = response.data?.bookingDetails;
+  
+        if (!Array.isArray(bookingDetails)) {
+          console.error('Invalid API response structure:', response.data);
+          return;
+        }
+  
+        // Transform the data only if `bookingDetails` is defined and an array
+        const meetings = bookingDetails.map((booking, index) => ({
+          id: booking.id || index,  // Ensure unique IDs
           name: booking.title,
           date: booking.date,
           startTime: booking.start_time,
@@ -225,19 +239,21 @@ const Meetings = () => {
           location: `Room ID: ${booking.place_id}`,
           visitorCompany: booking.participants?.[0]?.company_name || 'N/A',
           participant: booking.participants?.map((p) => p.full_name).join(', ') || 'N/A',
-          status: getStatusLabel(booking.status), // Convert status to a readable label
+          status: getStatusLabel(booking.status),
           participants: booking.participants || [],
         }));
+  
+        // Update the state with the fetched data
         setMeetingsData(meetings);
-        setFilteredData(meetings); // Initialize filtered 
-        console.log(meetings)
+        setFilteredData(meetings); // Initialize filtered data
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   const getStatusLabel = (status) => {
     switch (status) {
