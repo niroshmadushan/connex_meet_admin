@@ -97,7 +97,7 @@ const Meetings = () => {
   const totalMeetings = meetingsData.length;
   const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
   const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
-  const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
+  const finishedMeetings = meetingsData.filter(meeting => meeting.type === 'Finished').length;
   // Function to open the new meeting modal
   const handleLoginOpen = () => setLoginModalOpen(true);
   const handleLoginClose = () => setLoginModalOpen(false);
