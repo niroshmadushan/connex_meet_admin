@@ -215,37 +215,41 @@ const Meetings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Make the API request
+        // Make the API request and log the full response
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookings', { withCredentials: true });
-        
-        // Log the response to inspect its structure
         console.log("API Response:", response);
   
-        // Safely access `response.data` using optional chaining and log the structure
-        const bookingDetails = response.data?.bookingDetails;
+        // Extract the array from the API response
+        const data = response.data;
   
-        if (!Array.isArray(bookingDetails)) {
-          console.error('Invalid API response structure:', response.data);
+        // Check if the response data is a valid array
+        if (!Array.isArray(data)) {
+          console.error('Invalid API response structure:', data);
           return;
         }
   
-        // Transform the data only if `bookingDetails` is defined and an array
-        const meetings = bookingDetails.map((booking, index) => ({
-          id: booking.id || index,  // Ensure unique IDs
-          name: booking.title,
-          date: booking.date,
-          startTime: booking.start_time,
-          endTime: booking.end_time,
-          location: `Room ID: ${booking.place_id}`,
-          visitorCompany: booking.participants?.[0]?.company_name || 'N/A',
-          participant: booking.participants?.map((p) => p.full_name).join(', ') || 'N/A',
-          status: getStatusLabel(booking.status),
-          participants: booking.participants || [],
-        }));
+        // Map over the array to extract meeting details and participants
+        const meetings = data.map((item, index) => {
+          const booking = item.bookingDetails;
+          const participants = item.participants || [];
   
-        // Update the state with the fetched data
+          return {
+            id: booking.id || index, // Use booking.id if available, else fallback to array index
+            name: booking.title,
+            date: booking.date,
+            startTime: booking.start_time,
+            endTime: booking.end_time,
+            location: `Room ID: ${booking.place_id}`,
+            visitorCompany: participants.length > 0 ? participants[0].company_name : 'N/A',
+            participant: participants.map((p) => p.full_name).join(', ') || 'N/A',
+            status: getStatusLabel(booking.status),
+            participants, // Keep the full participants array for modal display
+          };
+        });
+  
+        // Set the meetings data to the formatted array
         setMeetingsData(meetings);
-        setFilteredData(meetings); // Initialize filtered data
+        setFilteredData(meetings); // Initialize filtered data for the table
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -253,6 +257,7 @@ const Meetings = () => {
   
     fetchData();
   }, []);
+  
   
 
   const getStatusLabel = (status) => {
