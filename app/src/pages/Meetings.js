@@ -324,6 +324,21 @@ const Meetings = () => {
       width: 150,
       renderCell: (params) => {
         const statusColor =
+          params.value === 'Active' ? '#4caf50' : params.value === 'Deactive' ? '#f44336' : '#ff9800'; // Set color based on type
+  
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography sx={{ color: statusColor, fontWeight: 'bold' }}>{params.value}</Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
+      renderCell: (params) => {
+        const statusColor =
           params.value === 'Ongoing' ? '#4caf50' : params.value === 'Finished' ? '#f44336' : '#ff9800'; // Set color based on type
   
         return (
