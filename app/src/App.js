@@ -1,69 +1,90 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Updated to use Routes
-import { CssBaseline, Box } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Meetings from './pages/Meetings';
 import Sessions from './pages/Sessions';
-import Location from './pages/ManageLocations.js'
+import Location from './pages/ManageLocations';
 import Events from './pages/Events';
 import Interviews from './pages/Interviews';
 import Services from './pages/Services';
 import Users from './pages/Users';
 import Analytics from './pages/Analytics';
-import EventForm from './components/EventForm';
-import MeetingForm from './components/MeetingForm';
-import UserForm from './components/UserForm';
+import Login from './pages/Login';
+import { CssBaseline, Box, ThemeProvider } from '@mui/material';
+import axios from 'axios';
 import theme from './theme';
+import APIConnect from './config';
 
-// Example handler for user form submission
-const handleUserSubmit = (userData) => {
-  console.log('User data submitted:', userData);
+// Create AuthContext
+export const AuthContext = createContext();
+
+// Main AppContent Component
+const AppContent = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      {isAuthenticated && <Sidebar />} {/* Sidebar visible only if authenticated */}
+      <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto', height: '100vh' }}>
+        {isAuthenticated && <Header />} {/* Header visible only if authenticated */}
+        <Box sx={{ flexGrow: 1, mt: 2 }}>
+          <Routes>
+            {/* Public Route - Login Page */}
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+            <Route path="/meetings" element={<PrivateRoute><Meetings /></PrivateRoute>} />
+            <Route path="/sessions" element={<PrivateRoute><Sessions /></PrivateRoute>} />
+            <Route path="/events" element={<PrivateRoute><Events /></PrivateRoute>} />
+            <Route path="/interviews" element={<PrivateRoute><Interviews /></PrivateRoute>} />
+            <Route path="/services" element={<PrivateRoute><Services /></PrivateRoute>} />
+            <Route path="/location" element={<PrivateRoute><Location /></PrivateRoute>} />
+            <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+          </Routes>
+        </Box>
+        {isAuthenticated && <Footer />} {/* Footer visible only if authenticated */}
+      </Box>
+    </Box>
+  );
 };
 
+// PrivateRoute Component to Protect Routes
+const PrivateRoute = ({ children }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated ? children : <Navigate to="/" />;
+};
+
+// Main App Component
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const verifyToken = APIConnect.verifytoken;
+
+  // Check the authentication status
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axios.get(verifyToken, { withCredentials: true });
+        setIsAuthenticated(response.status === 200);
+      } catch (error) {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Box sx={{ display: 'flex' }}>
-          {/* Sidebar */}
-          <Sidebar />
-
-          {/* Main Content Area */}
-          <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto', height: '100vh' }}>
-            {/* Header */}
-            <Header />
-
-            {/* Main content and routes */}
-            <Box sx={{ flexGrow: 1, mt: 2 }}>
-              <Routes> {/* Updated from Switch to Routes */}
-                {/* Page Routes */}
-                <Route path="/" element={<Analytics />} />
-                <Route path="/meetings" element={<Meetings />} />
-                <Route path="/sessions" element={<Sessions />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/interviews" element={<Interviews />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/location" element={<Location />} />
-                <Route path="/users" element={<Users />} />
-                
-
-                {/* Form Routes */}
-                <Route path="/create-event" element={<EventForm />} />
-                <Route path="/create-meeting" element={<MeetingForm />} />
-                <Route path="/create-user" element={<UserForm onSubmit={handleUserSubmit} />} />
-              </Routes>
-            </Box>
-
-            {/* Footer */}
-            <Footer />
-          </Box>
-        </Box>
-      </Router>
-    </ThemeProvider>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <AppContent />
+        </Router>
+      </ThemeProvider>
+    </AuthContext.Provider>
   );
 }
 

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { format, isSameDay } from 'date-fns';
 import {
   Box, Typography, Modal, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  TextField, Grid, MenuItem, Select, InputLabel, FormControl, Fade, InputAdornment, Divider
+  TextField, Grid, MenuItem, Select, InputLabel, FormControl, Fade, InputAdornment, Divider, IconButton,
+  Autocomplete,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -12,6 +14,22 @@ import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import AddMeetingSession from '../components/AddMeetingSession';  // Import the new meeting form component
+import INTMEET from './meeting/AddMeetingInternal';
+import EXTMEET from './meeting/AddMeetingSession';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import APIConnection from '../config';
+import EventIcon from '@mui/icons-material/Event';
+import TitleIcon from '@mui/icons-material/Title';
+import NotesIcon from '@mui/icons-material/Notes';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+const themeColor = {
+  primary: '#007aff',
+  primaryDark: '#005bb5',
+};
+
 
 const meetingsData = [
   { id: 1, name: 'Meeting A', date: '2024-09-12', startTime: '09:00', endTime: '10:00', location: 'Room 101', visitorCompany: 'XYZ Inc.', participant: 'John Doe', status: 'Ongoing' },
@@ -38,27 +56,94 @@ const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
 const Meetings = () => {
   const [open, setOpen] = useState(false);
   const [newMeetingOpen, setNewMeetingOpen] = useState(false); // For the new meeting modal
+  const [selectedMeetingType, setSelectedMeetingType] = useState(null); // Track selected meeting type
   const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [filteredData, setFilteredData] = useState(meetingsData);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-
   const totalMeetings = meetingsData.length;
   const upcomingMeetings = meetingsData.filter(meeting => meeting.status === 'Upcoming').length;
   const ongoingMeetings = meetingsData.filter(meeting => meeting.status === 'Ongoing').length;
   const finishedMeetings = meetingsData.filter(meeting => meeting.status === 'Finished').length;
+  const [rooms, setRooms] = useState([]);
+  const [availableRooms, setAvailableRooms] = useState([])
+  const [bookings, setBookings] = useState([]);
+  const [employeeEmails, setEmployeeEmails] = useState([]);
+  const [employeeEmailscn, setEmployeeEmailscn] = useState([]);
+  const [empid,setempid]=useState();
+  const [showModal, setShowModal] = useState();
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
+
+  
+  const getemailscnapi = APIConnection.getallorgemails;
+  const [formData, setFormData] = useState({
+    title: '',
+    date: '',
+    availableRooms: [],
+    selectedRoomId: '',
+    availableSlots: [],
+    selectedSlot: '',
+    startTime: '',
+    endTime: '',
+    startTimeOptions: [],
+    endTimeOptions: [],
+    companyName: 'Connex IT',
+    employeeName: '',
+    participantList: [],
+    type: 'internalmeeting',
+    specialNote: '',
+    refreshment: '',
+    id: '',
+    orgId: '',
+  });
+
+  // Function to open the new meeting modal
+ const handleLoginOpen = () => setLoginModalOpen(true);
+  const handleLoginClose = () => setLoginModalOpen(false);
+
+  // Function to handle login form submission
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    // Here you can implement login logic (e.g., API call, validation, etc.)
+    Swal.fire(`Welcome, ${loginData.username}!`, 'You have successfully logged in.', 'success');
+    handleLoginClose();
+  };
+
+  // Handle form field changes for login modal
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+  };
+  // Function to close all modals
+  const closeAllModals = () => {
+    setNewMeetingOpen(false);
+  };
+
+  // Function to handle a successful meeting addition and close the modal
+  const handleSuccessfulMeetingAddition = () => {
+    closeAllModals(); // Close the modal
+    Swal.fire('Success!', 'The meeting has been added successfully.', 'success'); // Show success alert
+  };
+
 
   const handleRowClick = (params) => {
     setSelectedMeeting(params.row);
     setOpen(true);
   };
-
+  const handleSuccessClose = () => {
+    // Close the modal after successful meeting addition
+    setNewMeetingOpen(false);
+  };
   const handleClose = () => setOpen(false);
 
-  const handleNewMeetingOpen = () => setNewMeetingOpen(true); // Open the new meeting modal
-  const handleNewMeetingClose = () => setNewMeetingOpen(false); // Close the new meeting modal
+  const handleNewMeetingOpen = () => {
+    setSelectedMeetingType(null); // Reset meeting type
+    setNewMeetingOpen(true); // Open the new meeting modal
+  };
+  const handleNewMeetingClose = () => setNewMeetingOpen(false);
 
-  
+
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -99,27 +184,361 @@ const Meetings = () => {
       },
     ],
   };
+// this modal function area
+
+const navigate = useNavigate();
+
+useEffect(() => {
+  const userId = localStorage.getItem('id') || '';
+  const userOrgId = localStorage.getItem('orgid') || '';
+  setFormData((prevData) => ({
+    ...prevData,
+    id: userId,
+    orgId: userOrgId,
+  }));
+}, []);
+useEffect(() => {
+  const empId = localStorage.getItem('id'); // Retrieve 'id' from local storage
+
+  if (empId) {
+    axios
+      .get(`http://192.168.12.68:3001/email/${empId}`, { withCredentials: true })
+      .then((response) => {
+        // Extract the email values from the response and set the employeeEmails state
+        const emails = response.data.map((item) => item.email);
+        setEmployeeEmails(emails);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch employee emails:', error);
+      });
+  }
+}, []);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const roomsResponse = await axios.get('http://192.168.12.68:3001/place', { withCredentials: true });
+      setRooms(roomsResponse.data);
+
+      const bookingsResponse = await axios.get('http://192.168.12.68:3001/bookings', { withCredentials: true });
+      setBookings(bookingsResponse.data);
+
+      const emailsResponse = await axios.get(getemailscnapi, { withCredentials: true });
+      setEmployeeEmailscn(emailsResponse.data)
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
+useEffect(() => {
+  if (formData.date) {
+    updateAvailableRooms();
+    setFormData((prevData) => ({
+      ...prevData,
+      selectedRoomId: '',
+      availableSlots: [],
+      startTimeOptions: [],
+      endTimeOptions: [],
+      startTime: '',
+      endTime: '',
+    }));
+  }
+}, [formData.date, rooms]);
+
+useEffect(() => {
+  if (formData.selectedRoomId) {
+    const selectedRoom = rooms.find((room) => room.id === formData.selectedRoomId);
+    if (selectedRoom) {
+      const availableTimeSlots = getAvailableTimeSlots(selectedRoom);
+      setFormData((prevData) => ({
+        ...prevData,
+        availableSlots: availableTimeSlots,
+        selectedSlot: '',
+        startTimeOptions: [],
+        endTimeOptions: [],
+        startTime: '',
+        endTime: '',
+      }));
+    }
+  }
+}, [formData.selectedRoomId, formData.date]);
+
+useEffect(() => {
+  if (formData.selectedSlot) {
+    const [slotStart, slotEnd] = formData.selectedSlot.split(' - ');
+    const timeOptions = generateTimeOptions(slotStart, slotEnd);
+    setFormData((prevData) => ({
+      ...prevData,
+      startTimeOptions: timeOptions,
+      endTimeOptions: timeOptions,
+      startTime: '',
+      endTime: '',
+    }));
+  }
+}, [formData.selectedSlot]);
+
+useEffect(() => {
+  if (formData.startTime) {
+    const [slotStart, slotEnd] = formData.selectedSlot.split(' - ');
+    const endOptions = generateTimeOptions(formData.startTime, slotEnd);
+    setFormData((prevData) => ({
+      ...prevData,
+      endTimeOptions: endOptions.slice(1),
+      endTime: '',
+    }));
+  }
+}, [formData.startTime]);
+const handleChangecon =(e)=>{
+  setempid(e.target.value);
+  console.log(e.target.value);
+  const empId =e.target.value;
+  if (empId) {
+    axios
+      .get(`http://192.168.12.68:3001/email/${empId}`, { withCredentials: true })
+      .then((response) => {
+        // Extract the email values from the response and set the employeeEmails state
+        const emails = response.data.map((item) => item.email);
+        setEmployeeEmails(emails);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch employee emails:', error);
+      });
+  }
+}
+
+const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleEmailChange = (event, value) => {
+  setFormData({
+    ...formData,
+    employeeEmail: value,
+  });
+};
+
+const updateAvailableRooms = () => {
+  if (formData.date) {
+    // Filter rooms that have at least one available time slot for the selected date
+    const filteredRooms = rooms.filter((room) => {
+      const availableTimeSlots = getAvailableTimeSlots(room);
+      return availableTimeSlots.length > 0;
+    });
+    setAvailableRooms(filteredRooms);
+  }
+};
+
+const handleAddParticipant = () => {
+  if (formData.employeeEmail.trim()) {
+    const newParticipant = {
+      companyName: formData.companyName,
+      employeeEmail: formData.employeeEmail,
+    };
+    setFormData((prevData) => ({
+      ...prevData,
+      participantList: [...prevData.participantList, newParticipant],
+      employeeEmail: '',
+    }));
+  }
+};
+
+const handleDeleteParticipant = (index) => {
+  const updatedList = formData.participantList.filter((_, i) => i !== index);
+  setFormData({
+    ...formData,
+    participantList: updatedList,
+  });
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Check if the participant list is empty before proceeding
+  if (formData.participantList.length === 0) {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Please add at least one participant before submitting the meeting.',
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+    return; // Prevent form submission if no participants are present
+  }
+
+  const formattedDate = formData.date ? format(new Date(formData.date), 'MM/dd/yyyy') : '';
+
+  const bookingData = {
+    title: formData.title,
+    date: formattedDate,
+    startTime: formData.startTime,
+    endTime: formData.endTime,
+    type: formData.type,
+    specialNote: formData.specialNote,
+    refreshment: formData.refreshment,
+    selectedRoomId: formData.selectedRoomId,
+    participantList: formData.participantList,
+    id: empid,
+    orgId:null,
+  };
+
+  try {
+    await axios.post('http://192.168.12.68:3001/add-booking-int', bookingData, { withCredentials: true });
+    handleLoginClose();
+    Swal.fire('Success!', 'The meeting has been added successfully.', 'success');
+     
+      
+      
+    
+  } catch (error) {
+    Swal.fire('Error!', 'There was a problem adding the meeting. Please try again.', 'error');
+    console.error('Error adding booking:', error);
+  }
+};
+
+const generateTimeOptions = (start, end, step = 15) => {
+  const startTime = new Date(`1970-01-01T${convertTo24Hour(start)}:00`);
+  const endTime = new Date(`1970-01-01T${convertTo24Hour(end)}:00`);
+  const options = [];
+
+  while (startTime <= endTime) {
+    const timeString = convertTo12Hour(startTime.toTimeString().substring(0, 5)); // Format to 12-hour for display
+    options.push(timeString);
+    startTime.setMinutes(startTime.getMinutes() + step);
+  }
+
+  return options;
+};
+
+const convertTo12Hour = (time24h) => {
+  let [hours, minutes] = time24h.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert back to 12-hour format
+  hours = hours % 12 || 12; // Adjust 0 to 12 for midnight
+  return `${hours}:${minutes.toString().padStart(2, '0')} ${period}`;
+};
+
+const convertTo24Hour = (time12h) => {
+  const [time, modifier] = time12h.split(' ');
+  let [hours, minutes] = time.split(':');
+
+  // Handle "12:00 AM" and "12:00 PM" edge cases
+  if (hours === '12') {
+    hours = modifier === 'AM' ? '00' : '12';
+  } else {
+    hours = modifier === 'PM' ? (parseInt(hours, 10) + 12).toString() : hours;
+  }
+
+  return `${hours.padStart(2, '0')}:${minutes}`; // Ensure "01" format instead of "1"
+};
+
+const getAvailableTimeSlots = (room) => {
+  const startTime = room.start_time; // Already in 12-hour format
+  const endTime = room.end_time;     // Already in 12-hour format
+
+  // Convert the 12-hour time to 24-hour format for internal calculations
+  const convertTime = (time) => {
+    const [timePart, period] = time.split(' ');
+    const [hours, minutes] = timePart.split(':').map(Number);
+    const adjustedHours = period === 'PM' && hours !== 12 ? hours + 12 : hours;
+    return adjustedHours * 100 + minutes; // Use 100-based format for comparisons
+  };
+
+  const roomStart = convertTime(startTime);
+  const roomEnd = convertTime(endTime);
+
+  const roomBookings = bookings.filter(
+    (booking) => booking.place_id === room.id && isSameDay(new Date(booking.date), new Date(formData.date))
+  );
+
+  if (roomBookings.length === 0) {
+    return [`${startTime} - ${endTime}`]; // If no bookings, the entire slot is free
+  }
+
+  // Sort and find free slots
+  const sortedBookings = roomBookings
+    .map((booking) => ({
+      start: convertTime(booking.start_time),
+      end: convertTime(booking.end_time),
+    }))
+    .sort((a, b) => a.start - b.start);
+
+  const freeSlots = [];
+  let lastEndTime = roomStart;
+
+  sortedBookings.forEach((booking) => {
+    if (lastEndTime < booking.start) {
+      freeSlots.push({ start: lastEndTime, end: booking.start });
+    }
+    lastEndTime = Math.max(lastEndTime, booking.end);
+  });
+
+  if (lastEndTime < roomEnd) {
+    freeSlots.push({ start: lastEndTime, end: roomEnd });
+  }
+
+  // Convert slots back to 12-hour format for display
+  const formatTime = (time) => {
+    const hours = Math.floor(time / 100);
+    const minutes = time % 100;
+    return convertTo12Hour(`${hours}:${minutes.toString().padStart(2, '0')}`);
+  };
+
+  return freeSlots.map((slot) => `${formatTime(slot.start)} - ${formatTime(slot.end)}`);
+};
+
+
+
+
+
+
+
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Meetings Overview
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={handleNewMeetingOpen}
-          sx={{
-            backgroundColor: '#007aff',
-            ':hover': {
-              backgroundColor: '#005bb5',
-            },
-          }}
-        >
-          Add New Meeting
-        </Button>
-      </Box>
+  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+    Meetings Overview
+  </Typography>
+
+  {/* Wrap the buttons in a Box to align them to the right */}
+  <Box sx={{ ml: 'auto', display: 'flex', gap: 2 }}>
+    <Button
+      variant="contained"
+      startIcon={<AddCircleOutlineIcon />}
+      onClick={handleLoginOpen}
+      sx={{
+        backgroundColor: '#007aff',
+        ':hover': {
+          backgroundColor: '#005bb5',
+        },
+      }}
+    >
+      Add New Meeting
+    </Button>
+    
+    <Button
+      variant="contained"
+      startIcon={<AddCircleOutlineIcon />}
+      onClick={handleLoginOpen}
+      sx={{
+        backgroundColor: '#007aff',
+        ':hover': {
+          backgroundColor: '#005bb5',
+        },
+      }}
+    >
+      Add New Meeting
+    </Button>
+  </Box>
+</Box>
+
 
       <Grid container spacing={4} sx={{ marginBottom: 4 }}>
         <Grid item xs={12} sm={3}>
@@ -308,13 +727,296 @@ const Meetings = () => {
       )}
 
       {/* New Meeting Form Modal */}
-      <Modal open={newMeetingOpen} onClose={handleNewMeetingClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Fade in={newMeetingOpen}>
-          <Box sx={{ width: '600px', maxWidth: '100%',height:'800px',overflowY:'scroll' ,backgroundColor:'white',borderRadius:'10px'}}>
-            <AddMeetingSession  />
-          </Box>
-        </Fade>
-      </Modal>
+      <Modal
+  open={loginModalOpen}
+  onClose={handleLoginClose}
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    padding: '20px',
+    overflowY: 'auto',  // Enable vertical scrolling
+    backdropFilter: 'blur(5px)',  // Blur the background when modal is open
+  }}
+>
+  <Fade in={loginModalOpen}>
+    <Box
+      sx={{
+        width: '500px',
+        maxWidth: '95%',
+        maxHeight: '90%',
+        backgroundColor: '#ffffff',
+        borderRadius: '12px',
+        p: '30px',
+        boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
+        overflowY: 'auto',  // Ensure the modal content is scrollable
+      }}
+    >
+      <Typography variant="h5" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
+        Add a New Internal Meeting
+      </Typography>
+
+      <Divider sx={{ mb: 3 }} />
+
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          {/* Conducted By Selector */}
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel>Conducted By</InputLabel>
+              <Select
+                label="Conducted By"
+                name="conductedBy"
+                value={formData.conductedBy}
+                onChange={handleChangecon}
+                required
+              >
+                {employeeEmailscn.map((org) => (
+                  <MenuItem key={org.id} value={org.id}>
+                    {org.email}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Meeting Title Field */}
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <TitleIcon color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+              required
+            />
+          </Grid>
+
+          {/* Date Picker and Room Selector */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EventIcon color="primary" />
+                  </InputAdornment>
+                ),
+                inputProps: {
+                  min: format(new Date(), 'yyyy-MM-dd'),  // Set the minimum date to today's date
+                },
+              }}
+              required
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Select Room</InputLabel>
+              <Select
+                label="Select Room"
+                name="selectedRoomId"
+                value={formData.selectedRoomId}
+                onChange={handleChange}
+                required
+              >
+                {availableRooms.map((room) => (
+                  <MenuItem key={room.id} value={room.id}>
+                    {room.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Available Time Slot Selector */}
+          {formData.availableSlots.length > 0 && (
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel>Select Time Slot</InputLabel>
+                <Select
+                  label="Select Time Slot"
+                  name="selectedSlot"
+                  value={formData.selectedSlot}
+                  onChange={handleChange}
+                  required
+                >
+                  {formData.availableSlots.map((slot, index) => (
+                    <MenuItem key={index} value={slot}>
+                      {slot}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+
+          {/* Start and End Time Selectors */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              select
+              label="Start Time"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              required
+            >
+              {formData.startTimeOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              select
+              label="End Time"
+              name="endTime"
+              value={formData.endTime}
+              onChange={handleChange}
+              required
+            >
+              {formData.endTimeOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          {/* Participant Email Selector */}
+          <Grid item xs={12}>
+            <Autocomplete
+              options={employeeEmails}
+              value={formData.employeeEmail}
+              onChange={handleEmailChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Employee Email"
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EventIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </Grid>
+
+          {/* Add Participant Button */}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              onClick={handleAddParticipant}
+              sx={{ backgroundColor: themeColor.primary, color: '#fff', ':hover': { backgroundColor: themeColor.primaryDark } }}
+              fullWidth
+            >
+              Add Participant
+            </Button>
+          </Grid>
+
+          {/* Participant List */}
+          {formData.participantList.length > 0 && (
+            <Grid item xs={12}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell>Employee Email</TableCell>
+                    <TableCell>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {formData.participantList.map((participant, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{participant.employeeEmail}</TableCell>
+                      <TableCell>
+                        <IconButton onClick={() => handleDeleteParticipant(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          )}
+
+          {/* Special Note and Refreshment Details */}
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Special Note"
+              name="specialNote"
+              value={formData.specialNote}
+              onChange={handleChange}
+              multiline
+              rows={3}
+              placeholder="Enter any special notes regarding the event"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Refreshment"
+              name="refreshment"
+              value={formData.refreshment}
+              onChange={handleChange}
+              multiline
+              rows={2}
+              placeholder="Enter refreshment details if any"
+            />
+          </Grid>
+
+          {/* Submit Button */}
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ backgroundColor: themeColor.primary, color: '#fff', ':hover': { backgroundColor: themeColor.primaryDark } }}
+            >
+              Add Meeting
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+
+      <Box sx={{ textAlign: 'right', mt: 3 }}>
+       
+      </Box>
+    </Box>
+  </Fade>
+</Modal>
+
+      {/* New Meeting Form Modal */}
+    
+
+
     </Box>
   );
 };
