@@ -228,7 +228,7 @@ const Meetings = () => {
           return;
         }
   
-        // Get the current time for comparison
+        // Get the current date and time
         const currentTime = new Date();
   
         // Map over the array to extract meeting details and participants
@@ -236,10 +236,10 @@ const Meetings = () => {
           const booking = item.bookingDetails;
           const participants = item.participants || [];
   
-          // Convert meeting date, startTime, and endTime to Date objects
-          const meetingDate = new Date(booking.date);
-          const startTime = new Date(`${booking.date} ${booking.start_time}`);
-          const endTime = new Date(`${booking.date} ${booking.end_time}`);
+          // Convert the booking date and time to `Date` objects
+          const meetingDate = booking.date; // Date in 'MM/dd/yyyy' format
+          const startTime = new Date(`${meetingDate} ${booking.start_time}`);
+          const endTime = new Date(`${meetingDate} ${booking.end_time}`);
   
           // Determine the meeting type: "Upcoming", "Ongoing", or "Finished"
           let type = '';
@@ -254,9 +254,9 @@ const Meetings = () => {
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,
-            date: format(meetingDate, 'yyyy-MM-dd'), // Format the date as 'YYYY-MM-DD'
-            startTime: format(startTime, 'hh:mm a'), // Format startTime (e.g., '08:30 AM')
-            endTime: format(endTime, 'hh:mm a'), // Format endTime (e.g., '10:00 AM')
+            date: meetingDate, // Keep the original date format
+            startTime: booking.start_time, // Keep the original time format (e.g., '1:45 PM')
+            endTime: booking.end_time, // Keep the original time format (e.g., '4:45 PM')
             location: `Room ID: ${booking.place_id}`,
             visitorCompany: participants.length > 0 ? participants[0].company_name : 'N/A',
             participant: participants.map((p) => p.full_name).join(', ') || 'N/A',
@@ -276,6 +276,7 @@ const Meetings = () => {
   
     fetchData();
   }, []);
+  
   
 
 
