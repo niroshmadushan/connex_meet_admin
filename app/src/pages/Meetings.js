@@ -229,7 +229,8 @@ const Meetings = () => {
           participants: booking.participants || [],
         }));
         setMeetingsData(meetings);
-        setFilteredData(meetings); // Initialize filtered data
+        setFilteredData(meetings); // Initialize filtered 
+        console.log(meetings)
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
