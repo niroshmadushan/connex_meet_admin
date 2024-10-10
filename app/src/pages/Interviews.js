@@ -526,7 +526,7 @@ const Meetings = () => {
       companyName: formData.companyName,
       employeeName: formData.employeeName,
       participantList: formData.participantList,
-      type: 'meeting',
+      type: 'interview',
       id: empid,// ID from local storage
       orgId: formData.orgId, // Org ID from local storage
     };
@@ -604,6 +604,7 @@ const Meetings = () => {
       refreshment: formData.refreshment,
       selectedRoomId: formData.selectedRoomId,
       participantList: formData.participantList,
+      type: 'interview',
       id: empid,
       orgId: null,
     };
