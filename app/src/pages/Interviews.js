@@ -967,7 +967,7 @@ const Meetings = () => {
                     >
                       {employeeEmailscn.map((org) => (
                         <MenuItem key={org.id} value={org.id}>
-                          {org.email}
+                          {org.name} - {org.email}
                         </MenuItem>
                       ))}
                     </Select>
@@ -1255,7 +1255,7 @@ const Meetings = () => {
                     >
                       {employeeEmailscn.map((org) => (
                         <MenuItem key={org.id} value={org.id}>
-                          {org.email}
+                          {org.name} - {org.email}
                         </MenuItem>
                       ))}
                     </Select>
