@@ -9,7 +9,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import Swal from 'sweetalert2';
 
 const AddServiceForm = () => {
-  const [formData, setFormData] = useState({
+  const [formDatasrc, setFormDatasrc] = useState({
     title: '',
     date: '',
     companyName: '',
@@ -17,15 +17,15 @@ const AddServiceForm = () => {
   });
 
   // Handle change for each input field
-  const handleChange = (e) => {
-    setFormData({
+  const handleChangesrc = (e) => {
+    setFormDatasrc({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmitsrc = (e) => {
     e.preventDefault();
     // Here you would normally submit formData to the backend
     console.log('Service data submitted:', formData);
@@ -38,7 +38,7 @@ const AddServiceForm = () => {
       confirmButtonText: 'OK',
     }).then(() => {
       // Clear form fields after submission
-      setFormData({
+      setFormDatasrc({
         title: '',
         date: '',
         companyName: '',
@@ -53,7 +53,7 @@ const AddServiceForm = () => {
         Add a New Service
       </Typography>
       <Paper elevation={3} sx={{ padding: '20px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitsrc}>
           <Grid container spacing={3}>
             {/* Title Field */}
             <Grid item xs={12}>
@@ -61,8 +61,8 @@ const AddServiceForm = () => {
                 fullWidth
                 label="Service Title"
                 name="title"
-                value={formData.title}
-                onChange={handleChange}
+                value={formDatasrc.title}
+                onChange={handleChangesrc}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -81,8 +81,8 @@ const AddServiceForm = () => {
                 label="Date"
                 name="date"
                 type="date"
-                value={formData.date}
-                onChange={handleChange}
+                value={formDatasrc.date}
+                onChange={handleChangesrc}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -103,8 +103,8 @@ const AddServiceForm = () => {
                 fullWidth
                 label="Company Name"
                 name="companyName"
-                value={formData.companyName}
-                onChange={handleChange}
+                value={formDatasrc.companyName}
+                onChange={handleChangesrc}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -122,8 +122,8 @@ const AddServiceForm = () => {
                 fullWidth
                 label="Special Note"
                 name="specialNote"
-                value={formData.specialNote}
-                onChange={handleChange}
+                value={formDatasrc.specialNote}
+                onChange={handleChangesrc}
                 multiline
                 rows={4}
                 placeholder="Enter any special notes regarding the service"
