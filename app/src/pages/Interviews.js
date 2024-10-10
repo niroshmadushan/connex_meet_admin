@@ -216,7 +216,7 @@ const Meetings = () => {
     const fetchData = async () => {
       try {
         // Make the API request and log the full response
-        const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsmeetings', { withCredentials: true });
+        const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsinterview', { withCredentials: true });
         console.log("API Response:", response);
   
         // Extract the array from the API response
