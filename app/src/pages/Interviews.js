@@ -213,7 +213,7 @@ const Meetings = () => {
       console.error('Failed to fetch data:', error);
     }
   };
-  
+
   useEffect(() => {
     fetchData2();
     const fetchData = async () => {
@@ -888,7 +888,7 @@ const Meetings = () => {
                 <Grid item xs={6}><Typography>{selectedMeeting.endTime}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Location:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.location}</Typography></Grid>
-                <Grid item xs={12}><Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>Participants</Typography></Grid>
+                
 
               </Grid>
               

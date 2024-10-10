@@ -871,6 +871,8 @@ const Meetings = () => {
               <Grid container spacing={2}>
                 <Grid item xs={6}><Typography><strong>Meeting Name:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.name}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Conduct By:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.conductedBy}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Date:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.date}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Start Time:</strong></Typography></Grid>
