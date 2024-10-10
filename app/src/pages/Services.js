@@ -147,7 +147,7 @@ const Services = () => {
   // Handle change for each input field
   const handleChangesrc = (e) => {
     setFormDatasrc({
-      ...formData,
+      ...formDatasrc,
       [e.target.name]: e.target.value,
     });
   };
