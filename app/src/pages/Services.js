@@ -155,7 +155,7 @@ const Services = () => {
   // Counters for status breakdown
   const totalServices = servicesData.length;
   const upcomingServices = servicesData.filter(service => service.status === 'Pending').length;
-  const ongoingServices = servicesData.filter(service => service.status === 'Ongoing').length;
+  const ongoingServices = servicesData.filter(service => service.type === 'Ongoing').length;
   const finishedServices = servicesData.filter(service => service.status === 'Completed').length;
 
   const chartData = {
