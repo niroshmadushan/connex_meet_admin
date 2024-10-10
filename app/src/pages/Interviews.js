@@ -874,6 +874,8 @@ const Meetings = () => {
               <Grid container spacing={2}>
                 <Grid item xs={6}><Typography><strong>Interview Name:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.name}</Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Conduct By:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography>{selectedMeeting.conductedBy}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Date:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.date}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Start Time:</strong></Typography></Grid>
@@ -885,7 +887,7 @@ const Meetings = () => {
                 <Grid item xs={12}><Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>Participants</Typography></Grid>
 
               </Grid>
-
+              
               <Typography variant="h6" sx={{ marginTop: 3, marginBottom: 2 }}>
                 Interviewer Team Information
               </Typography>
