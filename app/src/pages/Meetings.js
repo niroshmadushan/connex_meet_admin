@@ -856,9 +856,9 @@ const Meetings = () => {
 
       {/* Meeting Details Modal */}
       {selectedMeeting && (
-        <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',mt:2 }}>
           <Fade in={open}>
-            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
+          <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px',height:'80vh',overflowY:'scroll' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Meeting Details
               </Typography>
