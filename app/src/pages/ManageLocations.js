@@ -142,24 +142,6 @@ const ManageLocations = () => {
       });
 
       // Update the frontend state with the new location data
-      const newLocationData = {
-        id: response.data.id, // Use the ID returned from the backend
-        name: newLocation.name,
-        address: newLocation.address,
-        availableFrom: formattedFrom,
-        availableTo: formattedTo,
-        status: 'Open',
-        bookings: [],
-      };
-
-      setFilteredData([...filteredData, newLocationData]);
-      setOpen(false);
-      setNewLocation({
-        name: '',
-        address: '',
-        availableFrom: { hour: '08', minute: '00', period: 'AM' },
-        availableTo: { hour: '04', minute: '00', period: 'PM' },
-      });
     }
   } catch (error) {
     console.error('Failed to add location:', error);
