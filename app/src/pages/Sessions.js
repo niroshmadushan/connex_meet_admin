@@ -526,7 +526,7 @@ const Meetings = () => {
       companyName: formData.companyName,
       employeeName: formData.employeeName,
       participantList: formData.participantList,
-      type: 'meeting',
+      type: 'externalsession',
       id: empid,// ID from local storage
       orgId: formData.orgId, // Org ID from local storage
     };
@@ -557,7 +557,7 @@ const Meetings = () => {
           companyName: '',
           employeeName: '',
           participantList: [],
-          type: 'meeting',
+          type: '',
           specialNote: '',
           refreshment: '',
           id: '',
@@ -604,6 +604,7 @@ const Meetings = () => {
       refreshment: formData.refreshment,
       selectedRoomId: formData.selectedRoomId,
       participantList: formData.participantList,
+      type: 'session',
       id: empid,
       orgId: null,
     };
@@ -725,7 +726,7 @@ const Meetings = () => {
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Meetings Overview
+          Session Overview
         </Typography>
 
         {/* Wrap the buttons in a Box to align them to the right */}
@@ -741,7 +742,7 @@ const Meetings = () => {
               },
             }}
           >
-            Add New Internal Meeting
+            Add New Internal Session
           </Button>
 
           <Button
@@ -755,7 +756,7 @@ const Meetings = () => {
               },
             }}
           >
-            Add New External Meeting
+            Add New External Session
           </Button>
         </Box>
       </Box>
@@ -764,7 +765,7 @@ const Meetings = () => {
       <Grid container spacing={4} sx={{ marginBottom: 4 }}>
         <Grid item xs={12} sm={3}>
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
-            <Typography variant="h6">Total Meetings</Typography>
+            <Typography variant="h6">Total Session</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#007aff' }}>
               <CountUp end={totalMeetings} duration={1.5} />
             </Typography>
@@ -772,7 +773,7 @@ const Meetings = () => {
         </Grid>
         <Grid item xs={12} sm={3}>
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
-            <Typography variant="h6">Upcoming Meetings</Typography>
+            <Typography variant="h6">Upcoming Session</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
               <CountUp end={upcomingMeetings} duration={1.5} />
             </Typography>
@@ -780,7 +781,7 @@ const Meetings = () => {
         </Grid>
         <Grid item xs={12} sm={3}>
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
-            <Typography variant="h6">Ongoing Meetings</Typography>
+            <Typography variant="h6">Ongoing Session</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
               <CountUp end={ongoingMeetings} duration={1.5} />
             </Typography>
@@ -788,7 +789,7 @@ const Meetings = () => {
         </Grid>
         <Grid item xs={12} sm={3}>
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
-            <Typography variant="h6">Finished Meetings</Typography>
+            <Typography variant="h6">Finished Session</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f44336' }}>
               <CountUp end={finishedMeetings} duration={1.5} />
             </Typography>
@@ -846,7 +847,7 @@ const Meetings = () => {
       <Box sx={{ marginTop: 4 }}>
         <Paper sx={{ padding: 3, backgroundColor: '#fff', borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Meetings Status Overview
+            Session Status Overview
           </Typography>
           <Box sx={{ height: '250px', width: '100%' }}>
             <Line data={chartData} />
@@ -860,11 +861,11 @@ const Meetings = () => {
           <Fade in={open}>
             <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                Meeting Details
+                Session Details
               </Typography>
               <Divider sx={{ marginBottom: 2 }} />
               <Grid container spacing={2}>
-                <Grid item xs={6}><Typography><strong>Meeting Name:</strong></Typography></Grid>
+                <Grid item xs={6}><Typography><strong>Session Name:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.name}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Date:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.date}</Typography></Grid>
@@ -947,7 +948,7 @@ const Meetings = () => {
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
-              Add a New Internal Meeting
+              Add a New Internal Session
             </Typography>
 
             <Divider sx={{ mb: 3 }} />
