@@ -228,6 +228,8 @@ const Meetings = () => {
           return;
         }
   
+        // Define the array that contains employee IDs and their names
+  
         // Get the current date and time
         const currentTime = new Date();
   
@@ -251,6 +253,9 @@ const Meetings = () => {
             type = 'Finished';
           }
   
+          // Find the employee name based on booking.emp_id
+          const conductedBy = employeeEmailscn.find(emp => emp.id === booking.emp_id)?.name || 'N/A';
+  
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,
@@ -263,6 +268,7 @@ const Meetings = () => {
             status: getStatusLabel(booking.status),
             participants, // Keep the full participants array for modal display
             type, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
+            conductedBy, // Add the employee name who conducted the meeting
           };
         });
   
@@ -276,6 +282,7 @@ const Meetings = () => {
   
     fetchData();
   }, []);
+  
   
   
 
