@@ -40,19 +40,40 @@ const Services = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://192.168.13.150:3001/getservices', { withCredentials: true });
-        const services = response.data.map(service => ({
-          ...service,
-          serviceCompany: service.company_name, // Map company_name to serviceCompany for consistency
-          status: getStatusLabel(service.status), // Map status codes to labels
-        }));
+        const currentDate = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+  
+        // Map over the response data and add `type` and `status` properties
+        const services = response.data.map(service => {
+          // Determine the type based on the date comparison
+          const serviceDate = service.date; // Format: 'YYYY-MM-DD'
+  
+          let type = '';
+          if (serviceDate > currentDate) {
+            type = 'Upcoming';
+          } else if (serviceDate < currentDate) {
+            type = 'Finished';
+          } else {
+            type = 'Ongoing';
+          }
+  
+          return {
+            ...service,
+            serviceCompany: service.company_name, // Map company_name to serviceCompany for consistency
+            status: getStatusLabel(service.status), // Map status codes to labels
+            type, // Add the new type field
+          };
+        });
+  
         setServicesData(services);
         setFilteredData(services); // Initialize filtered data
       } catch (error) {
         console.error('Failed to fetch services data:', error);
       }
     };
+  
     fetchData();
   }, []);
+  
 
   // Map status values to labels
   const getStatusLabel = (status) => {
@@ -95,6 +116,7 @@ const Services = () => {
     { field: 'date', headerName: 'Date', width: 150 },
     { field: 'serviceCompany', headerName: 'Company Name', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'type', headerName: 'Type', width: 150 },
   ];
 
   // Counters for status breakdown
