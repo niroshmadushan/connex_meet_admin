@@ -421,7 +421,7 @@ const Meetings = () => {
         .get(`http://192.168.13.150:3001/email/${empId}`, { withCredentials: true })
         .then((response) => {
           // Extract the email values from the response and set the employeeEmails state
-          const emails = response.data.map((item) => item.email);
+          const emails = response.data.map((item) => item.name);
           setEmployeeEmails(emails);
         })
         .catch((error) => {
