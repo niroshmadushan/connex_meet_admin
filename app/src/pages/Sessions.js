@@ -313,7 +313,7 @@ const Meetings = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Meeting Name', width: 150 },
+    { field: 'name', headerName: 'Session Name', width: 150 },
     { field: 'date', headerName: 'Date', width: 120 },
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
