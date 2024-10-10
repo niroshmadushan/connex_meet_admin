@@ -175,7 +175,7 @@ const Services = () => {
       
       // Check response status
       if (response.status === 200) {
-        handleClose();
+        setAddServiceOpen(false);
         // Show success alert
         Swal.fire({
           title: 'Success!',
@@ -190,7 +190,7 @@ const Services = () => {
             companyName: '',
             specialNote: '',
           });
-          setAddServiceOpen(false); // Close the modal after successful submission
+          // Close the modal after successful submission
         });
       }
     } catch (error) {
