@@ -16,7 +16,7 @@ import EventIcon from '@mui/icons-material/Event';
 import TitleIcon from '@mui/icons-material/Title';
 import GroupIcon from '@mui/icons-material/Group';
 import NotesIcon from '@mui/icons-material/Notes';
-
+import Swal from 'sweetalert2';
 // Sample service data
 const servicesData = [
   {
@@ -156,7 +156,7 @@ const Services = () => {
   const handleSubmitsrc = (e) => {
     e.preventDefault();
     // Here you would normally submit formData to the backend
-    console.log('Service data submitted:', formData);
+    console.log('Service data submitted:', formDatasrc);
 
     // Show success alert
     Swal.fire({
