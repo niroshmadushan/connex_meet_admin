@@ -198,6 +198,7 @@ const Meetings = () => {
   
     fetchData2();
   }, []);
+
   const fetchData2 = async () => {
     try {
       const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
@@ -212,6 +213,7 @@ const Meetings = () => {
       console.error('Failed to fetch data:', error);
     }
   };
+  
   useEffect(() => {
     fetchData2();
     const fetchData = async () => {
@@ -257,7 +259,7 @@ const Meetings = () => {
       
           // Find the employee name based on booking.emp_id
           const conductedBy = employeeEmailscn.find(emp => emp.id === booking.emp_id)?.name || 'N/A';
-          console.log(employeeEmailscn)
+         
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,

@@ -193,26 +193,28 @@ const Meetings = () => {
         });
     }
   }, []);
-
   useEffect(() => {
-    const fetchData2 = async () => {
-      try {
-        const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
-        setRooms(roomsResponse.data);
-
-        const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
-        setBookings(bookingsResponse.data);
-
-        const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
-        setEmployeeEmailscn(emailsResponse.data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
+  
     fetchData2();
   }, []);
 
+  const fetchData2 = async () => {
+    try {
+      const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
+      setRooms(roomsResponse.data);
+
+      const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
+      setBookings(bookingsResponse.data);
+
+      const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
+      setEmployeeEmailscn(emailsResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+  
   useEffect(() => {
+    fetchData2();
     const fetchData = async () => {
       try {
         // Make the API request and log the full response
@@ -240,7 +242,9 @@ const Meetings = () => {
           const meetingDate = booking.date; // Date in 'MM/dd/yyyy' format
           const startTime = new Date(`${meetingDate} ${booking.start_time}`);
           const endTime = new Date(`${meetingDate} ${booking.end_time}`);
-  
+
+          const conductedBy = employeeEmailscn.find(emp => emp.id === booking.emp_id)?.name || 'N/A';
+         
           // Determine the meeting type: "Upcoming", "Ongoing", or "Finished"
           let type = '';
           if (currentTime < startTime) {
@@ -262,7 +266,8 @@ const Meetings = () => {
             participant: participants.map((p) => p.full_name).join(', ') || 'N/A',
             status: getStatusLabel(booking.status),
             participants, // Keep the full participants array for modal display
-            type, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
+            type,
+            conductedBy, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
           };
         });
   
