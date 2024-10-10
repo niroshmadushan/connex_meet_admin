@@ -171,7 +171,7 @@ const Services = () => {
   
     try {
       // Send POST request to add new service
-      const response = await axios.post('http://192.168.13.150:3001/services', serviceData);
+      const response = await axios.post('http://192.168.13.150:3001/services', serviceData, { withCredentials: true });
       
       // Check response status
       if (response.status === 200) {
