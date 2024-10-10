@@ -133,6 +133,7 @@ const ManageLocations = () => {
     const response = await axios.post('http://192.168.13.150:3001/addlocations', locationData, { withCredentials: true });
 
     if (response.status === 200) {
+      setOpen(false);
       // Show success alert
       Swal.fire({
         title: 'Success!',
@@ -142,6 +143,11 @@ const ManageLocations = () => {
       });
 
       // Update the frontend state with the new location data
+    
+
+     
+    
+     
     }
   } catch (error) {
     console.error('Failed to add location:', error);
