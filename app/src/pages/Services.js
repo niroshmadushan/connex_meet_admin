@@ -175,6 +175,7 @@ const Services = () => {
       
       // Check response status
       if (response.status === 200) {
+        handleClose();
         // Show success alert
         Swal.fire({
           title: 'Success!',
