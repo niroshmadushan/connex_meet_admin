@@ -195,24 +195,25 @@ const Meetings = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData2 = async () => {
-      try {
-        const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
-        setRooms(roomsResponse.data);
-
-        const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
-        setBookings(bookingsResponse.data);
-
-        const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
-        setEmployeeEmailscn(emailsResponse.data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
+  
     fetchData2();
   }, []);
+  const fetchData2 = async () => {
+    try {
+      const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
+      setRooms(roomsResponse.data);
 
+      const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
+      setBookings(bookingsResponse.data);
+
+      const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
+      setEmployeeEmailscn(emailsResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
   useEffect(() => {
+    fetchData2();
     const fetchData = async () => {
       try {
         fetchData2();
