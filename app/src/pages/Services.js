@@ -21,7 +21,7 @@ const BlinkingDot = ({ color }) => (
     sx={{
       color: color,
       fontSize: '14px',
-      animation: 'blinking 1.5s infinite',
+      animation: 'blinking 0.3s infinite',
       '@keyframes blinking': {
         '0%': { opacity: 0 },
         '50%': { opacity: 1 },
