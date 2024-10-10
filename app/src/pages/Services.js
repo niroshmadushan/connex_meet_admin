@@ -18,9 +18,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import NotesIcon from '@mui/icons-material/Notes';
 import Swal from 'sweetalert2';
 // Sample service data
-import {
-  Box, TextField, Button, Grid, Paper, Typography, InputAdornment
-} from '@mui/material';
+import {Paper} from '@mui/material';
 const servicesData = [
   {
     id: 1,
