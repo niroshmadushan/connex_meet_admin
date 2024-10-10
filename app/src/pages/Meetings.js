@@ -214,27 +214,41 @@ const Meetings = () => {
   };
   
   useEffect(() => {
-    fetchData2();
     const fetchData = async () => {
       try {
-        // Make the API request and log the full response
-        const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsmeetings', { withCredentials: true });
-        console.log("API Response:", response);
+        // Fetch the special bookings interview data
+        const interviewResponse = await axios.get('http://192.168.13.150:3001/getallspecialbookingsinterview', { withCredentials: true });
+        console.log("Interview API Response:", interviewResponse);
   
-        // Extract the array from the API response
-        const data = response.data;
-  
-        // Check if the response data is a valid array
-        if (!Array.isArray(data)) {
-          console.error('Invalid API response structure:', data);
+        const interviewData = interviewResponse.data;
+        
+        if (!Array.isArray(interviewData)) {
+          console.error('Invalid Interview API response structure:', interviewData);
           return;
         }
+  
+        // Fetch the employee data
+        const employeeResponse = await axios.get('http://192.168.13.150:3001/employeeDataEndpoint', { withCredentials: true });
+        console.log("Employee API Response:", employeeResponse);
+  
+        const employeeData = employeeResponse.data;
+  
+        if (!Array.isArray(employeeData)) {
+          console.error('Invalid Employee API response structure:', employeeData);
+          return;
+        }
+  
+        // Create an employee lookup map using id as the key
+        const employeeMap = employeeData.reduce((map, employee) => {
+          map[employee.id] = employee.name;
+          return map;
+        }, {});
   
         // Get the current date and time
         const currentTime = new Date();
   
-        // Map over the array to extract meeting details and participants
-        const meetings = data.map((item, index) => {
+        // Map over the interview data to extract meeting details and participants
+        const meetings = interviewData.map((item, index) => {
           const booking = item.bookingDetails;
           const participants = item.participants || [];
   
@@ -242,9 +256,7 @@ const Meetings = () => {
           const meetingDate = booking.date; // Date in 'MM/dd/yyyy' format
           const startTime = new Date(`${meetingDate} ${booking.start_time}`);
           const endTime = new Date(`${meetingDate} ${booking.end_time}`);
-
-          const conductedBy = employeeEmailscn.find(emp => emp.id === booking.emp_id)?.name || 'N/A';
-         
+  
           // Determine the meeting type: "Upcoming", "Ongoing", or "Finished"
           let type = '';
           if (currentTime < startTime) {
@@ -254,6 +266,9 @@ const Meetings = () => {
           } else {
             type = 'Finished';
           }
+  
+          // Lookup employee name using the booking's emp_id
+          const conductedBy = employeeMap[booking.emp_id] || 'N/A';
   
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
@@ -266,8 +281,8 @@ const Meetings = () => {
             participant: participants.map((p) => p.full_name).join(', ') || 'N/A',
             status: getStatusLabel(booking.status),
             participants, // Keep the full participants array for modal display
-            type,
-            conductedBy, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
+            type, // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
+            conductedBy, // Add the employee name who conducted the meeting
           };
         });
   
@@ -281,6 +296,7 @@ const Meetings = () => {
   
     fetchData();
   }, []);
+  
   
   
 
