@@ -130,7 +130,7 @@ const ManageLocations = () => {
 
   try {
     // Make the POST request to add a new location
-    const response = await axios.post('http://192.168.13.150:3001/location', locationData, { withCredentials: true });
+    const response = await axios.post('http://192.168.13.150:3001/addlocations', locationData, { withCredentials: true });
 
     if (response.status === 200) {
       // Show success alert
