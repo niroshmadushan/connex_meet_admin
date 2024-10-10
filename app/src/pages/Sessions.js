@@ -969,7 +969,7 @@ const Meetings = () => {
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
-              Add a New Internal Session
+              Add a New External Session
             </Typography>
 
             <Divider sx={{ mb: 3 }} />
