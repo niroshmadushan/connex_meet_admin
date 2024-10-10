@@ -526,7 +526,7 @@ const Meetings = () => {
       companyName: formData.companyName,
       employeeName: formData.employeeName,
       participantList: formData.participantList,
-      type: 'externalsession',
+      type: 'session',
       id: empid,// ID from local storage
       orgId: formData.orgId, // Org ID from local storage
     };
@@ -604,7 +604,7 @@ const Meetings = () => {
       refreshment: formData.refreshment,
       selectedRoomId: formData.selectedRoomId,
       participantList: formData.participantList,
-      type: 'session',
+      type: 'externalsession',
       id: empid,
       orgId: null,
     };
@@ -742,7 +742,7 @@ const Meetings = () => {
               },
             }}
           >
-            Add New Internal Session
+            Add New External Session
           </Button>
 
           <Button
@@ -756,7 +756,7 @@ const Meetings = () => {
               },
             }}
           >
-            Add New External Session
+            Add New Internal Session
           </Button>
         </Box>
       </Box>
