@@ -859,7 +859,7 @@ const Meetings = () => {
       {selectedMeeting && (
         <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',overflow:'scroll',mt:2 }}>
           <Fade in={open}>
-            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
+            <Paper sx={{ padding: 4, width: '80%', maxWidth: '60vh' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Session Details
               </Typography>
