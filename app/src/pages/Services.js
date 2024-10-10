@@ -16,6 +16,7 @@ import EventIcon from '@mui/icons-material/Event';
 import TitleIcon from '@mui/icons-material/Title';
 import GroupIcon from '@mui/icons-material/Group';
 import NotesIcon from '@mui/icons-material/Notes';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 // Sample service data
 
@@ -154,27 +155,55 @@ const Services = () => {
   };
 
   // Handle form submission
-  const handleSubmitsrc = (e) => {
-    e.preventDefault();
-    // Here you would normally submit formData to the backend
-    console.log('Service data submitted:', formDatasrc);
+ // Make sure to import axios at the top of your file
 
-    // Show success alert
-    Swal.fire({
-      title: 'Success!',
-      text: 'The service has been added successfully.',
-      icon: 'success',
-      confirmButtonText: 'OK',
-    }).then(() => {
-      // Clear form fields after submission
-      setFormDatasrc({
-        title: '',
-        date: '',
-        companyName: '',
-        specialNote: '',
+  // Handle form submission
+  const handleSubmitsrc = async (e) => {
+    e.preventDefault();
+  
+    // Map form data to match backend field names
+    const serviceData = {
+      title: formDatasrc.title,
+      date: formDatasrc.date,
+      company_name: formDatasrc.companyName,
+      note: formDatasrc.specialNote,
+    };
+  
+    try {
+      // Send POST request to add new service
+      const response = await axios.post('http://192.168.13.150:3001/services', serviceData);
+      
+      // Check response status
+      if (response.status === 200) {
+        // Show success alert
+        Swal.fire({
+          title: 'Success!',
+          text: 'The service has been added successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          // Clear form fields after submission
+          setFormDatasrc({
+            title: '',
+            date: '',
+            companyName: '',
+            specialNote: '',
+          });
+          setAddServiceOpen(false); // Close the modal after successful submission
+        });
+      }
+    } catch (error) {
+      // Show error alert if request fails
+      Swal.fire({
+        title: 'Error!',
+        text: `Failed to add service: ${error.response?.data?.message || error.message}`,
+        icon: 'error',
+        confirmButtonText: 'OK',
       });
-    });
+      console.error('Failed to add service:', error);
+    }
   };
+  
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
