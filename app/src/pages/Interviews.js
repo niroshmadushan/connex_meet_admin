@@ -215,14 +215,16 @@ const Meetings = () => {
   };
 
   useEffect(() => {
-    fetchData2();
     const fetchData = async () => {
       try {
         fetchData2();
         // Make the API request and log the full response
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsinterview', { withCredentials: true });
         console.log("API Response:", response);
-  
+
+        const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
+      setEmployeeEmailscn(emailsResponse.data);
+        console.log(emailsResponse.data);
         // Extract the array from the API response
         const data = response.data;
   
