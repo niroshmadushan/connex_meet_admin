@@ -112,25 +112,62 @@ const ManageLocations = () => {
   const handleEditClose = () => setEditOpen(false);
 
   // Function to handle the addition of a new location
-  const handleAddLocation = () => {
-    const formattedFrom = `${newLocation.availableFrom.hour}:${newLocation.availableFrom.minute} ${newLocation.availableFrom.period}`;
-    const formattedTo = `${newLocation.availableTo.hour}:${newLocation.availableTo.minute} ${newLocation.availableTo.period}`;
+ // Function to handle the addition of a new location and sending data to backend
+ const handleAddLocation = async () => {
+  const formattedFrom = `${newLocation.availableFrom.hour}:${newLocation.availableFrom.minute} ${newLocation.availableFrom.period}`;
+  const formattedTo = `${newLocation.availableTo.hour}:${newLocation.availableTo.minute} ${newLocation.availableTo.period}`;
 
-    const newId = locationsData.length + 1;
-    const newLocationData = {
-      id: newId,
-      name: newLocation.name,
-      address: newLocation.address,
-      availableFrom: formattedFrom,
-      availableTo: formattedTo,
-      status: 'Open',
-      bookings: [],
-    };
-
-    const updatedData = [...locationsData, newLocationData];
-    setFilteredData(updatedData);
-    setOpen(false);
+  // Prepare the data to be sent to the backend
+  const locationData = {
+    name: newLocation.name,
+    address: newLocation.address,
+    available_from: formattedFrom,
+    available_to: formattedTo,
   };
+
+  try {
+    // Make the POST request to add a new location
+    const response = await axios.post('http://192.168.13.150:3001/location', locationData, { withCredentials: true });
+
+    if (response.status === 200) {
+      // Show success alert
+      Swal.fire({
+        title: 'Success!',
+        text: 'The location has been added successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
+
+      // Update the frontend state with the new location data
+      const newLocationData = {
+        id: response.data.id, // Use the ID returned from the backend
+        name: newLocation.name,
+        address: newLocation.address,
+        availableFrom: formattedFrom,
+        availableTo: formattedTo,
+        status: 'Open',
+        bookings: [],
+      };
+
+      setFilteredData([...filteredData, newLocationData]);
+      setOpen(false);
+      setNewLocation({
+        name: '',
+        address: '',
+        availableFrom: { hour: '08', minute: '00', period: 'AM' },
+        availableTo: { hour: '04', minute: '00', period: 'PM' },
+      });
+    }
+  } catch (error) {
+    console.error('Failed to add location:', error);
+    Swal.fire({
+      title: 'Error!',
+      text: `Failed to add location: ${error.response?.data?.message || error.message}`,
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+  }
+};
 
   // Handle search/filter logic
   useEffect(() => {
