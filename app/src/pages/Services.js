@@ -12,19 +12,24 @@ import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import axios from 'axios';
+
 import Swal from 'sweetalert2';
 
 // Custom styles for the status dot
-const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
-  color: status === 'Ongoing' ? '#4caf50' : status === 'Finished' ? '#f44336' : '#ff9800',
-  fontSize: '14px',
-  animation: 'blinking 1.5s infinite',
-  '@keyframes blinking': {
-    '0%': { opacity: 0 },
-    '50%': { opacity: 1 },
-    '100%': { opacity: 0 },
-  },
-}));
+const BlinkingDot = ({ color }) => (
+  <FiberManualRecordIcon
+    sx={{
+      color: color,
+      fontSize: '14px',
+      animation: 'blinking 1.5s infinite',
+      '@keyframes blinking': {
+        '0%': { opacity: 0 },
+        '50%': { opacity: 1 },
+        '100%': { opacity: 0 },
+      },
+    }}
+  />
+);
 
 const Services = () => {
   const [open, setOpen] = useState(false); // Modal for service details
@@ -116,7 +121,35 @@ const Services = () => {
     { field: 'date', headerName: 'Date', width: 150 },
     { field: 'serviceCompany', headerName: 'Company Name', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'type', headerName: 'Type', width: 150 },
+    {
+      field: 'type',
+      headerName: 'Type',
+      width: 150,
+      renderCell: (params) => {
+        let color = '';
+        switch (params.value) {
+          case 'Upcoming':
+            color = '#ff9800'; // Orange for Upcoming
+            break;
+          case 'Ongoing':
+            color = '#4caf50'; // Green for Ongoing
+            break;
+          case 'Finished':
+            color = '#f44336'; // Red for Finished
+            break;
+          default:
+            color = '#000'; // Default color (black)
+        }
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Blinking dot with dynamic color */}
+            <BlinkingDot color={color} />
+            {/* Type text with matching color */}
+            <Typography sx={{ marginLeft: 1, color: color }}>{params.value}</Typography>
+          </Box>
+        );
+      },
+    },
   ];
 
   // Counters for status breakdown
