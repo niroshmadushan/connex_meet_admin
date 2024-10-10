@@ -215,6 +215,7 @@ const Meetings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        fetchData2();
         // Make the API request and log the full response
         const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsinterview', { withCredentials: true });
         console.log("API Response:", response);
@@ -252,7 +253,7 @@ const Meetings = () => {
           } else {
             type = 'Finished';
           }
-  
+      
           // Find the employee name based on booking.emp_id
           const conductedBy = employeeEmailscn.find(emp => emp.id === booking.emp_id)?.name || 'N/A';
           console.log(employeeEmailscn)
