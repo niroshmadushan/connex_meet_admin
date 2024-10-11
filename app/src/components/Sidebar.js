@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, List, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { SidebarContainer, LogoContainer, StyledListItem, themeColors } from '../theme.js';
+import { SidebarContainer, LogoContainer, StyledListItem, themeColors } from './theme.js';
  // Import from theme.js
 import EventIcon from '@mui/icons-material/Event';
 import GroupIcon from '@mui/icons-material/Group';
