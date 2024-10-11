@@ -118,7 +118,11 @@ const Users = () => {
 
     try {
       // Make the PUT request to update the status
-      await axios.put(`http://192.168.13.150:3001/updateuserstatus/${id}`, { status: newStatus });
+      await axios.put(
+        `http://192.168.13.150:3001/updateuserstatus/${id}`,
+        { status: newStatus },
+        { withCredentials: true } // Include credentials for the request
+      );
       
       // Update the rows state with the new status
       const updatedRows = rows.map((row) =>
