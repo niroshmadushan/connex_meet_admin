@@ -257,10 +257,11 @@ const ManageLocations = () => {
         },
         { withCredentials: true }
       );
-
+      setOpenDetails(false);
+      setEditOpen(false);
       Swal.fire('Success!', 'Location updated successfully.', 'success');
       fetchData();
-      setEditOpen(false);
+     
     } catch (error) {
       console.error('Failed to update location:', error);
       Swal.fire('Error!', 'Failed to update location.', 'error');
