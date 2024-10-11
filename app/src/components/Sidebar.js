@@ -20,7 +20,7 @@ const SidebarContainer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: 260,
     boxSizing: 'border-box',
-    background: 'linear-gradient(180deg, #001f3f, #003366, #00509E)', // Dark blue gradient
+    background: '#001f3f', // Dark blue gradient
     color: '#ffffff',
     paddingTop: theme.spacing(2),
     borderRight: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border for definition
