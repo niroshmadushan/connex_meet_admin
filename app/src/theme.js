@@ -1,33 +1,33 @@
-import { Box, Drawer, ListItem } from '@mui/material';
-import { styled } from '@mui/system';
+import { styled } from '@mui/material/styles';
+import { Box, ListItem } from '@mui/material';
 
-// Theme Colors
+// Sidebar Theme Colors
 export const themeColors = {
-  sidebarBg: 'linear-gradient(to bottom, #2e2e2e, #444444)',
-  buttonBg: '#444444',
+  sidebarBg: 'linear-gradient(to bottom, #001f3f, #003366, #00509E)', // Matching dark blue gradient
+  buttonBg: '#003366',
   buttonText: '#ffffff',
-  hoverBg: '#555555',
-  borderColor: '#222222',
-  logoBg: '#2e2e2e',
+  hoverBg: 'rgba(255, 255, 255, 0.2)',
+  borderColor: 'rgba(255, 255, 255, 0.1)',
+  logoBg: '#001f3f',
 };
 
-// Sidebar Container Style
-export const SidebarContainer = styled(Drawer)(({ theme }) => ({
-  width: 260,
-  flexShrink: 0,
-  '& .MuiDrawer-paper': {
-    width: 260,
-    boxSizing: 'border-box',
-    background: themeColors.sidebarBg,
-    color: themeColors.buttonText,
-    paddingTop: theme.spacing(2),
-    borderRight: `1px solid ${themeColors.borderColor}`,
-    position: 'relative',
-    overflow: 'hidden',
-  },
+// Styled Components for Sidebar
+export const SidebarContainer = styled(Box)(({ theme }) => ({
+  width: '260px',
+  height: '100vh',
+  background: themeColors.sidebarBg,
+  color: themeColors.buttonText,
+  display: 'flex',
+  flexDirection: 'column',
+  boxShadow: theme.shadows[3],
+  borderRight: `1px solid ${themeColors.borderColor}`,
+  overflowY: 'auto',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  zIndex: 1200,
 }));
 
-// Logo Container
 export const LogoContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   display: 'flex',
@@ -37,30 +37,48 @@ export const LogoContainer = styled(Box)(({ theme }) => ({
   borderBottom: `1px solid ${themeColors.borderColor}`,
   height: '80px',
 }));
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1E3A8A', // Dark blue as the primary color for buttons, etc.
+    },
+    secondary: {
+      main: '#374151', // Gray for hover states or subtle UI elements
+    },
+    background: {
+      default: '#f8fafc', // Light background color
+    },
+    typography: {
+      fontFamily: 'Roboto, sans-serif',
+      h5: {
+        fontWeight: 'bold',
+        letterSpacing: '1px',
+      },}}});
 
-// Styled ListItem for Sidebar Menu
+      export default theme;
 export const StyledListItem = styled(ListItem)(({ theme }) => ({
-  borderRadius: '4px',
-  width: '90%',
-  margin: '5px auto',
+  borderRadius: '12px',
+  width: '80%',
+  margin: '0 auto 12px auto',
   padding: '5px 12px',
-  height: '35px',
+  height: '40px',
   alignItems: 'center',
-  backgroundColor: themeColors.buttonBg,
+  backgroundColor: 'transparent',
   color: themeColors.buttonText,
   '&:hover': {
     backgroundColor: themeColors.hoverBg,
-    transform: 'scale(1.03)',
-    boxShadow: theme.shadows[2],
+    transform: 'scale(0.98)',
+    transition: 'transform 0.3s ease, background-color 0.3s ease',
   },
   '& .MuiListItemIcon-root': {
-    minWidth: '35px',
+    minWidth: '40px',
     color: themeColors.buttonText,
-    marginRight: '8px',
+    marginLeft: '20px',
   },
   '& .MuiListItemText-primary': {
     color: themeColors.buttonText,
-    fontSize: '14px',
-    fontWeight: 400,
+    fontSize: '1.1rem',
+    fontWeight: 500,
   },
 }));
