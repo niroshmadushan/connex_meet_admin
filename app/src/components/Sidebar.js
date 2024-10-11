@@ -12,7 +12,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import PeopleIcon from '@mui/icons-material/People';
 import AdminLogo from '../assets/admin-logo.png';
 import DeveloperLogo from '../assets/developer-logo.png';
-
+import { styled } from '@mui/material/styles';
 const ShineEffect = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
