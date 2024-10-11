@@ -14,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import BusinessIcon from '@mui/icons-material/Business';
 import LockIcon from '@mui/icons-material/Lock';
 import BadgeIcon from '@mui/icons-material/Badge';
+import APIConnection from '../config';
 import axios from 'axios'; // Add this line to import axios
 // Blinking Dot for Status
 const blink = keyframes`
@@ -37,7 +38,7 @@ const initialRows = [
 ];
 
 const Users = () => {
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState(null);
@@ -52,7 +53,21 @@ const Users = () => {
     confirmPassword: ''
   });
   const currentAdmin = 'SuperAdmin';
+  useEffect(() => {
 
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const dataResponse = await axios.get(APIConnection.getalluserdata, { withCredentials: true });
+      setRows(dataResponse.data);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+  
   // Handle opening and closing of the modal
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -99,12 +114,7 @@ const Users = () => {
 
 
   // Handle approval for normal users
-  const handleApproval = (id) => {
-    const updatedRows = rows.map(row =>
-      row.id === id ? { ...row, approval: 'Approved' } : row
-    );
-    setRows(updatedRows);
-  };
+
 
   // Handle status toggle
   const toggleStatus = (id) => {

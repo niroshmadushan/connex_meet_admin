@@ -8,6 +8,7 @@ const config = {
     verifytoken: `${BACKEND_URL}/verifytoken`,
     getallorgemails: `${BACKEND_URL}/getallorgemails`,
     getalllocationdata: `${BACKEND_URL}/getlocations`,
+    getalluserdata: `${BACKEND_URL}/getProfileData`,
  
 };
 
