@@ -40,6 +40,7 @@ const Users = () => {
   const [imageBase64, setImageBase64] = useState('');
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredRows, setFilteredRows] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
   const [image, setImage] = useState(null);
   const [newAdmin, setNewAdmin] = useState({
@@ -289,7 +290,7 @@ const Users = () => {
 
       {/* Data Table */}
       <div style={{ height: 400, width: '100%' }}>
-        <DataGrid rows={rows} columns={columns} pageSize={5} />
+        <DataGrid rows={filteredRows} columns={columns} pageSize={5} />
       </div>
 
       {/* Add New Admin Modal */}
