@@ -112,13 +112,24 @@ const Users = () => {
 
 
   // Handle status toggle
-  const toggleStatus = (id) => {
-    const updatedRows = rows.map(row =>
-      row.id === id
-        ? { ...row, status: row.status === 'Active' ? 'Deactivated' : 'Active' }
-        : row
-    );
-    setRows(updatedRows);
+  const toggleStatus = async (id, currentStatus) => {
+    // Determine the new status value based on the current status
+    const newStatus = currentStatus === 2 ? 3 : 2;
+
+    try {
+      // Make the PUT request to update the status
+      await axios.put(`http://192.168.13.150:3001/updatestatus/${id}`, { status: newStatus });
+      
+      // Update the rows state with the new status
+      const updatedRows = rows.map((row) =>
+        row.id === id ? { ...row, status: newStatus } : row
+      );
+      setRows(updatedRows);
+      fetchData();
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
+    }
   };
 
   // Form fields for the new admin modal
