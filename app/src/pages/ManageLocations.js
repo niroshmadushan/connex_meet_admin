@@ -356,7 +356,7 @@ const ManageLocations = () => {
       {/* Add Location Modal */}
       <Modal open={open} onClose={handleAddLocationClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Fade in={open}>
-        <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px',height:'80vh',overflowY:'scroll' }}>
+          <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               Add New Location
             </Typography>
@@ -678,7 +678,7 @@ const ManageLocations = () => {
       {selectedLocation && (
         <Modal open={openDetails} onClose={handleCloseDetails} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Fade in={openDetails}>
-            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px' }}>
+          <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px',height:'80vh',overflowY:'scroll' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Location Bookings
               </Typography>
