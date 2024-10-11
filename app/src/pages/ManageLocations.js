@@ -88,11 +88,13 @@ const ManageLocations = () => {
     try {
       const dataResponse = await axios.get(APIConnection.getalllocationdata, { withCredentials: true });
       setlocationsData(dataResponse.data);
+      setFilteredData(dataResponse.data); // Set filtered data here
       console.log(dataResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   };
+  
 
 
 
@@ -193,7 +195,8 @@ const ManageLocations = () => {
           : location.bookings.length > 0)
     );
     setFilteredData(filtered);
-  }, [searchTerm, availabilityFilter]);
+  }, [searchTerm, availabilityFilter, locationsData]); // Add `locationsData` here
+  
 
   // Function to save edited location details
   const handleSaveEdit = () => {
