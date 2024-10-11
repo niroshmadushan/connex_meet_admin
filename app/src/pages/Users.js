@@ -14,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import BusinessIcon from '@mui/icons-material/Business';
 import LockIcon from '@mui/icons-material/Lock';
 import BadgeIcon from '@mui/icons-material/Badge';
+import Swal from 'sweetalert2';
 import APIConnection from '../config';
 import axios from 'axios'; // Add this line to import axios
 // Blinking Dot for Status
@@ -84,13 +85,14 @@ const Users = () => {
     try {
       const response = await axios.post('http://192.168.13.150:3001/add-admin', adminData);
       if (response.status === 200) {
+        
         setRows([...rows, { id: rows.length + 1, ...adminData, role: 'Admin', approval: 'Approved', contactNo: newAdmin.phone }]);
         handleClose();
-        alert('Admin added successfully!');
+        Swal.fire('Success!', 'Admin added successfully!', 'success');
       }
     } catch (error) {
       console.error('Error adding admin:', error);
-      alert(`Failed to add admin: ${error.response?.data?.message || error.message}`);
+      Swal.fire('Error!', `Failed to add admin: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
 
@@ -124,9 +126,9 @@ const Users = () => {
         row.id === id ? { ...row, status: newStatus } : row
       );
       setRows(updatedRows);
+      Swal.fire('Updated!', `User status updated to ${newStatus === 2 ? 'Active' : 'Deactivated'}`, 'success');
     } catch (error) {
-      console.error('Failed to update status:', error);
-      alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
+      Swal.fire('Error!', `Failed to update status: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
   
