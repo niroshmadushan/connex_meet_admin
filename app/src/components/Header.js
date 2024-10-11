@@ -76,7 +76,7 @@ const Header = () => {
         position="sticky" 
         sx={{ 
           borderRadius: '20px', 
-          background: 'linear-gradient(to right, #0d47a1, #1976d2, #64b5f6)', // Dark Blue Gradient
+          background: 'linear-gradient(to right, #0d47a1, #1976d2, #001f3f)', // Dark Blue Gradient
         }}
       >
         <Toolbar>
