@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import {
-  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent,IconButton, Avatar,
+  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent, IconButton, Avatar, InputAdornment,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/system';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { keyframes } from '@emotion/react';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import HomeIcon from '@mui/icons-material/Home';
+import BusinessIcon from '@mui/icons-material/Business';
+import LockIcon from '@mui/icons-material/Lock';
+import BadgeIcon from '@mui/icons-material/Badge';
 // Blinking Dot for Status
 const blink = keyframes`
   0% { opacity: 0; }
@@ -195,7 +202,6 @@ const Users = () => {
             Register
           </Typography>
 
-          {/* Avatar and Upload Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
             <Avatar src={image} sx={{ width: 80, height: 80, marginBottom: 1 }} />
           </Box>
@@ -216,37 +222,44 @@ const Users = () => {
 
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <TextField label="Name" name="fullName" fullWidth value={newAdmin.fullName} onChange={handleChange} />
+              <TextField label="Name" name="fullName" fullWidth value={newAdmin.fullName} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Email" name="email" fullWidth value={newAdmin.email} onChange={handleChange} />
+              <TextField label="Email" name="email" fullWidth value={newAdmin.email} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><EmailIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Phone" name="phone" fullWidth value={newAdmin.phone} onChange={handleChange} />
+              <TextField label="Phone" name="phone" fullWidth value={newAdmin.phone} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><PhoneIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Address" name="address" fullWidth value={newAdmin.address} onChange={handleChange} />
+              <TextField label="Address" name="address" fullWidth value={newAdmin.address} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><HomeIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Designation" name="designation" fullWidth value={newAdmin.designation} onChange={handleChange} />
+              <TextField label="Designation" name="designation" fullWidth value={newAdmin.designation} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><BusinessIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Organization ID" name="organizationId" fullWidth value={newAdmin.organizationId} onChange={handleChange} />
+              <TextField label="Organization ID" name="organizationId" fullWidth value={newAdmin.organizationId} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><BadgeIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Password" name="password" type="password" fullWidth value={newAdmin.password} onChange={handleChange} />
+              <TextField label="Password" name="password" type="password" fullWidth value={newAdmin.password} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><LockIcon /></InputAdornment> }} />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Confirm Password" name="confirmPassword" type="password" fullWidth value={newAdmin.confirmPassword} onChange={handleChange} />
+              <TextField label="Confirm Password" name="confirmPassword" type="password" fullWidth value={newAdmin.confirmPassword} onChange={handleChange}
+                InputProps={{ startAdornment: <InputAdornment position="start"><LockIcon /></InputAdornment> }} />
             </Grid>
           </Grid>
 
-          {/* Action Buttons */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-            <Button onClick={handleClose} variant="outlined" color="error">
+            <Button onClick={handleClose} variant="outlined" color="error" sx={{ color: '#f44336', borderColor: '#f44336', ':hover': { backgroundColor: '#ffebee' } }}>
               Cancel
             </Button>
-            <Button onClick={handleAddAdmin} variant="contained" color="primary">
+            <Button onClick={handleAddAdmin} variant="contained" color="primary" sx={{ backgroundColor: '#007aff', ':hover': { backgroundColor: '#005bb5' } }}>
               Register
             </Button>
           </Box>
