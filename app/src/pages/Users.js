@@ -212,8 +212,8 @@ const Users = () => {
 
   // Statistics
   const totalUsers = rows.length;
-  const totalAdmins = rows.filter(row => row.role === 'Admin').length;
-  const totalNormalUsers = rows.filter(row => row.role === 'User').length;
+  const totalAdmins = rows.filter(row => row.role === 'admin').length;
+  const totalNormalUsers = rows.filter(row => row.role === 'user').length;
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9fafb' }}>
