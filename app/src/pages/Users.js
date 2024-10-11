@@ -31,8 +31,17 @@ const initialRows = [
 const Users = () => {
   const [rows, setRows] = useState(initialRows);
   const [open, setOpen] = useState(false);
-  const [newAdmin, setNewAdmin] = useState({ fullName: '', email: '', contactNo: '', employeeId: '' });
-  const currentAdmin = 'SuperAdmin'; // Auto-filled for "Created by"
+  const [newAdmin, setNewAdmin] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    designation: '',
+    organizationId: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const currentAdmin = 'SuperAdmin';
 
   // Handle opening and closing of the modal
   const handleOpen = () => setOpen(true);
@@ -177,53 +186,120 @@ const Users = () => {
 
       {/* Add New Admin Modal */}
       <Modal open={open} onClose={handleClose}>
-        <Paper sx={{ padding: 3, width: '400px', margin: 'auto', marginTop: '100px' }}>
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>
-            Add New Admin
+        <Paper sx={{ padding: 3, width: '450px', margin: 'auto', marginTop: '50px' }}>
+          <Typography variant="h6" sx={{ marginBottom: 2, textAlign: 'center' }}>
+            Register
           </Typography>
-          <TextField
-            label="Full Name"
-            name="fullName"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-            value={newAdmin.fullName}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Email"
-            name="email"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-            value={newAdmin.email}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Contact No"
-            name="contactNo"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-            value={newAdmin.contactNo}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Employee ID"
-            name="employeeId"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-            value={newAdmin.employeeId}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Created By"
-            name="createdBy"
-            fullWidth
-            value={currentAdmin}
-            InputProps={{
-              readOnly: true,
-            }}
-            sx={{ marginBottom: 2 }}
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+          {/* Avatar and Upload Button */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+            <Avatar
+              src={image}
+              sx={{ width: 80, height: 80, marginBottom: 1 }}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="icon-button-file"
+              type="file"
+              onChange={handleImageUpload}
+            />
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" aria-label="upload picture" component="span">
+                <CameraAltIcon /> Upload
+              </IconButton>
+            </label>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Name"
+                name="fullName"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.fullName}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                name="email"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.email}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Phone"
+                name="phone"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.phone}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Address"
+                name="address"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.address}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Designation"
+                name="designation"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.designation}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Organization ID"
+                name="organizationId"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.organizationId}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.password}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Confirm Password"
+                name="confirmPassword"
+                type="password"
+                fullWidth
+                sx={{ marginBottom: 2 }}
+                value={newAdmin.confirmPassword}
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Action Buttons */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
             <Button
               onClick={handleClose}
               variant="outlined"
@@ -245,7 +321,7 @@ const Users = () => {
                 ':hover': { backgroundColor: '#005bb5' }
               }}
             >
-              Add Admin
+              Register
             </Button>
           </Box>
         </Paper>
