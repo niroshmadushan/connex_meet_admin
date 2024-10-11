@@ -1,6 +1,7 @@
-import { styled } from '@mui/material/styles';
-import { Box, ListItem } from '@mui/material';
+import { createTheme } from '@mui/material/styles'; // Import createTheme
+import { Box, ListItem } from '@mui/material'; // Necessary imports for styling
 
+// Define the custom theme using createTheme
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -13,12 +14,15 @@ const theme = createTheme({
     background: {
       default: '#f8fafc', // Light background color
     },
-    typography: {
-      fontFamily: 'Roboto, sans-serif',
-      h5: {
-        fontWeight: 'bold',
-        letterSpacing: '1px',
-      },}}});
+  },
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+    h5: {
+      fontWeight: 'bold',
+      letterSpacing: '1px',
+    },
+  },
+});
 
 export default theme;
 
