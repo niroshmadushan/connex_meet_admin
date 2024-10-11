@@ -278,6 +278,7 @@ const Users = () => {
             <Select
               label="Status Filter"
               value={statusFilter}
+              sx={{width:'200px'}}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               <MenuItem value="">All</MenuItem>
