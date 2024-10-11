@@ -115,27 +115,41 @@ const Users = () => {
   const toggleStatus = async (id, currentStatus) => {
     // Determine the new status value based on the current status
     const newStatus = currentStatus === 2 ? 3 : 2;
-
+  
+    // Debugging: Log the current and new status
+    console.log(`User ID: ${id}, Current Status: ${currentStatus}, New Status: ${newStatus}`);
+  
     try {
-      // Make the PUT request to update the status
-      await axios.put(
+      // Make the PUT request to update the status with credentials
+      const response = await axios.put(
         `http://192.168.13.150:3001/updateuserstatus/${id}`,
         { status: newStatus },
-        { withCredentials: true } // Include credentials for the request
+        { withCredentials: true }
       );
-      
-      // Update the rows state with the new status
-      const updatedRows = rows.map((row) =>
-        row.id === id ? { ...row, status: newStatus } : row
-      );
-      setRows(updatedRows);
-      fetchData();
+  
+      // Debugging: Check the API response
+      console.log('API Response:', response);
+  
+      if (response.status === 200) {
+        // Update the rows state with the new status
+        const updatedRows = rows.map((row) =>
+          row.id === id ? { ...row, status: newStatus } : row
+        );
+        setRows(updatedRows);
+        console.log('User status updated successfully.');
+  
+        // Optional: Call fetchData() if needed to refresh the data
+        // fetchData();
+      } else {
+        console.error('Failed to update status. Response:', response);
+        alert('Failed to update status.');
+      }
     } catch (error) {
       console.error('Failed to update status:', error);
       alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
     }
   };
-
+  
   // Form fields for the new admin modal
   const handleChange = (e) => {
     setNewAdmin({ ...newAdmin, [e.target.name]: e.target.value });
