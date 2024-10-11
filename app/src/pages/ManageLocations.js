@@ -112,7 +112,7 @@ const ManageLocations = () => {
   const [editOpen, setEditOpen] = useState(false); // Modal for editing location
   const [openDetails, setOpenDetails] = useState(false); // Modal for location details
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [locationsData,setlocationsData] =useState([])
+  const [locationsData, setlocationsData] = useState([])
   const [filteredData, setFilteredData] = useState(locationsData);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
@@ -124,7 +124,7 @@ const ManageLocations = () => {
   });
 
   useEffect(() => {
-  
+
     fetchData();
   }, []);
 
@@ -138,7 +138,7 @@ const ManageLocations = () => {
       console.error('Failed to fetch data:', error);
     }
   };
-  
+
 
 
 
@@ -189,50 +189,50 @@ const ManageLocations = () => {
   const handleEditClose = () => setEditOpen(false);
 
   // Function to handle the addition of a new location
- // Function to handle the addition of a new location and sending data to backend
- const handleAddLocation = async () => {
-  const formattedFrom = `${newLocation.availableFrom.hour}:${newLocation.availableFrom.minute} ${newLocation.availableFrom.period}`;
-  const formattedTo = `${newLocation.availableTo.hour}:${newLocation.availableTo.minute} ${newLocation.availableTo.period}`;
+  // Function to handle the addition of a new location and sending data to backend
+  const handleAddLocation = async () => {
+    const formattedFrom = `${newLocation.availableFrom.hour}:${newLocation.availableFrom.minute} ${newLocation.availableFrom.period}`;
+    const formattedTo = `${newLocation.availableTo.hour}:${newLocation.availableTo.minute} ${newLocation.availableTo.period}`;
 
-  // Prepare the data to be sent to the backend
-  const locationData = {
-    name: newLocation.name,
-    address: newLocation.address,
-    available_from: formattedFrom,
-    available_to: formattedTo,
-  };
+    // Prepare the data to be sent to the backend
+    const locationData = {
+      name: newLocation.name,
+      address: newLocation.address,
+      available_from: formattedFrom,
+      available_to: formattedTo,
+    };
 
-  try {
-    // Make the POST request to add a new location
-    const response = await axios.post('http://192.168.13.150:3001/addlocations', locationData, { withCredentials: true });
+    try {
+      // Make the POST request to add a new location
+      const response = await axios.post('http://192.168.13.150:3001/addlocations', locationData, { withCredentials: true });
 
-    if (response.status === 200) {
-      setOpen(false);
-      // Show success alert
+      if (response.status === 200) {
+        setOpen(false);
+        // Show success alert
+        Swal.fire({
+          title: 'Success!',
+          text: 'The location has been added successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+
+        // Update the frontend state with the new location data
+
+
+
+
+
+      }
+    } catch (error) {
+      console.error('Failed to add location:', error);
       Swal.fire({
-        title: 'Success!',
-        text: 'The location has been added successfully.',
-        icon: 'success',
+        title: 'Error!',
+        text: `Failed to add location: ${error.response?.data?.message || error.message}`,
+        icon: 'error',
         confirmButtonText: 'OK',
       });
-
-      // Update the frontend state with the new location data
-    
-
-     
-    
-     
     }
-  } catch (error) {
-    console.error('Failed to add location:', error);
-    Swal.fire({
-      title: 'Error!',
-      text: `Failed to add location: ${error.response?.data?.message || error.message}`,
-      icon: 'error',
-      confirmButtonText: 'OK',
-    });
-  }
-};
+  };
 
   // Handle search/filter logic
   useEffect(() => {
@@ -243,12 +243,12 @@ const ManageLocations = () => {
         (availabilityFilter === ''
           ? true
           : availabilityFilter === 'Available'
-          ? location.bookings.length === 0
-          : location.bookings.length > 0)
+            ? location.bookings.length === 0
+            : location.bookings.length > 0)
     );
     setFilteredData(filtered);
   }, [searchTerm, availabilityFilter, locationsData]); // Add `locationsData` here
-  
+
 
   // Function to save edited location details
   const handleSaveEdit = async () => {
@@ -269,7 +269,7 @@ const ManageLocations = () => {
       setEditOpen(false);
       Swal.fire('Success!', 'Location updated successfully.', 'success');
       fetchData();
-     
+
     } catch (error) {
       console.error('Failed to update location:', error);
       Swal.fire('Error!', 'Failed to update location.', 'error');
@@ -441,7 +441,7 @@ const ManageLocations = () => {
                   fullWidth
                   variant="outlined"
                   value={newLocation.address}
-                  onChange={(e) => setNewLocation({ ...newLocation, address: e.target.value })} 
+                  onChange={(e) => setNewLocation({ ...newLocation, address: e.target.value })}
                 />
               </Grid>
 
@@ -738,7 +738,7 @@ const ManageLocations = () => {
       {selectedLocation && (
         <Modal open={openDetails} onClose={handleCloseDetails} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Fade in={openDetails}>
-          <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px',height:'80vh',overflowY:'scroll' }}>
+            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px', height: '80vh', overflowY: 'scroll' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Location Bookings
               </Typography>
@@ -766,6 +766,7 @@ const ManageLocations = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Time</TableCell>
+                      <TableCell>Title</TableCell>
                       <TableCell>Event</TableCell>
                     </TableRow>
                   </TableHead>
@@ -774,17 +775,28 @@ const ManageLocations = () => {
                       selectedLocation.bookings.map((booking, index) => (
                         <TableRow key={index}>
                           <TableCell>{booking.time}</TableCell>
-                          <TableCell>{booking.event}</TableCell>
+                          <TableCell>{booking.title}</TableCell>
+                          <TableCell>
+                            {booking.event === 'meeting' && 'Meeting'}
+                            {booking.event === 'internalmeeting' && 'Internal Meeting'}
+                            {booking.event === 'interview' && 'Interview'}
+                            {booking.event === 'internalsession' && 'Internal Session'}
+                            {booking.event === 'session' && 'Internal Session'}
+                            {(!booking.event ||
+                              !['meeting', 'internalmeeting', 'interview', 'internalsession', 'session'].includes(booking.event)) &&
+                              booking.event} {/* Fallback to show the original event if not matched */}
+                          </TableCell>
                         </TableRow>
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={2}>No bookings for today</TableCell>
+                        <TableCell colSpan={3}>No bookings for today</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
               </TableContainer>
+
 
               <Box sx={{ textAlign: 'right', marginTop: 2 }}>
                 {/* Edit Button */}
