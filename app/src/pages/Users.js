@@ -112,38 +112,18 @@ const Users = () => {
 
 
   // Handle status toggle
-  const toggleStatus = async (id, currentStatus) => {
-    // Determine the new status value based on the current status
-    const newStatus = currentStatus === 2 ? 3 : 2;
-  
-    // Debugging: Log the current and new status
-    console.log(`User ID: ${id}, Current Status: ${currentStatus}, New Status: ${newStatus}`);
-  
+  const toggleStatus = async (id, newStatus) => {
     try {
-      // Make the PUT request to update the status with credentials
-      const response = await axios.put(
+      await axios.put(
         `http://192.168.13.150:3001/updateuserstatus/${id}`,
         { status: newStatus },
         { withCredentials: true }
       );
-  
-      // Debugging: Check the API response
-      console.log('API Response:', response);
-  
-      if (response.status === 200) {
-        // Update the rows state with the new status
-        const updatedRows = rows.map((row) =>
-          row.id === id ? { ...row, status: newStatus } : row
-        );
-        setRows(updatedRows);
-        console.log('User status updated successfully.');
-  
-        // Optional: Call fetchData() if needed to refresh the data
-        // fetchData();
-      } else {
-        console.error('Failed to update status. Response:', response);
-        alert('Failed to update status.');
-      }
+
+      const updatedRows = rows.map((row) =>
+        row.id === id ? { ...row, status: newStatus } : row
+      );
+      setRows(updatedRows);
     } catch (error) {
       console.error('Failed to update status:', error);
       alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
@@ -154,7 +134,6 @@ const Users = () => {
   const handleChange = (e) => {
     setNewAdmin({ ...newAdmin, [e.target.name]: e.target.value });
   };
-
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Full Name', width: 200 },
@@ -167,7 +146,6 @@ const Users = () => {
       headerName: 'Status',
       width: 130,
       renderCell: (params) => {
-        // Map status values to labels
         const statusLabel = params.row.status === 2 ? 'Active' : 'Deactivated';
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -180,19 +158,29 @@ const Users = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
-        <Button
-          variant="contained"
-          color={params.row.status === 2 ? 'warning' : 'success'}
-          sx={{
-            backgroundColor: params.row.status === 2 ? '#ff9800' : '#4caf50',
-            ':hover': { backgroundColor: params.row.status === 2 ? '#fb8c00' : '#43a047' }
-          }}
-          onClick={() => toggleStatus(params.row.id)}
-        >
-          {params.row.status === 2 ? 'Deactivate' : 'Activate'}
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          {params.row.status === 2 ? (
+            <Button
+              variant="contained"
+              color="warning"
+              sx={{ backgroundColor: '#ff9800', ':hover': { backgroundColor: '#fb8c00' } }}
+              onClick={() => toggleStatus(params.row.id, 3)} // Set to status 3 on click
+            >
+              Deactivate
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ backgroundColor: '#4caf50', ':hover': { backgroundColor: '#43a047' } }}
+              onClick={() => toggleStatus(params.row.id, 2)} // Set to status 2 on click
+            >
+              Activate
+            </Button>
+          )}
+        </Box>
       ),
     },
   ];
