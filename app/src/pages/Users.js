@@ -14,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import BusinessIcon from '@mui/icons-material/Business';
 import LockIcon from '@mui/icons-material/Lock';
 import BadgeIcon from '@mui/icons-material/Badge';
+import axios from 'axios'; // Add this line to import axios
 // Blinking Dot for Status
 const blink = keyframes`
   0% { opacity: 0; }
@@ -37,6 +38,7 @@ const initialRows = [
 
 const Users = () => {
   const [rows, setRows] = useState(initialRows);
+  const [imageBase64, setImageBase64] = useState('');
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState(null);
   const [newAdmin, setNewAdmin] = useState({
@@ -82,11 +84,19 @@ const Users = () => {
     }
   };
 
-  // Handle image upload
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     setImage(URL.createObjectURL(file));
+
+    // Convert image to Base64 string
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageBase64(reader.result.split(',')[1]); // Get Base64 part without data:image prefix
+    };
+    reader.readAsDataURL(file);
   };
+  // Handle image upload
+
 
   // Handle approval for normal users
   const handleApproval = (id) => {
