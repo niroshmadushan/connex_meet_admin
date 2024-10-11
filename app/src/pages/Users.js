@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent, IconButton, Avatar, InputAdornment,
+  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent, IconButton, Avatar, InputAdornment, MenuItem, Select, FormControl, InputLabel
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/system';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { keyframes } from '@emotion/react';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -16,7 +17,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import BadgeIcon from '@mui/icons-material/Badge';
 import Swal from 'sweetalert2';
 import APIConnection from '../config';
-import axios from 'axios'; // Add this line to import axios
+import axios from 'axios';
+ // Add this line to import axios
 // Blinking Dot for Status
 const blink = keyframes`
   0% { opacity: 0; }
@@ -37,6 +39,8 @@ const Users = () => {
   const [rows, setRows] = useState([]);
   const [imageBase64, setImageBase64] = useState('');
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [image, setImage] = useState(null);
   const [newAdmin, setNewAdmin] = useState({
     fullName: '',
@@ -53,6 +57,23 @@ const Users = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Apply search and filter logic whenever `searchQuery` or `statusFilter` changes
+    let filtered = rows;
+
+    if (searchQuery) {
+      filtered = filtered.filter((row) =>
+        row.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (statusFilter) {
+      filtered = filtered.filter((row) => row.status === parseInt(statusFilter));
+    }
+
+    setFilteredRows(filtered);
+  }, [searchQuery, statusFilter, rows]);
 
   const fetchData = async () => {
     try {
@@ -228,18 +249,43 @@ const Users = () => {
       </Grid>
 
       {/* Add New Admin Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{
-          marginBottom: 3,
-          backgroundColor: '#007aff',
-          ':hover': { backgroundColor: '#005bb5' }
-        }}
-        onClick={handleOpen}
-      >
-        Add New Admin
-      </Button>
+      <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+        <Grid item xs={4}>
+          <Button variant="contained" color="primary" sx={{ backgroundColor: '#007aff', ':hover': { backgroundColor: '#005bb5' } }} onClick={handleOpen}>
+            Add New Admin
+          </Button>
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label="Search by Full Name"
+            variant="outlined"
+            fullWidth
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <FormControl fullWidth variant="outlined">
+            <InputLabel>Status Filter</InputLabel>
+            <Select
+              label="Status Filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value={2}>Active</MenuItem>
+              <MenuItem value={3}>Deactivated</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
 
       {/* Data Table */}
       <div style={{ height: 400, width: '100%' }}>
