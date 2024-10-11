@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent
+  Box, Button, Modal, TextField, Typography, Paper, Grid, Card, CardContent,IconButton, Avatar
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/system';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { keyframes } from '@emotion/react';
-
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 // Blinking Dot for Status
 const blink = keyframes`
   0% { opacity: 0; }
@@ -52,10 +52,7 @@ const Users = () => {
     const newId = rows.length + 1;
     const newAdminData = {
       id: newId,
-      fullName: newAdmin.fullName,
-      email: newAdmin.email,
-      contactNo: newAdmin.contactNo,
-      employeeId: newAdmin.employeeId,
+      ...newAdmin,
       role: 'Admin',
       status: 'Active',
       approval: 'Approved',
@@ -63,6 +60,12 @@ const Users = () => {
     };
     setRows([...rows, newAdminData]);
     handleClose();
+  };
+
+  // Handle image upload
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    setImage(URL.createObjectURL(file));
   };
 
   // Handle approval for normal users
