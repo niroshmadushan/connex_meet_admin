@@ -88,6 +88,7 @@ const ManageLocations = () => {
     try {
       const dataResponse = await axios.get(APIConnection.getalllocationdata, { withCredentials: true });
       setlocationsData(dataResponse.data);
+      console.log(dataResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
