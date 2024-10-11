@@ -83,7 +83,7 @@ const Header = () => {
           {/* Typing Effect in Left Corner */}
           <Box sx={{ flexGrow: 1 }}>
             <ReactTypingEffect
-              text={["Welcome TO Connex Digital World", "Introducing New Visitor Management Platform"]}
+              text={["Welcome to Connex Digital World", "Introducing New Visitor Management Platform"]}
               speed={100}
               eraseSpeed={50}
               eraseDelay={1500}
