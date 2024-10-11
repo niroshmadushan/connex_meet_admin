@@ -31,6 +31,7 @@ const initialRows = [
 const Users = () => {
   const [rows, setRows] = useState(initialRows);
   const [open, setOpen] = useState(false);
+  const [image, setImage] = useState(null);
   const [newAdmin, setNewAdmin] = useState({
     fullName: '',
     email: '',
