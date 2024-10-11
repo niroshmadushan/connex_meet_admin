@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import {
   Box, Typography, Modal, Button, Grid, TextField, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Select, MenuItem, FormControl, InputLabel, Fade, InputAdornment, Divider
@@ -62,6 +63,49 @@ const locationsData = [
     ],
   },
 ];
+
+const isPlaceAvailable = (availableFrom, availableTo, bookings) => {
+  // Convert availableFrom and availableTo to moment objects for easier comparison
+  const startAvailability = moment(availableFrom, 'hh:mm A');
+  const endAvailability = moment(availableTo, 'hh:mm A');
+
+  if (bookings.length === 0) {
+    // If there are no bookings, the place is fully available
+    return true;
+  }
+
+  // Sort bookings by time to ensure they are in order
+  const sortedBookings = bookings.sort((a, b) => {
+    const startTimeA = moment(a.time.split(' - ')[0], 'hh:mm A');
+    const startTimeB = moment(b.time.split(' - ')[0], 'hh:mm A');
+    return startTimeA.diff(startTimeB);
+  });
+
+  // Check if there's a gap before the first booking
+  const firstBookingStart = moment(sortedBookings[0].time.split(' - ')[0], 'hh:mm A');
+  if (firstBookingStart.isAfter(startAvailability)) {
+    return true;
+  }
+
+  // Check for gaps between bookings
+  for (let i = 0; i < sortedBookings.length - 1; i++) {
+    const currentBookingEnd = moment(sortedBookings[i].time.split(' - ')[1], 'hh:mm A');
+    const nextBookingStart = moment(sortedBookings[i + 1].time.split(' - ')[0], 'hh:mm A');
+
+    if (nextBookingStart.isAfter(currentBookingEnd)) {
+      return true;
+    }
+  }
+
+  // Check if there's a gap after the last booking
+  const lastBookingEnd = moment(sortedBookings[sortedBookings.length - 1].time.split(' - ')[1], 'hh:mm A');
+  if (lastBookingEnd.isBefore(endAvailability)) {
+    return true;
+  }
+
+  // If no gaps are found, the place is fully booked
+  return false;
+};
 
 const ManageLocations = () => {
   const [open, setOpen] = useState(false); // Modal for adding location
@@ -237,11 +281,11 @@ const ManageLocations = () => {
       headerName: 'Availability',
       width: 150,
       renderCell: (params) => {
-        const isUnavailable = params.row.bookings.length > 0;
+        const isAvailable = isPlaceAvailable(params.row.availableFrom, params.row.availableTo, params.row.bookings);
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <BlinkingDot status={isUnavailable ? 'Unavailable' : 'Available'} />
-            <Typography sx={{ marginLeft: 1 }}>{isUnavailable ? 'Unavailable' : 'Available'}</Typography>
+            <BlinkingDot status={isAvailable ? 'Available' : 'Unavailable'} />
+            <Typography sx={{ marginLeft: 1 }}>{isAvailable ? 'Available' : 'Unavailable'}</Typography>
           </Box>
         );
       },
