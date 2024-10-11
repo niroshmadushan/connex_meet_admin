@@ -1,7 +1,7 @@
 import { Box, Drawer, ListItem } from '@mui/material';
 import { styled } from '@mui/system';
 
-// Theme Colors
+// Define theme colors
 export const themeColors = {
   sidebarBg: 'linear-gradient(to bottom, #2e2e2e, #444444)',
   buttonBg: '#444444',
@@ -11,7 +11,7 @@ export const themeColors = {
   logoBg: '#2e2e2e',
 };
 
-// Sidebar Container Style
+// Styled components using themeColors
 export const SidebarContainer = styled(Drawer)(({ theme }) => ({
   width: 260,
   flexShrink: 0,
@@ -27,7 +27,6 @@ export const SidebarContainer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-// Logo Container
 export const LogoContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   display: 'flex',
@@ -38,7 +37,6 @@ export const LogoContainer = styled(Box)(({ theme }) => ({
   height: '80px',
 }));
 
-// Styled ListItem for Sidebar Menu
 export const StyledListItem = styled(ListItem)(({ theme }) => ({
   borderRadius: '4px',
   width: '90%',
