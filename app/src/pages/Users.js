@@ -190,17 +190,14 @@ const Users = () => {
 
       {/* Add New Admin Modal */}
       <Modal open={open} onClose={handleClose}>
-        <Paper sx={{ padding: 3, width: '450px', margin: 'auto', marginTop: '50px' }}>
+        <Paper sx={{ padding: 3, width: '600px', margin: 'auto', marginTop: '50px' }}>
           <Typography variant="h6" sx={{ marginBottom: 2, textAlign: 'center' }}>
             Register
           </Typography>
 
           {/* Avatar and Upload Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
-            <Avatar
-              src={image}
-              sx={{ width: 80, height: 80, marginBottom: 1 }}
-            />
+            <Avatar src={image} sx={{ width: 80, height: 80, marginBottom: 1 }} />
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
             <input
@@ -218,113 +215,38 @@ const Users = () => {
           </Box>
 
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Name"
-                name="fullName"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.fullName}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Name" name="fullName" fullWidth value={newAdmin.fullName} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Email"
-                name="email"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.email}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Email" name="email" fullWidth value={newAdmin.email} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Phone"
-                name="phone"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.phone}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Phone" name="phone" fullWidth value={newAdmin.phone} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Address"
-                name="address"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.address}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Address" name="address" fullWidth value={newAdmin.address} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Designation"
-                name="designation"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.designation}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Designation" name="designation" fullWidth value={newAdmin.designation} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Organization ID"
-                name="organizationId"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.organizationId}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Organization ID" name="organizationId" fullWidth value={newAdmin.organizationId} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Password"
-                name="password"
-                type="password"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.password}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Password" name="password" type="password" fullWidth value={newAdmin.password} onChange={handleChange} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Confirm Password"
-                name="confirmPassword"
-                type="password"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                value={newAdmin.confirmPassword}
-                onChange={handleChange}
-              />
+            <Grid item xs={6}>
+              <TextField label="Confirm Password" name="confirmPassword" type="password" fullWidth value={newAdmin.confirmPassword} onChange={handleChange} />
             </Grid>
           </Grid>
 
           {/* Action Buttons */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-            <Button
-              onClick={handleClose}
-              variant="outlined"
-              color="error"
-              sx={{
-                color: '#f44336',
-                borderColor: '#f44336',
-                ':hover': { backgroundColor: '#ffebee' }
-              }}
-            >
+            <Button onClick={handleClose} variant="outlined" color="error">
               Cancel
             </Button>
-            <Button
-              onClick={handleAddAdmin}
-              variant="contained"
-              color="primary"
-              sx={{
-                backgroundColor: '#007aff',
-                ':hover': { backgroundColor: '#005bb5' }
-              }}
-            >
+            <Button onClick={handleAddAdmin} variant="contained" color="primary">
               Register
             </Button>
           </Box>
