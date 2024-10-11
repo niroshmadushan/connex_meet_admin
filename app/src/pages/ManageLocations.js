@@ -243,23 +243,30 @@ const ManageLocations = () => {
   
 
   // Function to save edited location details
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     const formattedFrom = `${editLocation.availableFrom.hour}:${editLocation.availableFrom.minute} ${editLocation.availableFrom.period}`;
     const formattedTo = `${editLocation.availableTo.hour}:${editLocation.availableTo.minute} ${editLocation.availableTo.period}`;
 
-    const updatedLocations = filteredData.map((location) =>
-      location.id === selectedLocation.id
-        ? {
-            ...location,
-            status: editLocation.status,
-            availableFrom: formattedFrom,
-            availableTo: formattedTo,
-          }
-        : location
-    );
-    setFilteredData(updatedLocations);
-    setEditOpen(false);
+    try {
+      await axios.put(
+        `http://192.168.13.150:3001/updatelocationstatus/${selectedLocation.id}`,
+        {
+          start_time: formattedFrom,
+          end_time: formattedTo,
+          status_id: editLocation.status === 'Open' ? 1 : 2,
+        },
+        { withCredentials: true }
+      );
+
+      Swal.fire('Success!', 'Location updated successfully.', 'success');
+      fetchData();
+      setEditOpen(false);
+    } catch (error) {
+      console.error('Failed to update location:', error);
+      Swal.fire('Error!', 'Failed to update location.', 'error');
+    }
   };
+
 
   // Define columns for the table
   const columns = [
