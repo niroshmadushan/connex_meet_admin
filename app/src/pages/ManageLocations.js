@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CountUp from 'react-countup';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import APIConnection from '../config';
 
 import Swal from 'sweetalert2';
 
@@ -67,6 +68,7 @@ const ManageLocations = () => {
   const [editOpen, setEditOpen] = useState(false); // Modal for editing location
   const [openDetails, setOpenDetails] = useState(false); // Modal for location details
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [locationsData,setlocationsData] =useState([])
   const [filteredData, setFilteredData] = useState(locationsData);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
@@ -76,6 +78,23 @@ const ManageLocations = () => {
     availableFrom: { hour: '08', minute: '00', period: 'AM' },
     availableTo: { hour: '04', minute: '00', period: 'PM' },
   });
+
+  useEffect(() => {
+  
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const dataResponse = await axios.get(APIConnection.getalllocationdata, { withCredentials: true });
+      setlocationsData(dataResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+
+
+
 
   // Editing location
   const [editLocation, setEditLocation] = useState({
