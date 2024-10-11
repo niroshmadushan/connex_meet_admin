@@ -151,10 +151,18 @@ const ManageLocations = () => {
   });
 
   // Statistics for locations
-  const totalLocations = locationsData.length;
-  const unavailableLocations = locationsData.filter(location => location.bookings.length > 0).length;
-  const availableLocations = totalLocations - unavailableLocations;
-  const inUseLocations = unavailableLocations;
+  const calculateCounts = () => {
+    const total = filteredData.length;
+    const available = filteredData.filter((location) =>
+      isPlaceAvailable(location.availableFrom, location.availableTo, location.bookings)
+    ).length;
+    const unavailable = total - available;
+    const inUse = filteredData.filter((location) => location.status === 'Open').length;
+
+    return { total, available, unavailable, inUse };
+  };
+
+  const { total, available, unavailable, inUse } = calculateCounts();
 
   // Handle row click to show location bookings
   const handleRowClick = (location) => {
@@ -329,7 +337,7 @@ const ManageLocations = () => {
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f0f4f8', borderRadius: 2 }}>
             <Typography variant="h6">Total Locations</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#007aff' }}>
-              <CountUp end={totalLocations} duration={1.5} />
+              <CountUp end={total} duration={1.5} />
             </Typography>
           </Grid>
         </Grid>
@@ -337,7 +345,7 @@ const ManageLocations = () => {
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#f9fafb', borderRadius: 2 }}>
             <Typography variant="h6">Available Locations</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
-              <CountUp end={availableLocations} duration={1.5} />
+              <CountUp end={available} duration={1.5} />
             </Typography>
           </Grid>
         </Grid>
@@ -345,7 +353,7 @@ const ManageLocations = () => {
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#ffebee', borderRadius: 2 }}>
             <Typography variant="h6">Unavailable Locations</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f44336' }}>
-              <CountUp end={unavailableLocations} duration={1.5} />
+              <CountUp end={unavailable} duration={1.5} />
             </Typography>
           </Grid>
         </Grid>
@@ -353,7 +361,7 @@ const ManageLocations = () => {
           <Grid sx={{ padding: 3, textAlign: 'center', backgroundColor: '#e8f5e9', borderRadius: 2 }}>
             <Typography variant="h6">In Use Now</Typography>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
-              <CountUp end={inUseLocations} duration={1.5} />
+              <CountUp end={inUse} duration={1.5} />
             </Typography>
           </Grid>
         </Grid>
