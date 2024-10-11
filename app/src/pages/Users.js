@@ -98,28 +98,6 @@ const Users = () => {
       ),
     },
     {
-      field: 'approval',
-      headerName: 'Approval',
-      width: 150,
-      renderCell: (params) => (
-        params.row.role === 'User' && params.row.approval === 'Pending' ? (
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{
-              backgroundColor: '#f44336', // Red for approval
-              ':hover': { backgroundColor: '#e53935' }
-            }}
-            onClick={() => handleApproval(params.row.id)}
-          >
-            Approve
-          </Button>
-        ) : (
-          <Typography>{params.row.approval}</Typography>
-        )
-      ),
-    },
-    {
       field: 'actions',
       headerName: 'Actions',
       width: 150,
