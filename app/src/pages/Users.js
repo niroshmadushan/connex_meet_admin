@@ -30,12 +30,7 @@ const BlinkingDot = styled(FiberManualRecordIcon)(({ status }) => ({
 }));
 
 // Sample user data with dummy data for all columns
-const initialRows = [
-  { id: 1, fullName: 'John Admin', email: 'admin.john@example.com', contactNo: '123-456-7890', employeeId: 'EMP001', role: 'Admin', status: 'Active', approval: 'Approved' },
-  { id: 2, fullName: 'Jane User', email: 'jane.user@example.com', contactNo: '987-654-3210', employeeId: 'EMP002', role: 'User', status: 'Pending', approval: 'Pending' },
-  { id: 3, fullName: 'Michael Admin', email: 'michael.admin@example.com', contactNo: '564-897-1234', employeeId: 'EMP003', role: 'Admin', status: 'Active', approval: 'Approved' },
-  { id: 4, fullName: 'Alice User', email: 'alice.user@example.com', contactNo: '456-789-0123', employeeId: 'EMP004', role: 'User', status: 'Active', approval: 'Pending' },
-];
+
 
 const Users = () => {
   const [rows, setRows] = useState([]);
@@ -133,21 +128,25 @@ const Users = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'fullName', headerName: 'Full Name', width: 200 },
+    { field: 'name', headerName: 'Full Name', width: 200 },
     { field: 'email', headerName: 'Email', width: 250 },
-    { field: 'contactNo', headerName: 'Contact No', width: 150 },
-    { field: 'employeeId', headerName: 'Employee ID', width: 130 },
+    { field: 'phone', headerName: 'Contact No', width: 150 },
+    { field: 'designation', headerName: 'Designation', width: 130 },
     { field: 'role', headerName: 'Role', width: 130 },
     {
       field: 'status',
       headerName: 'Status',
       width: 130,
-      renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <BlinkingDot status={params.row.status} />
-          <Typography sx={{ marginLeft: 1 }}>{params.row.status}</Typography>
-        </Box>
-      ),
+      renderCell: (params) => {
+        // Map status values to labels
+        const statusLabel = params.row.status === 2 ? 'Active' : 'Deactivated';
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <BlinkingDot status={statusLabel} />
+            <Typography sx={{ marginLeft: 1 }}>{statusLabel}</Typography>
+          </Box>
+        );
+      },
     },
     {
       field: 'actions',
@@ -156,18 +155,19 @@ const Users = () => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          color={params.row.status === 'Active' ? 'warning' : 'success'}
+          color={params.row.status === 2 ? 'warning' : 'success'}
           sx={{
-            backgroundColor: params.row.status === 'Active' ? '#ff9800' : '#4caf50',
-            ':hover': { backgroundColor: params.row.status === 'Active' ? '#fb8c00' : '#43a047' }
+            backgroundColor: params.row.status === 2 ? '#ff9800' : '#4caf50',
+            ':hover': { backgroundColor: params.row.status === 2 ? '#fb8c00' : '#43a047' }
           }}
           onClick={() => toggleStatus(params.row.id)}
         >
-          {params.row.status === 'Active' ? 'Deactivate' : 'Activate'}
+          {params.row.status === 2 ? 'Deactivate' : 'Activate'}
         </Button>
       ),
     },
   ];
+  
 
   // Statistics
   const totalUsers = rows.length;
