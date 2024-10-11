@@ -253,7 +253,7 @@ const ManageLocations = () => {
         {
           start_time: formattedFrom,
           end_time: formattedTo,
-          status_id: editLocation.status === 'Open' ? 1 : 2,
+          status_id: editLocation.status === 'Open' ? 4 : 3,
         },
         { withCredentials: true }
       );
