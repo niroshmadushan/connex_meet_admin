@@ -14,7 +14,6 @@ import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import { CssBaseline, Box, ThemeProvider } from '@mui/material';
 import axios from 'axios';
-import theme from './theme';
 import APIConnect from './config';
 
 // Create AuthContext
@@ -78,7 +77,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <CssBaseline />
         <Router>
           <AppContent />
