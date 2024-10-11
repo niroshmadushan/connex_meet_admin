@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Box, List, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { SidebarContainer, StyledListItem, LogoContainer } from '../theme'; // Import from theme.js
+import { SidebarContainer, LogoContainer, StyledListItem, themeColors } from '../theme.js';
+ // Import from theme.js
 import EventIcon from '@mui/icons-material/Event';
 import GroupIcon from '@mui/icons-material/Group';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -11,6 +12,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import RoomIcon from '@mui/icons-material/Room';
 import PeopleIcon from '@mui/icons-material/People';
 import AdminLogo from '../assets/admin-logo.png';
+import { styled } from '@mui/system';
+
 import DeveloperLogo from '../assets/developer-logo.png';
 
 const ShineEffect = styled(Box)(({ theme }) => ({
