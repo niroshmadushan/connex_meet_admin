@@ -56,18 +56,30 @@ const Users = () => {
   const handleClose = () => setOpen(false);
 
   // Handle new admin form submission
-  const handleAddAdmin = () => {
-    const newId = rows.length + 1;
-    const newAdminData = {
-      id: newId,
-      ...newAdmin,
-      role: 'Admin',
-      status: 'Active',
-      approval: 'Approved',
-      createdBy: currentAdmin,
+  const handleAddAdmin = async () => {
+    const adminData = {
+      name: newAdmin.fullName,
+      status: 1, // Assuming status 1 means active
+      email: newAdmin.email,
+      phone: newAdmin.phone,
+      address: newAdmin.address,
+      designation: newAdmin.designation,
+      password: newAdmin.password,
+      org_id: newAdmin.organizationId,
+      image: imageBase64, // Base64 image string
     };
-    setRows([...rows, newAdminData]);
-    handleClose();
+
+    try {
+      const response = await axios.post('http://192.168.13.150:3001/add-admin', adminData);
+      if (response.status === 200) {
+        setRows([...rows, { id: rows.length + 1, ...adminData, role: 'Admin', approval: 'Approved', contactNo: newAdmin.phone }]);
+        handleClose();
+        alert('Admin added successfully!');
+      }
+    } catch (error) {
+      console.error('Error adding admin:', error);
+      alert(`Failed to add admin: ${error.response?.data?.message || error.message}`);
+    }
   };
 
   // Handle image upload
