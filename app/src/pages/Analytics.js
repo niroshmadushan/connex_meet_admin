@@ -16,7 +16,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://192.168.13.6:3001/getdashbaord',{ withCredentials: true });
+        const response = await axios.get('http://192.168.13.6:3001/getdashboard',{ withCredentials: true });
         setDashboardData(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
