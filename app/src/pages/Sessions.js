@@ -195,7 +195,7 @@ const Meetings = () => {
   }, []);
 
   useEffect(() => {
-  
+
     fetchData2();
   }, []);
 
@@ -220,21 +220,21 @@ const Meetings = () => {
       try {
         // Make the API request and log the full response
         const response = await axios.get(`${APIConnection.mainapi}/getallspecialbookingssessions`, { withCredentials: true });
-       
-  
+
+
         // Extract the array from the API response
         const data = response.data;
 
         const employeeResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
         console.log("Employee API Response:", employeeResponse);
-  
+
         const employeeData = employeeResponse.data;
-  
+
         if (!Array.isArray(employeeData)) {
           console.error('Invalid Employee API response structure:', employeeData);
           return;
         }
-  
+
         // Create an employee lookup map using id as the key
         const employeeMap = employeeData.reduce((map, employee) => {
           map[employee.id] = employee.name;
@@ -245,20 +245,20 @@ const Meetings = () => {
           console.error('Invalid API response structure:', data);
           return;
         }
-  
+
         // Get the current date and time
         const currentTime = new Date();
-  
+
         // Map over the array to extract meeting details and participants
         const meetings = data.map((item, index) => {
           const booking = item.bookingDetails;
           const participants = item.participants || [];
-  
+
           // Convert the booking date and time to `Date` objects
           const meetingDate = booking.date; // Date in 'MM/dd/yyyy' format
           const startTime = new Date(`${meetingDate} ${booking.start_time}`);
           const endTime = new Date(`${meetingDate} ${booking.end_time}`);
-  
+
           // Determine the meeting type: "Upcoming", "Ongoing", or "Finished"
           let type = '';
           if (currentTime < startTime) {
@@ -268,7 +268,7 @@ const Meetings = () => {
           } else {
             type = 'Finished';
           }
-           const conductedBy = employeeMap[booking.emp_id] || 'N/A';
+          const conductedBy = employeeMap[booking.emp_id] || 'N/A';
           return {
             id: booking.id || index, // Use booking.id if available, else fallback to array index
             name: booking.title,
@@ -284,7 +284,7 @@ const Meetings = () => {
             conductedBy // Add the calculated type value ("Upcoming", "Ongoing", "Finished")
           };
         });
-  
+
         // Set the meetings data to the formatted array
         setMeetingsData(meetings);
         setFilteredData(meetings); // Initialize filtered data for the table
@@ -292,11 +292,11 @@ const Meetings = () => {
         console.error('Failed to fetch data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
-  
+
+
 
 
   const getStatusLabel = (status) => {
@@ -344,7 +344,7 @@ const Meetings = () => {
       renderCell: (params) => {
         const statusColor =
           params.value === 'Ongoing' ? '#4caf50' : params.value === 'Finished' ? '#f44336' : '#ff9800'; // Set color based on type
-  
+
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <BlinkingDot status={params.value} sx={{ color: statusColor, marginRight: '8px' }} />
@@ -360,7 +360,7 @@ const Meetings = () => {
       renderCell: (params) => {
         const statusColor =
           params.value === 'Active' ? 'green' : params.value === 'Deactive' ? '#f44336' : '#ff9800'; // Set color based on type
-  
+
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
@@ -369,9 +369,9 @@ const Meetings = () => {
         );
       },
     },
-    
+
   ];
-  
+
   const handleClose = () => setOpen(false);
   useEffect(() => {
     if (formData.date) {
@@ -876,9 +876,9 @@ const Meetings = () => {
 
       {/* Meeting Details Modal */}
       {selectedMeeting && (
-        <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',overflow:'scroll',mt:2 }}>
+        <Modal open={open} onClose={handleClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'scroll', mt: 2 }}>
           <Fade in={open}>
-            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px',height:'80vh',overflowY:'scroll' }}>
+            <Paper sx={{ padding: 4, width: '80%', maxWidth: '600px', height: '80vh', overflowY: 'scroll' }}>
               <Typography variant="h6" sx={{ marginBottom: 2 }}>
                 Session Details
               </Typography>
@@ -896,7 +896,7 @@ const Meetings = () => {
                 <Grid item xs={6}><Typography>{selectedMeeting.endTime}</Typography></Grid>
                 <Grid item xs={6}><Typography><strong>Location:</strong></Typography></Grid>
                 <Grid item xs={6}><Typography>{selectedMeeting.location}</Typography></Grid>
-                
+
 
               </Grid>
 
@@ -955,7 +955,7 @@ const Meetings = () => {
           backdropFilter: 'blur(5px)',  // Blur the background when modal is open
         }}
       >
-        <Fade in={loginModalOpen}>
+        {/* <Fade in={loginModalOpen}>
           <Box
             sx={{
               width: '500px',
@@ -965,7 +965,7 @@ const Meetings = () => {
               borderRadius: '12px',
               p: '30px',
               boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
-              overflowY: 'auto',  // Ensure the modal content is scrollable
+              overflowY: 'auto', 
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
@@ -976,7 +976,7 @@ const Meetings = () => {
 
             <form onSubmit={handleSubmit}>
               <Grid container spacing={3}>
-                {/* Conducted By Selector */}
+               
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel>Conducted By</InputLabel>
@@ -996,7 +996,7 @@ const Meetings = () => {
                   </FormControl>
                 </Grid>
 
-                {/* Meeting Title Field */}
+                
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -1015,7 +1015,7 @@ const Meetings = () => {
                   />
                 </Grid>
 
-                {/* Date Picker and Room Selector */}
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -1032,7 +1032,7 @@ const Meetings = () => {
                         </InputAdornment>
                       ),
                       inputProps: {
-                        min: format(new Date(), 'yyyy-MM-dd'),  // Set the minimum date to today's date
+                        min: format(new Date(), 'yyyy-MM-dd'),  
                       },
                     }}
                     required
@@ -1058,7 +1058,7 @@ const Meetings = () => {
                   </FormControl>
                 </Grid>
 
-                {/* Available Time Slot Selector */}
+
                 {formData.availableSlots.length > 0 && (
                   <Grid item xs={12}>
                     <FormControl fullWidth>
@@ -1080,7 +1080,7 @@ const Meetings = () => {
                   </Grid>
                 )}
 
-                {/* Start and End Time Selectors */}
+              
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -1117,7 +1117,7 @@ const Meetings = () => {
                   </TextField>
                 </Grid>
 
-                {/* Participant Email Selector */}
+                
                 <Grid item xs={12}>
                   <Autocomplete
                     options={employeeEmails}
@@ -1140,7 +1140,7 @@ const Meetings = () => {
                   />
                 </Grid>
 
-                {/* Add Participant Button */}
+
                 <Grid item xs={12}>
                   <Button
                     variant="contained"
@@ -1152,7 +1152,7 @@ const Meetings = () => {
                   </Button>
                 </Grid>
 
-                {/* Participant List */}
+               
                 {formData.participantList.length > 0 && (
                   <Grid item xs={12}>
                     <Table>
@@ -1180,7 +1180,7 @@ const Meetings = () => {
                   </Grid>
                 )}
 
-                {/* Special Note and Refreshment Details */}
+               
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -1207,7 +1207,7 @@ const Meetings = () => {
                   />
                 </Grid>
 
-                {/* Submit Button */}
+                
                 <Grid item xs={12}>
                   <Button
                     type="submit"
@@ -1225,7 +1225,56 @@ const Meetings = () => {
 
             </Box>
           </Box>
+        </Fade> */}
+        <Fade in={login2ModalOpen}>
+          <Box
+            sx={{
+              width: 400,
+              bgcolor: 'background.paper',
+              borderRadius: 2,
+              p: 4,
+              boxShadow: 3,
+              textAlign: 'center',
+              animation: 'pulse 2s infinite',
+            }}
+          >
+            {/* Animated Icon */}
+            <Slide direction="down" in={open} mountOnEnter unmountOnExit>
+              <AccessTimeIcon
+                sx={{ fontSize: 80, color: 'primary.main', mb: 2 }}
+              />
+            </Slide>
+
+            {/* Title */}
+            <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+              Coming Soon! 🚀
+            </Typography>
+
+            {/* Description */}
+            <Typography variant="body1" sx={{ mb: 3 }}>
+              This feature will be available in the next version update. Stay
+              tuned!
+            </Typography>
+
+            {/* Loading Spinner for polish */}
+            <CircularProgress color="secondary" sx={{ mb: 3 }} />
+
+            {/* Close Button */}
+            <Button
+              variant="contained"
+              onClick={onClose}
+              sx={{
+                bgcolor: 'primary.main',
+                color: '#fff',
+                ':hover': { bgcolor: 'primary.dark' },
+              }}
+            >
+              Close
+            </Button>
+          </Box>
         </Fade>
+
+
       </Modal>
 
       {/* New Meeting Form Modal */}
