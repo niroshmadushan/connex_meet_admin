@@ -12,7 +12,7 @@ import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import axios from 'axios';
-
+import APIConnection from '../config';
 import Swal from 'sweetalert2';
 
 // Custom styles for the status dot
