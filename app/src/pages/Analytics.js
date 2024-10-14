@@ -18,14 +18,19 @@ const Analytics = () => {
       try {
         const response = await axios.get('http://localhost:3001/api/dashboard'); // Adjust URL if needed
         setDashboardData(response.data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
+      } finally {
         setLoading(false);
       }
     };
     fetchDashboardData();
   }, []);
+
+  // Handle category change for the line chart
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
 
   if (loading) {
     return (
@@ -47,14 +52,14 @@ const Analytics = () => {
     canceledInterviews,
     totalServices,
     completedServices,
-    canceledServices
+    canceledServices,
   } = dashboardData;
 
   const chartData = {
     meetings: [completedMeetings, canceledMeetings],
     sessions: [completedSessions, canceledSessions],
     interviews: [completedInterviews, canceledInterviews],
-    services: [completedServices, canceledServices]
+    services: [completedServices, canceledServices],
   };
 
   const lineChartData = {
@@ -105,6 +110,16 @@ const Analytics = () => {
       },
     ],
   });
+
+  const barChartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      { label: 'Meetings', backgroundColor: '#42a5f5', data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] },
+      { label: 'Sessions', backgroundColor: '#ff9800', data: [8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65] },
+      { label: 'Services', backgroundColor: '#66bb6a', data: [12, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120] },
+      { label: 'Events', backgroundColor: '#ab47bc', data: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24] },
+    ],
+  };
 
   return (
     <Box sx={{ padding: 2, backgroundColor: '#fff', minHeight: '80vh', borderRadius: '10px' }}>
@@ -159,7 +174,7 @@ const Analytics = () => {
         </Grid>
       </Grid>
 
-      {/* Line Chart with Category Selector */}
+      {/* Category Selector and Line Chart */}
       <FormControl fullWidth sx={{ marginBottom: 2 }}>
         <InputLabel>Category</InputLabel>
         <Select value={selectedCategory} onChange={handleCategoryChange}>
@@ -174,21 +189,10 @@ const Analytics = () => {
         <Line data={lineChartData} options={{ responsive: true, maintainAspectRatio: false }} />
       </Box>
 
-      {/* Donut Charts */}
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={3}>
-          <Doughnut data={generateDonutData(completedMeetings, canceledMeetings, ['#4caf50', '#f44336'])} options={donutOptions(completedMeetings, totalMeetings)} />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Doughnut data={generateDonutData(completedSessions, canceledSessions, ['#ff9800', '#f44336'])} options={donutOptions(completedSessions, totalSessions)} />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Doughnut data={generateDonutData(completedInterviews, canceledInterviews, ['#42a5f5', '#f44336'])} options={donutOptions(completedInterviews, totalInterviews)} />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <Doughnut data={generateDonutData(completedServices, canceledServices, ['#ab47bc', '#f44336'])} options={donutOptions(completedServices, totalServices)} />
-        </Grid>
-      </Grid>
+      {/* Monthly Activities Overview (Bar Chart) */}
+      <Box sx={{ height: '300px', marginTop: 4 }}>
+        <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+      </Box>
     </Box>
   );
 };
