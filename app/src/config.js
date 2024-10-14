@@ -10,7 +10,7 @@ const config = {
     getalllocationdata: `${BACKEND_URL}/getlocations`,
     getalluserdata: `${BACKEND_URL}/getProfileData`,
 
-    mainapi:`${BACKEND_URL},`
+    mainapi:`${BACKEND_URL}`
  
 };
 
