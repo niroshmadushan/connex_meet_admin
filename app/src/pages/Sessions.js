@@ -201,10 +201,10 @@ const Meetings = () => {
 
   const fetchData2 = async () => {
     try {
-      const roomsResponse = await axios.get('${APIConnection.mainapi}/place', { withCredentials: true });
+      const roomsResponse = await axios.get(`${APIConnection.mainapi}/place`, { withCredentials: true });
       setRooms(roomsResponse.data);
 
-      const bookingsResponse = await axios.get('${APIConnection.mainapi}/bookings', { withCredentials: true });
+      const bookingsResponse = await axios.get(`${APIConnection.mainapi}/bookings`, { withCredentials: true });
       setBookings(bookingsResponse.data);
 
       const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
@@ -219,7 +219,7 @@ const Meetings = () => {
     const fetchData = async () => {
       try {
         // Make the API request and log the full response
-        const response = await axios.get('${APIConnection.mainapi}/getallspecialbookingssessions', { withCredentials: true });
+        const response = await axios.get(`${APIConnection.mainapi}/getallspecialbookingssessions`, { withCredentials: true });
        
   
         // Extract the array from the API response
