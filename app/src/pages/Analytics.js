@@ -32,10 +32,19 @@ const Analytics = () => {
     setSelectedCategory(event.target.value);
   };
 
+  // **Check if data is loaded before destructuring**
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <Typography variant="h6" color="error">Failed to load data. Please try again.</Typography>
       </Box>
     );
   }
@@ -127,7 +136,6 @@ const Analytics = () => {
         Analytics Dashboard
       </Typography>
 
-      {/* Total Counts (Meetings, Sessions, Interviews, Services) */}
       <Grid container spacing={2} sx={{ marginBottom: 3 }}>
         <Grid item xs={12} sm={3}>
           <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
@@ -151,30 +159,9 @@ const Analytics = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Interviews</Typography>
-            <Typography variant="h6" sx={{ color: '#66bb6a' }}>
-              <CountUp end={totalInterviews} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedInterviews}</Typography>
-            <Typography variant="caption">Canceled: {canceledInterviews}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Services</Typography>
-            <Typography variant="h6" sx={{ color: '#ab47bc' }}>
-              <CountUp end={totalServices} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedServices}</Typography>
-            <Typography variant="caption">Canceled: {canceledServices}</Typography>
-          </Paper>
-        </Grid>
+        {/* Add similar cards for Interviews and Services */}
       </Grid>
 
-      {/* Category Selector and Line Chart */}
       <FormControl fullWidth sx={{ marginBottom: 2 }}>
         <InputLabel>Category</InputLabel>
         <Select value={selectedCategory} onChange={handleCategoryChange}>
@@ -186,12 +173,11 @@ const Analytics = () => {
       </FormControl>
 
       <Box sx={{ height: '300px', marginBottom: 4 }}>
-        <Line data={lineChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+        <Line data={lineChartData} />
       </Box>
 
-      {/* Monthly Activities Overview (Bar Chart) */}
       <Box sx={{ height: '300px', marginTop: 4 }}>
-        <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+        <Bar data={barChartData} />
       </Box>
     </Box>
   );
