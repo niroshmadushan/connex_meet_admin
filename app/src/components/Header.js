@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  AppBar, Toolbar, IconButton, Avatar, Menu, MenuItem, Box, 
+  AppBar, Toolbar, IconButton, Avatar, Menu, Box, 
   TextField, Button, Divider, Typography, CircularProgress 
 } from '@mui/material';
 import ReactTypingEffect from 'react-typing-effect';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
+
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [profileData, setProfileData] = useState(null);  // Use state for profile
+  const [profileData, setProfileData] = useState(null);  // Initially null
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
@@ -24,25 +25,29 @@ const Header = () => {
   // Fetch Profile Data on Component Load
   useEffect(() => {
     const fetchProfileData = async () => {
-      
-      const userId = Cookies.get('id'); 
+      const userId = Cookies.get('id');  // Get user ID from cookies
+      if (!userId) {
+        Swal.fire('Error!', 'User ID not found in cookies. Please log in.', 'error');
+        setLoading(false);
+        return;
+      }
+
       const apiLink = `http://192.168.13.6:3001/profile/${userId}`;
 
       try {
         const response = await axios.get(apiLink, { withCredentials: true });
         setProfileData(response.data);
-        setNewProfileData(response.data);  // Set initial form values
-        setLoading(false);
+        setNewProfileData(response.data);  // Initialize form values
       } catch (error) {
         Swal.fire('Error!', 'Failed to load profile data.', 'error');
-        setLoading(false);
+      } finally {
+        setLoading(false);  // Stop loading spinner
       }
     };
 
     fetchProfileData();
   }, []);
 
-  // Handle menu open and close
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -50,13 +55,12 @@ const Header = () => {
     setPasswordMode(false);
   };
 
-  // Save updated profile
   const handleSaveProfile = async () => {
     const apiLink = `http://192.168.13.6:3001/profile`;
 
     try {
       await axios.put(apiLink, newProfileData, { withCredentials: true });
-      setProfileData(newProfileData);  // Update UI with new data
+      setProfileData(newProfileData);  // Update profile data in the UI
       Swal.fire('Success!', 'Profile updated successfully!', 'success');
       handleMenuClose();
     } catch (error) {
@@ -64,7 +68,6 @@ const Header = () => {
     }
   };
 
-  // Handle password change
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       Swal.fire('Error!', 'New passwords do not match!', 'error');
@@ -82,11 +85,10 @@ const Header = () => {
       Swal.fire('Success!', 'Password changed successfully!', 'success');
       handleMenuClose();
     } catch (error) {
-      Swal.fire('Error!', error.response.data.message || 'Failed to change password.', 'error');
+      Swal.fire('Error!', error.response?.data?.message || 'Failed to change password.', 'error');
     }
   };
 
-  // Handle profile image change
   const handleProfileImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -95,7 +97,6 @@ const Header = () => {
     }
   };
 
-  // Format date and time
   const formatDateTime = (date) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = date.toLocaleDateString(undefined, options);
@@ -106,7 +107,11 @@ const Header = () => {
     return `${formattedDate}, ${hours}:${minutes}:${seconds} ${ampm}`;
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <CircularProgress />;  // Show spinner while loading
+
+  if (!profileData) {
+    return <Typography color="error">Failed to load profile data.</Typography>;  // Handle missing profile data
+  }
 
   return (
     <AppBar 
@@ -114,7 +119,6 @@ const Header = () => {
       sx={{ borderRadius: '20px', background: 'linear-gradient(to right, #0d47a1, #1976d2, #001f3f)' }}
     >
       <Toolbar>
-        {/* Typing Effect in Left Corner */}
         <Box sx={{ flexGrow: 1 }}>
           <ReactTypingEffect
             text={["Welcome to Connex Digital World", "Introducing New Visitor Management Platform"]}
@@ -131,19 +135,16 @@ const Header = () => {
           />
         </Box>
 
-        {/* Live Time and Date */}
         <Box sx={{ textAlign: 'right', marginRight: 4, color: 'white' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             {formatDateTime(currentTime)}
           </Typography>
         </Box>
 
-        {/* Profile Icon */}
         <IconButton onClick={handleMenuOpen} color="inherit">
           <Avatar alt="Profile" src={profileData?.profileImage} />
         </IconButton>
 
-        {/* Profile Menu */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <Box sx={{ padding: 2, width: 300 }}>
             <Box sx={{ textAlign: 'center' }}>
@@ -156,8 +157,8 @@ const Header = () => {
 
             {editMode ? (
               <>
-                <TextField fullWidth label="Full Name" value={newProfileData.name} onChange={(e) => setNewProfileData({ ...newProfileData, name: e.target.value })} />
-                <TextField fullWidth label="Contact Number" value={newProfileData.contact} onChange={(e) => setNewProfileData({ ...newProfileData, contact: e.target.value })} />
+                <TextField fullWidth label="Full Name" value={newProfileData.name || ''} onChange={(e) => setNewProfileData({ ...newProfileData, name: e.target.value })} />
+                <TextField fullWidth label="Contact Number" value={newProfileData.contact || ''} onChange={(e) => setNewProfileData({ ...newProfileData, contact: e.target.value })} />
                 <Button fullWidth variant="contained" onClick={handleSaveProfile}>
                   Save Changes
                 </Button>
