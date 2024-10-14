@@ -50,7 +50,7 @@ const Header = () => {
       }
 
       try {
-        const response = await axios.get(`http://192.168.13.6:3001/profile/${userId}`, {
+        const response = await axios.get(`${APIConnection.mainapi}/profile/${userId}`, {
           withCredentials: true,
         });
 
@@ -80,7 +80,7 @@ const Header = () => {
 
   const handleSaveProfile = async () => {
     try {
-      await axios.put(`http://192.168.13.6:3001/profile`, newProfileData, {
+      await axios.put(`${APIConnection.mainapi}/profile`, newProfileData, {
         withCredentials: true,
       });
       setProfileData(newProfileData);  
@@ -110,7 +110,7 @@ const Header = () => {
 
     try {
       const userId = profileData.id;
-      await axios.post(`http://192.168.13.6:3001/password`, {
+      await axios.post(`${APIConnection.mainapi}/password`, {
         id: userId,
         ...passwordData,
       }, { withCredentials: true });
