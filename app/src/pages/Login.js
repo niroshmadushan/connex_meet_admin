@@ -141,16 +141,16 @@ const LoginPage = () => {
           <ContentBox>
             <img src={imglg} alt="Company Logo" style={{ marginBottom: 20, maxWidth: '40%' }} />
             <Typography variant="h4" gutterBottom>
-              Welcome to Connex Partner Portal
+              Welcome to Connex Meet Admin Portal
             </Typography>
             <Typography variant="body1" color="textSecondary">
-              Join us and become a part of our growing network. Access your dashboard and manage your activities seamlessly.
+            Welcome to Connex Meet—your smart solution for seamless visitor management. Monitor, organize, and engage effortlessly with every visitor.
             </Typography>
           </ContentBox>
         </Grid>
         <Grid item xs={12} md={4}>
           <StyledPaper elevation={6}>
-            <Typography variant="h5" style={{ marginBottom: '16px' }}>Login to Your Account</Typography>
+            <Typography variant="h5" style={{ marginBottom: '16px' }}>Login to Your Admin Account</Typography>
             <StyledTextField
               fullWidth
               variant="outlined"
@@ -224,17 +224,7 @@ const LoginPage = () => {
               {loading ? 'Logging in...' : 'Login'}
             </StyledButton>
 
-            <StyledButton
-              variant="contained"
-              onClick={handleBecomePartner}
-              sx={{
-                backgroundColor: '#007bff',
-                width: '100%',
-                marginTop: 2,
-              }}
-            >
-              Become a Partner
-            </StyledButton>
+            
           </StyledPaper>
         </Grid>
       </Grid>
