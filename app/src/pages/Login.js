@@ -139,7 +139,7 @@ const LoginPage = () => {
       <Grid container spacing={4} justifyContent="center" alignItems="center">
         <Grid item xs={12} md={6}>
           <ContentBox>
-            <img src={imglg} alt="Company Logo" style={{ marginBottom: 20, maxWidth: '80%' }} />
+            <img src={imglg} alt="Company Logo" style={{ marginBottom: 20, maxWidth: '50%' }} />
             <Typography variant="h4" gutterBottom>
               Welcome to Connex Partner Portal
             </Typography>
