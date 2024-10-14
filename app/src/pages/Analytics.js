@@ -6,6 +6,7 @@ import CountUp from 'react-countup';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import axios from 'axios';
 import 'chart.js/auto';
+import APIConnection from '../config';
 
 
 
@@ -70,7 +71,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://192.168.13.6:3001/getdashboard',{ withCredentials: true });
+        const response = await axios.get(`${APIConnection.mainapi}/getdashboard`,{ withCredentials: true });
         setDashboardData(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -84,7 +85,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchDashboardData2 = async () => {
       try {
-        const response = await axios.get('http://192.168.13.6:3001/getdashboardtwo', { withCredentials: true });
+        const response = await axios.get(`${APIConnection.mainapi}/getdashboardtwo`, { withCredentials: true });
         setDashboardData2(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
