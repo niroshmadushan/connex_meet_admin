@@ -24,6 +24,9 @@ import { AuthContext } from '../App';
 import { styled } from '@mui/system';
 import APIConnection from '../config';
 import imglg from '../assets/visitor-management-hero.jpg'
+import imglg1 from '../assets/admin-logo.png'
+import imglg3 from '../assets/developer-logo.png'
+
 
 
 import { jwtDecode } from 'jwt-decode';
@@ -33,6 +36,13 @@ const themeColor = {
   primaryDark: '#666',
   borderColor: '#777',
 };
+const LogoBox = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(2),
+  left: theme.spacing(2),
+  display: 'flex',
+  alignItems: 'center',
+}));
 
 const Background = styled(Box)(({ theme }) => ({
   minHeight: '90vh',
@@ -136,6 +146,9 @@ const LoginPage = () => {
 
   return (
     <Background>
+       <LogoBox>
+        <img src={imglg1} alt="Company Logo" style={{ width: '180px',margin:20 }} />
+      </LogoBox>
       <Grid container spacing={4} justifyContent="center" alignItems="center">
         <Grid item xs={12} md={6}>
           <ContentBox>
@@ -146,6 +159,7 @@ const LoginPage = () => {
             <Typography variant="body1" color="textSecondary">
             Welcome to Connex Meet—your smart solution for seamless visitor management. Monitor, organize, and engage effortlessly with every visitor.
             </Typography>
+           
           </ContentBox>
         </Grid>
         <Grid item xs={12} md={4}>
