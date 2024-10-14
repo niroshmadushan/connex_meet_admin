@@ -60,7 +60,8 @@ const chartOptions = {
 
 
 const Analytics = () => {
-  const [dashboardData, setDashboardData] = useState(null); // Store API data here
+  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData2, setDashboardData2] = useState(null); // Store API data here
   const [loading, setLoading] = useState(true); // Handle loading state
   const [selectedCategory, setSelectedCategory] = useState('meetings'); // Track selected category
 
@@ -70,6 +71,20 @@ const Analytics = () => {
       try {
         const response = await axios.get('http://192.168.13.6:3001/getdashboard',{ withCredentials: true });
         setDashboardData(response.data);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get('http://192.168.13.6:3001/getdashboardtwo', { withCredentials: true });
+        setDashboardData2(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -93,7 +108,6 @@ const Analytics = () => {
     );
   }
 
-  // If dashboardData is null, show an error message
   if (!dashboardData) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
@@ -101,6 +115,61 @@ const Analytics = () => {
       </Box>
     );
   }
+
+  // Extract data from the API response
+  const { meetings, sessions, interviews, services } = dashboardData;
+
+  // Prepare data for the bar chart
+  const barChartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Meetings',
+        backgroundColor: '#42a5f5',
+        data: meetings.map((month) => month.total),
+      },
+      {
+        label: 'Sessions',
+        backgroundColor: '#ff9800',
+        data: sessions.map((month) => month.total),
+      },
+      {
+        label: 'Interviews',
+        backgroundColor: '#66bb6a',
+        data: interviews.map((month) => month.total),
+      },
+      {
+        label: 'Services',
+        backgroundColor: '#ab47bc',
+        data: services.map((month) => month.totalServices),
+      },
+    ],
+  };
+
+  // Prepare data for the dynamic line chart based on the selected category
+  const categoryData = {
+    meetings: meetings.map((month) => month.total),
+    sessions: sessions.map((month) => month.total),
+    interviews: interviews.map((month) => month.total),
+    services: services.map((month) => month.totalServices),
+  };
+
+  const lineChartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Growth`,
+        fill: true,
+        backgroundColor: 'rgba(66, 165, 245, 0.2)',
+        borderColor: '#42a5f5',
+        data: categoryData[selectedCategory],
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#42a5f5',
+        tension: 0.3,
+      },
+    ],
+  };
 
   // Destructure the data from the API response
   const {
@@ -262,26 +331,38 @@ const Analytics = () => {
 
     {/* Bar Chart and Line Chart in One Line */}
     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
-      <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Monthly Activities Overview</Typography>
-        <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
-          <Bar data={barChartData} options={chartOptions} />
-        </Box>
+     {/* Monthly Activities Overview Bar Chart */}
+     <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+        <Grid item xs={12}>
+          <Paper sx={{ padding: 2, borderRadius: '10px' }}>
+            <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>
+              Monthly Activities Overview
+            </Typography>
+            <Box sx={{ height: '300px' }}>
+              <Bar data={barChartData} options={chartOptions} />
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
 
-      <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-        <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel>Category</InputLabel>
-          <Select label='Category' value={selectedCategory} onChange={handleCategoryChange}>
-            <MenuItem value="meetings">Meetings</MenuItem>
-            <MenuItem value="sessions">Sessions</MenuItem>
-            <MenuItem value="interviews">Interviews</MenuItem>
-            <MenuItem value="services">Services</MenuItem>
-          </Select>
-        </FormControl>
-        <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
-          <Line data={lineChartData} options={chartOptions} />
-        </Box>
+      {/* Growth Chart with Category Selection */}
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Paper sx={{ padding: 2, borderRadius: '10px' }}>
+            <FormControl fullWidth sx={{ marginBottom: 2 }}>
+              <InputLabel>Category</InputLabel>
+              <Select value={selectedCategory} onChange={handleCategoryChange} label="Category">
+                <MenuItem value="meetings">Meetings</MenuItem>
+                <MenuItem value="sessions">Sessions</MenuItem>
+                <MenuItem value="interviews">Interviews</MenuItem>
+                <MenuItem value="services">Services</MenuItem>
+              </Select>
+            </FormControl>
+            <Box sx={{ height: '300px' }}>
+              <Line data={lineChartData} options={chartOptions} />
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
     </Box>
   </Box>
