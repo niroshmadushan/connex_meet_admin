@@ -6,6 +6,7 @@ import {
   Stack 
 } from '@mui/material';
 import ReactTypingEffect from 'react-typing-effect';
+import APIConnection from '../config';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';  
