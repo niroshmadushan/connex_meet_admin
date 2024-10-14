@@ -126,22 +126,6 @@ const Analytics = () => {
     services: [completedServices, canceledServices],
   };
 
-  const lineChartData = {
-    labels: ['Completed', 'Canceled'],
-    datasets: [
-      {
-        label: `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Growth`,
-        fill: true,
-        backgroundColor: 'rgba(66, 165, 245, 0.2)',
-        borderColor: '#42a5f5',
-        data: chartData[selectedCategory],
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointHoverBackgroundColor: '#42a5f5',
-        tension: 0.3,
-      },
-    ],
-  };
 
   const generateDonutData = (completed, canceled, colors) => ({
     labels: ['Completed', 'Canceled'],
