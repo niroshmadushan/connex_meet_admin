@@ -182,10 +182,7 @@ const Header = () => {
             <Typography variant="body2" color="textSecondary">
               {profileData?.email}
             </Typography>
-            <Button variant="outlined" component="label">
-              Change Image
-              <input type="file" hidden accept="image/*" onChange={handleProfileImageChange} />
-            </Button>
+           
             <Button fullWidth variant="outlined" startIcon={<LockIcon />} onClick={handlePasswordDialogOpen}>
               Change Password
             </Button>
