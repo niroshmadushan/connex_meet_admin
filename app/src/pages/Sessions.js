@@ -1256,7 +1256,7 @@ const Meetings = () => {
             </Typography>
 
             {/* Loading Spinner for polish */}
-            <CircularProgress color="secondary" sx={{ mb: 3 }} />
+            {/* <CircularProgress color="secondary" sx={{ mb: 3 }} /> */}
 
             {/* Close Button */}
             <Button
