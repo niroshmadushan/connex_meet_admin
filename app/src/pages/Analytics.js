@@ -5,7 +5,13 @@ import CountUp from 'react-countup';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 
-InputLabel 
+const chartData = {
+  meetings: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+  sessions: [15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125],
+  interviews: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115],
+  services: [12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144],
+};
+ 
 // Sample Data for the metrics
 const totalMeetings = 100;
 const completedMeetings = 80;
@@ -36,12 +42,6 @@ const generateDonutData = (completed, canceled, colors) => ({
   ],
 });
 
-const chartData = {
-  meetings: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
-  sessions: [15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125],
-  interviews: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 115],
-  services: [12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144],
-};
 
 const meetingsDonutData = generateDonutData(completedMeetings, canceledMeetings, ['#4caf50', '#f44336']);
 const sessionsDonutData = generateDonutData(completedSessions, canceledSessions, ['#ff9800', '#f44336']);
