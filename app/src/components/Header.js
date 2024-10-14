@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';  // Import js-cookie
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [profileData, setProfileData] = useState(null);  // Initially null
+  const [profileData, setProfileData] = useState(null);  // Profile data
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
@@ -38,8 +38,15 @@ const Header = () => {
 
       try {
         const response = await axios.get(apiLink, { withCredentials: true });
-        setProfileData(response.data);  // Store profile data in state
-        setNewProfileData(response.data);  // Initialize the form with profile data
+
+        const profile = response.data;
+        if (profile.image) {
+          // Construct a data URL from Base64 data
+          profile.profileImage = `data:image/jpeg;base64,${profile.image}`;
+        }
+
+        setProfileData(profile);  // Store profile data in state
+        setNewProfileData(profile);  // Initialize the form with profile data
       } catch (error) {
         Swal.fire('Error!', 'Failed to load profile data.', 'error');
       } finally {
@@ -147,14 +154,14 @@ const Header = () => {
 
         {/* Profile Icon */}
         <IconButton onClick={handleMenuOpen} color="inherit">
-          <Avatar alt="Profile" src={profileData?.profileImage} />
+          <Avatar alt="Profile" src={profileData?.profileImage || '/default-avatar.png'} />
         </IconButton>
 
         {/* Profile Menu */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <Box sx={{ padding: 2, width: 300 }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Avatar src={profileData?.profileImage} sx={{ width: 100, height: 100, marginBottom: 2 }} />
+              <Avatar src={profileData?.profileImage || '/default-avatar.png'} sx={{ width: 100, height: 100, marginBottom: 2 }} />
               <Button variant="outlined" component="label">
                 Change Image
                 <input type="file" hidden accept="image/*" onChange={handleProfileImageChange} />
@@ -169,21 +176,11 @@ const Header = () => {
                   Save Changes
                 </Button>
               </>
-            ) : passwordMode ? (
-              <>
-                <TextField fullWidth label="Current Password" type="password" onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
-                <TextField fullWidth label="New Password" type="password" onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
-                <TextField fullWidth label="Confirm New Password" type="password" onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} />
-                <Button fullWidth variant="contained" onClick={handleChangePassword}>
-                  Change Password
-                </Button>
-              </>
             ) : (
               <>
                 <Typography variant="subtitle1" align="center">{profileData.name}</Typography>
                 <Typography variant="body2" align="center">{profileData.email}</Typography>
                 <Button fullWidth variant="contained" onClick={() => setEditMode(true)}>Edit Profile</Button>
-                <Button fullWidth variant="outlined" onClick={() => setPasswordMode(true)}>Change Password</Button>
               </>
             )}
           </Box>
