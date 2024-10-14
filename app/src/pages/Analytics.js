@@ -227,9 +227,7 @@ const Analytics = () => {
 
   return (
     <Box sx={{ padding: 2, backgroundColor: '#fff', minHeight: '80vh', borderRadius: '10px' }}>
-    <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3 }}>
-      Analytics Dashboard
-    </Typography>
+   
 
     {/* Total Counts (Meetings, Sessions, Interviews, Services) */}
     <Grid container spacing={2} sx={{ marginBottom: 3 }}>
