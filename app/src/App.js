@@ -43,6 +43,9 @@ const AppContent = () => {
             <Route path="/services" element={<PrivateRoute><Services /></PrivateRoute>} />
             <Route path="/location" element={<PrivateRoute><Location /></PrivateRoute>} />
             <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+
+            {/* Catch-all route to handle invalid URLs */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Box>
         {isAuthenticated && <Footer />} {/* Footer visible only if authenticated */}
