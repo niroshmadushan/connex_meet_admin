@@ -250,7 +250,7 @@ const Analytics = () => {
         <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
           <FormControl fullWidth sx={{ marginBottom: 2 }}>
             <InputLabel>Category</InputLabel>
-            <Select value={selectedCategory} onChange={handleCategoryChange}>
+            <Select label='Category' value={selectedCategory} onChange={handleCategoryChange}>
               <MenuItem value="meetings">Meetings</MenuItem>
               <MenuItem value="sessions">Sessions</MenuItem>
               <MenuItem value="interviews">Interviews</MenuItem>
