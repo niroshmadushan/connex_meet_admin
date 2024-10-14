@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { 
   AppBar, Toolbar, IconButton, Avatar, Menu, Box, 
-  TextField, Button, Divider, Typography, CircularProgress 
+  TextField, Button, Divider, Typography, CircularProgress, Dialog, 
+  DialogTitle, DialogContent, DialogActions, Snackbar, Alert 
 } from '@mui/material';
 import ReactTypingEffect from 'react-typing-effect';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';  // Import js-cookie
+import EditIcon from '@mui/icons-material/Edit';
+import LockIcon from '@mui/icons-material/Lock';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [profileData, setProfileData] = useState(null);  // Initially null
+  const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
@@ -20,19 +25,23 @@ const Header = () => {
     newPassword: '',
     confirmPassword: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Function to convert Buffer (byte array) to Base64 string
+  const handleSnackbarClose = () => setSnackbarOpen(false);
+
   const bufferToBase64 = (buffer) => {
-    const binary = new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+    const binary = new Uint8Array(buffer).reduce(
+      (acc, byte) => acc + String.fromCharCode(byte), ''
+    );
     return window.btoa(binary);
   };
 
-  // Fetch Profile Data on Component Load
+  // Fetch Profile Data from Backend
   useEffect(() => {
     const fetchProfileData = async () => {
       const userId = Cookies.get('id');  // Get user ID from cookies
-      console.log('User ID from cookies:', userId);  // Debugging log
 
       if (!userId) {
         Swal.fire('Error!', 'User ID not found in cookies. Please log in.', 'error');
@@ -40,30 +49,28 @@ const Header = () => {
         return;
       }
 
-      const apiLink = `http://192.168.13.6:3001/profile/${userId}`;
-
       try {
-        const response = await axios.get(apiLink, { withCredentials: true });
+        const response = await axios.get(`http://192.168.13.6:3001/profile/${userId}`, {
+          withCredentials: true,
+        });
 
         const profile = response.data;
-
-        // Convert image buffer to Base64 if image data exists
-        if (profile.image && profile.image.data) {
+        if (profile.image?.data) {
           const base64Image = bufferToBase64(profile.image.data);
-          profile.profileImage = `data:image/jpeg;base64,${base64Image}`; // Construct data URL
+          profile.profileImage = `data:image/jpeg;base64,${base64Image}`;
         }
 
-        setProfileData(profile);  // Store profile data in state
-        setNewProfileData(profile);  // Initialize the form with profile data
+        setProfileData(profile);
+        setNewProfileData(profile);
       } catch (error) {
         Swal.fire('Error!', 'Failed to load profile data.', 'error');
       } finally {
-        setLoading(false);  // Stop the loading spinner
+        setLoading(false);
       }
     };
 
     fetchProfileData();
-  }, []);  // Run only on component mount
+  }, []);
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
@@ -73,12 +80,13 @@ const Header = () => {
   };
 
   const handleSaveProfile = async () => {
-    const apiLink = `http://192.168.13.6:3001/profile`;
-
     try {
-      await axios.put(apiLink, newProfileData, { withCredentials: true });
-      setProfileData(newProfileData);  // Update profile in the UI
-      Swal.fire('Success!', 'Profile updated successfully!', 'success');
+      await axios.put(`http://192.168.13.6:3001/profile`, newProfileData, {
+        withCredentials: true,
+      });
+      setProfileData(newProfileData);  // Update UI
+      setSnackbarMessage('Profile updated successfully!');
+      setSnackbarOpen(true);
       handleMenuClose();
     } catch (error) {
       Swal.fire('Error!', 'Failed to update profile.', 'error');
@@ -87,17 +95,16 @@ const Header = () => {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Swal.fire('Error!', 'New passwords do not match!', 'error');
+      Swal.fire('Error!', 'Passwords do not match!', 'error');
       return;
     }
 
     try {
-      const userId = profileData.id;  // Use the ID from the profile data
-      await axios.post(
-        `http://192.168.13.6:3001/password`,
-        { id: userId, ...passwordData },
-        { withCredentials: true }
-      );
+      const userId = profileData.id;
+      await axios.post(`http://192.168.13.6:3001/password`, {
+        id: userId,
+        ...passwordData,
+      }, { withCredentials: true });
 
       Swal.fire('Success!', 'Password changed successfully!', 'success');
       handleMenuClose();
@@ -126,10 +133,6 @@ const Header = () => {
 
   if (loading) return <CircularProgress />;
 
-  if (!profileData) {
-    return <Typography color="error">Failed to load profile data.</Typography>;
-  }
-
   return (
     <AppBar 
       position="sticky" 
@@ -138,13 +141,13 @@ const Header = () => {
       <Toolbar>
         <Box sx={{ flexGrow: 1 }}>
           <ReactTypingEffect
-            text={["Welcome to Connex Digital World", "Introducing New Visitor Management Platform"]}
+            text={["Welcome to Connex Digital World", "New Visitor Management Platform"]}
             speed={100}
             eraseSpeed={50}
             eraseDelay={1500}
             typingDelay={500}
             cursor={"|"}
-            displayTextRenderer={(text, i) => (
+            displayTextRenderer={(text) => (
               <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
                 {text}
               </Typography>
@@ -165,7 +168,7 @@ const Header = () => {
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <Box sx={{ padding: 2, width: 300 }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Avatar src={profileData?.profileImage || '/default-avatar.png'} sx={{ width: 100, height: 100, marginBottom: 2 }} />
+              <Avatar src={profileData?.profileImage || '/default-avatar.png'} sx={{ width: 100, height: 100, mb: 2 }} />
               <Button variant="outlined" component="label">
                 Change Image
                 <input type="file" hidden accept="image/*" onChange={handleProfileImageChange} />
@@ -174,22 +177,57 @@ const Header = () => {
 
             {editMode ? (
               <>
-                <TextField fullWidth label="Full Name" value={newProfileData.name || ''} onChange={(e) => setNewProfileData({ ...newProfileData, name: e.target.value })} />
-                <TextField fullWidth label="Contact Number" value={newProfileData.contact || ''} onChange={(e) => setNewProfileData({ ...newProfileData, contact: e.target.value })} />
-                <Button fullWidth variant="contained" onClick={handleSaveProfile}>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  value={newProfileData.name || ''}
+                  onChange={(e) => setNewProfileData({ ...newProfileData, name: e.target.value })}
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  label="Contact Number"
+                  value={newProfileData.phone || ''}
+                  onChange={(e) => setNewProfileData({ ...newProfileData, phone: e.target.value })}
+                  sx={{ mb: 2 }}
+                />
+                <Button fullWidth variant="contained" startIcon={<SaveIcon />} onClick={handleSaveProfile}>
                   Save Changes
                 </Button>
               </>
             ) : (
-              <>
-                <Typography variant="subtitle1" align="center">{profileData.name}</Typography>
-                <Typography variant="body2" align="center">{profileData.email}</Typography>
-                <Button fullWidth variant="contained" onClick={() => setEditMode(true)}>Edit Profile</Button>
-              </>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="subtitle1">{profileData.name}</Typography>
+                <Typography variant="body2">{profileData.email}</Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<EditIcon />}
+                  onClick={() => setEditMode(true)}
+                  sx={{ mt: 2 }}
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<LockIcon />}
+                  onClick={() => setPasswordMode(true)}
+                  sx={{ mt: 2 }}
+                >
+                  Change Password
+                </Button>
+              </Box>
             )}
           </Box>
         </Menu>
       </Toolbar>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </AppBar>
   );
 };
