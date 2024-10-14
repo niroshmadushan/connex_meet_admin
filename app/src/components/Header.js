@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';  // Import js-cookie
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [profileData, setProfileData] = useState(null);  // Profile data
+  const [profileData, setProfileData] = useState(null);  // Initially null
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
@@ -21,6 +21,12 @@ const Header = () => {
     confirmPassword: '',
   });
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Function to convert Buffer (byte array) to Base64 string
+  const bufferToBase64 = (buffer) => {
+    const binary = new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+    return window.btoa(binary);
+  };
 
   // Fetch Profile Data on Component Load
   useEffect(() => {
@@ -40,9 +46,11 @@ const Header = () => {
         const response = await axios.get(apiLink, { withCredentials: true });
 
         const profile = response.data;
-        if (profile.image) {
-          // Construct a data URL from Base64 data
-          profile.profileImage = `data:image/jpeg;base64,${profile.image}`;
+
+        // Convert image buffer to Base64 if image data exists
+        if (profile.image && profile.image.data) {
+          const base64Image = bufferToBase64(profile.image.data);
+          profile.profileImage = `data:image/jpeg;base64,${base64Image}`; // Construct data URL
         }
 
         setProfileData(profile);  // Store profile data in state
@@ -128,7 +136,6 @@ const Header = () => {
       sx={{ borderRadius: '20px', background: 'linear-gradient(to right, #0d47a1, #1976d2, #001f3f)' }}
     >
       <Toolbar>
-        {/* Typing Effect */}
         <Box sx={{ flexGrow: 1 }}>
           <ReactTypingEffect
             text={["Welcome to Connex Digital World", "Introducing New Visitor Management Platform"]}
@@ -145,19 +152,16 @@ const Header = () => {
           />
         </Box>
 
-        {/* Live Time */}
         <Box sx={{ textAlign: 'right', marginRight: 4, color: 'white' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             {formatDateTime(currentTime)}
           </Typography>
         </Box>
 
-        {/* Profile Icon */}
         <IconButton onClick={handleMenuOpen} color="inherit">
           <Avatar alt="Profile" src={profileData?.profileImage || '/default-avatar.png'} />
         </IconButton>
 
-        {/* Profile Menu */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <Box sx={{ padding: 2, width: 300 }}>
             <Box sx={{ textAlign: 'center' }}>
