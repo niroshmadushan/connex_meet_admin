@@ -81,7 +81,7 @@ const Analytics = () => {
   }, []);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchDashboardData2 = async () => {
       try {
         const response = await axios.get('http://192.168.13.6:3001/getdashboardtwo', { withCredentials: true });
         setDashboardData2(response.data);
@@ -91,7 +91,7 @@ const Analytics = () => {
         setLoading(false);
       }
     };
-    fetchDashboardData();
+    fetchDashboardData2();
   }, []);
 
   // Handle category change for the line chart
