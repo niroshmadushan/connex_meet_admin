@@ -7,6 +7,58 @@ import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import axios from 'axios';
 import 'chart.js/auto';
 
+
+
+const barChartData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  datasets: [
+    { label: 'Meetings', backgroundColor: '#42a5f5', data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] },
+    { label: 'Sessions', backgroundColor: '#ff9800', data: [8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65] },
+    { label: 'Services', backgroundColor: '#66bb6a', data: [12, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120] },
+    { label: 'Events', backgroundColor: '#ab47bc', data: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24] },
+  ],
+};
+
+const lineChartData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  datasets: [
+    {
+      label: 'Meeting Growth',
+      fill: true,
+      backgroundColor: 'rgba(66, 165, 245, 0.2)',
+      borderColor: '#42a5f5',
+      data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointHoverBackgroundColor: '#42a5f5',
+      tension: 0.3,
+    },
+  ],
+};
+
+// Chart options for animations and minimalist design
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: {
+    duration: 1000,
+    easing: 'easeOutQuad',
+  },
+  plugins: {
+    legend: {
+      display: true,
+      position: 'bottom',
+      labels: {
+        color: '#333',
+        font: {
+          size: 12,
+        },
+      },
+    },
+  },
+};
+
+
 const Analytics = () => {
   const [dashboardData, setDashboardData] = useState(null); // Store API data here
   const [loading, setLoading] = useState(true); // Handle loading state
@@ -225,7 +277,7 @@ const Analytics = () => {
     </Box>
 
     {/* Bar Chart and Line Chart in One Line */}
-    {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
       <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
         <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Monthly Activities Overview</Typography>
         <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
@@ -247,7 +299,7 @@ const Analytics = () => {
           <Line data={lineChartData} options={chartOptions} />
         </Box>
       </Grid>
-    </Box> */}
+    </Box>
   </Box>
   );
 };
