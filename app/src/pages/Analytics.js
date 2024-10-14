@@ -61,10 +61,11 @@ const chartOptions = {
 
 const Analytics = () => {
   const [dashboardData, setDashboardData] = useState(null);
-  const [dashboardData2, setDashboardData2] = useState(null); // Store API data here
-  const [loading, setLoading] = useState(true); // Handle loading state
-  const [selectedCategory, setSelectedCategory] = useState('meetings'); // Track selected category
-
+  const [dashboardData2, setDashboardData2] = useState({ 
+    meetings: [], sessions: [], interviews: [], services: [] 
+  }); // Second API data
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('meetings');
   // Fetch dashboard data from the backend
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -100,6 +101,11 @@ const Analytics = () => {
   };
 
   // If data is still loading, show a loading spinner
+
+
+  // Prepare data for the bar chart
+  
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
@@ -108,50 +114,26 @@ const Analytics = () => {
     );
   }
 
-  if (!dashboardData) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <Typography variant="h6" color="error">Failed to load data. Please try again.</Typography>
-      </Box>
-    );
-  }
-
-  // Extract data from the API response
-  const { meetings, sessions, interviews, services } = dashboardData;
+  // Extract data safely using default values if any field is undefined
+  const { meetings = [], sessions = [], interviews = [], services = [] } = dashboardData2;
 
   // Prepare data for the bar chart
   const barChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
-      {
-        label: 'Meetings',
-        backgroundColor: '#42a5f5',
-        data: meetings.map((month) => month.total),
-      },
-      {
-        label: 'Sessions',
-        backgroundColor: '#ff9800',
-        data: sessions.map((month) => month.total),
-      },
-      {
-        label: 'Interviews',
-        backgroundColor: '#66bb6a',
-        data: interviews.map((month) => month.total),
-      },
-      {
-        label: 'Services',
-        backgroundColor: '#ab47bc',
-        data: services.map((month) => month.totalServices),
-      },
+      { label: 'Meetings', backgroundColor: '#42a5f5', data: meetings.map((month) => month.total || 0) },
+      { label: 'Sessions', backgroundColor: '#ff9800', data: sessions.map((month) => month.total || 0) },
+      { label: 'Interviews', backgroundColor: '#66bb6a', data: interviews.map((month) => month.total || 0) },
+      { label: 'Services', backgroundColor: '#ab47bc', data: services.map((month) => month.totalServices || 0) },
     ],
   };
 
   // Prepare data for the dynamic line chart based on the selected category
   const categoryData = {
-    meetings: meetings.map((month) => month.total),
-    sessions: sessions.map((month) => month.total),
-    interviews: interviews.map((month) => month.total),
-    services: services.map((month) => month.totalServices),
+    meetings: meetings.map((month) => month.total || 0),
+    sessions: sessions.map((month) => month.total || 0),
+    interviews: interviews.map((month) => month.total || 0),
+    services: services.map((month) => month.totalServices || 0),
   };
 
   const lineChartData = {
@@ -170,6 +152,8 @@ const Analytics = () => {
       },
     ],
   };
+
+
 
   // Destructure the data from the API response
   const {
