@@ -6,7 +6,7 @@ import {
 import ReactTypingEffect from 'react-typing-effect';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import Cookies from 'js-cookie';
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [profileData, setProfileData] = useState(null);  // Use state for profile
