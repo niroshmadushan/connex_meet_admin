@@ -120,6 +120,28 @@ const chartOptions = {
 };
 
 const Analytics = () => {
+  const [selectedCategory, setSelectedCategory] = useState('meetings');
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+  const lineChartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Growth`,
+        fill: true,
+        backgroundColor: 'rgba(66, 165, 245, 0.2)',
+        borderColor: '#42a5f5',
+        data: chartData[selectedCategory],
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#42a5f5',
+        tension: 0.3,
+      },
+    ],
+  };
+
   return (
     <Box sx={{ padding: 2, backgroundColor: '#fff', minHeight: '80vh', borderRadius: '10px' }}>
       <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3 }}>
