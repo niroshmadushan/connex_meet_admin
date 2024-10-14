@@ -25,7 +25,7 @@ const Header = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       
-      const userId = Cookies.get('userId'); 
+      const userId = Cookies.get('id'); 
       const apiLink = `http://192.168.13.6:3001/profile/${userId}`;
 
       try {
