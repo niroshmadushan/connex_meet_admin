@@ -6,7 +6,7 @@ import {
 import ReactTypingEffect from 'react-typing-effect';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';  // Import js-cookie
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,6 +26,8 @@ const Header = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       const userId = Cookies.get('id');  // Get user ID from cookies
+      console.log('User ID from cookies:', userId);  // Debugging log
+
       if (!userId) {
         Swal.fire('Error!', 'User ID not found in cookies. Please log in.', 'error');
         setLoading(false);
@@ -36,17 +38,17 @@ const Header = () => {
 
       try {
         const response = await axios.get(apiLink, { withCredentials: true });
-        setProfileData(response.data);
-        setNewProfileData(response.data);  // Initialize form values
+        setProfileData(response.data);  // Store profile data in state
+        setNewProfileData(response.data);  // Initialize the form with profile data
       } catch (error) {
         Swal.fire('Error!', 'Failed to load profile data.', 'error');
       } finally {
-        setLoading(false);  // Stop loading spinner
+        setLoading(false);  // Stop the loading spinner
       }
     };
 
     fetchProfileData();
-  }, []);
+  }, []);  // Run only on component mount
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
@@ -60,7 +62,7 @@ const Header = () => {
 
     try {
       await axios.put(apiLink, newProfileData, { withCredentials: true });
-      setProfileData(newProfileData);  // Update profile data in the UI
+      setProfileData(newProfileData);  // Update profile in the UI
       Swal.fire('Success!', 'Profile updated successfully!', 'success');
       handleMenuClose();
     } catch (error) {
@@ -75,7 +77,7 @@ const Header = () => {
     }
 
     try {
-      const userId = profileData.id;
+      const userId = profileData.id;  // Use the ID from the profile data
       await axios.post(
         `http://192.168.13.6:3001/password`,
         { id: userId, ...passwordData },
@@ -107,10 +109,10 @@ const Header = () => {
     return `${formattedDate}, ${hours}:${minutes}:${seconds} ${ampm}`;
   };
 
-  if (loading) return <CircularProgress />;  // Show spinner while loading
+  if (loading) return <CircularProgress />;
 
   if (!profileData) {
-    return <Typography color="error">Failed to load profile data.</Typography>;  // Handle missing profile data
+    return <Typography color="error">Failed to load profile data.</Typography>;
   }
 
   return (
@@ -119,6 +121,7 @@ const Header = () => {
       sx={{ borderRadius: '20px', background: 'linear-gradient(to right, #0d47a1, #1976d2, #001f3f)' }}
     >
       <Toolbar>
+        {/* Typing Effect */}
         <Box sx={{ flexGrow: 1 }}>
           <ReactTypingEffect
             text={["Welcome to Connex Digital World", "Introducing New Visitor Management Platform"]}
@@ -135,16 +138,19 @@ const Header = () => {
           />
         </Box>
 
+        {/* Live Time */}
         <Box sx={{ textAlign: 'right', marginRight: 4, color: 'white' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             {formatDateTime(currentTime)}
           </Typography>
         </Box>
 
+        {/* Profile Icon */}
         <IconButton onClick={handleMenuOpen} color="inherit">
           <Avatar alt="Profile" src={profileData?.profileImage} />
         </IconButton>
 
+        {/* Profile Menu */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <Box sx={{ padding: 2, width: 300 }}>
             <Box sx={{ textAlign: 'center' }}>
