@@ -24,7 +24,8 @@ const Header = () => {
   // Fetch Profile Data on Component Load
   useEffect(() => {
     const fetchProfileData = async () => {
-      const userId = localStorage.getItem('id');
+      
+      const userId = Cookies.get('userId'); 
       const apiLink = `http://192.168.13.6:3001/profile/${userId}`;
 
       try {
