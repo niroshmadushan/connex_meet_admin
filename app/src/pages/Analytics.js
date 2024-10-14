@@ -103,6 +103,34 @@ const Analytics = () => {
     ],
   });
 
+  const donutOptions = (completed, total) => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '70%',
+    plugins: {
+      tooltip: {
+        enabled: true,
+      },
+      beforeDraw(chart) {
+        const { ctx, width, height } = chart;
+        const percentage = Math.round((completed / total) * 100);
+        ctx.save();
+        ctx.font = 'bold 18px Arial';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        const textX = Math.round(width / 2);
+        const textY = Math.round(height / 2);
+        ctx.fillText(`${percentage}%`, textX, textY);
+      },
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 1500,
+      easing: 'easeInOutQuad',
+    },
+  });
+
   const meetingsDonutData = generateDonutData(completedMeetings, canceledMeetings, ['#4caf50', '#f44336']);
   const sessionsDonutData = generateDonutData(completedSessions, canceledSessions, ['#ff9800', '#f44336']);
   const interviewsDonutData = generateDonutData(completedInterviews, canceledInterviews, ['#42a5f5', '#f44336']);
