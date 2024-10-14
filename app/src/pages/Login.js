@@ -110,7 +110,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       
-      const response = await axios.post(loginapi, {email, password}, { withCredentials: true });
+      const response = await axios.post(loginapi, {email, password,role:'admin'}, { withCredentials: true });
       if (response.status === 200) {
         if (response.data.firstLogin) {
           Swal.fire('Welcome!', 'Please change your password.', 'info');
