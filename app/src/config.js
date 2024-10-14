@@ -9,6 +9,8 @@ const config = {
     getallorgemails: `${BACKEND_URL}/getallorgemails`,
     getalllocationdata: `${BACKEND_URL}/getlocations`,
     getalluserdata: `${BACKEND_URL}/getProfileData`,
+
+    mainapi:`${BACKEND_URL},`
  
 };
 

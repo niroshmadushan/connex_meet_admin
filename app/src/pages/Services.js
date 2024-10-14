@@ -44,7 +44,7 @@ const Services = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.13.150:3001/getservices', { withCredentials: true });
+        const response = await axios.get(`${APIConnection.mainapi}/getservices`, { withCredentials: true });
         const currentDate = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
   
         // Map over the response data and add `type` and `status` properties

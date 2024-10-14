@@ -105,7 +105,7 @@ const Users = () => {
     };
 
     try {
-      const response = await axios.post('http://192.168.13.150:3001/add-admin', adminData);
+      const response = await axios.post(`${APIConnection.mainapi}/add-admin`, adminData);
       if (response.status === 200) {
         
         setRows([...rows, { id: rows.length + 1, ...adminData, role: 'Admin', approval: 'Approved', contactNo: newAdmin.phone }]);
@@ -139,7 +139,7 @@ const Users = () => {
   const toggleStatus = async (id, newStatus) => {
     try {
       await axios.put(
-        `http://192.168.13.150:3001/updateuserstatus/${id}`,
+        `${APIConnection.mainapi}/updateuserstatus/${id}`,
         { status: newStatus },
         { withCredentials: true }
       );

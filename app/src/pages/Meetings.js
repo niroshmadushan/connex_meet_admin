@@ -182,7 +182,7 @@ const Meetings = () => {
 
     if (empId) {
       axios
-        .get(`http://192.168.13.150:3001/email/${empId}`, { withCredentials: true })
+        .get(`${APIConnection.mainapi}/email/${empId}`, { withCredentials: true })
         .then((response) => {
           // Extract the email values from the response and set the employeeEmails state
           const emails = response.data.map((item) => item.email);
@@ -200,10 +200,10 @@ const Meetings = () => {
 
   const fetchData2 = async () => {
     try {
-      const roomsResponse = await axios.get('http://192.168.13.150:3001/place', { withCredentials: true });
+      const roomsResponse = await axios.get(`${APIConnection.mainapi}/place`, { withCredentials: true });
       setRooms(roomsResponse.data);
 
-      const bookingsResponse = await axios.get('http://192.168.13.150:3001/bookings', { withCredentials: true });
+      const bookingsResponse = await axios.get(`${APIConnection.mainapi}/bookings`, { withCredentials: true });
       setBookings(bookingsResponse.data);
 
       const emailsResponse = await axios.get(APIConnection.getallorgemails, { withCredentials: true });
@@ -218,7 +218,7 @@ const Meetings = () => {
     const fetchData = async () => {
       try {
         // Make the API request and log the full response
-        const response = await axios.get('http://192.168.13.150:3001/getallspecialbookingsmeetings', { withCredentials: true });
+        const response = await axios.get(`${APIConnection.mainapi}/getallspecialbookingsmeetings`, { withCredentials: true });
         console.log("API Response:", response);
   
         // Extract the array from the API response
@@ -438,7 +438,7 @@ const Meetings = () => {
     const empId = e.target.value;
     if (empId) {
       axios
-        .get(`http://192.168.13.150:3001/email/${empId}`, { withCredentials: true })
+        .get(`${APIConnection.mainapi}/email/${empId}`, { withCredentials: true })
         .then((response) => {
           // Extract the email values from the response and set the employeeEmails state
           const emails = response.data.map((item) => item.email);
@@ -553,7 +553,7 @@ const Meetings = () => {
 
     try {
       // Send the booking data to the API endpoint
-      await axios.post('http://192.168.13.150:3001/add-booking', bookingData, {
+      await axios.post('${APIConnection.mainapi}/add-booking', bookingData, {
         withCredentials: true,
       });
       handleLogin2Close();
@@ -629,7 +629,7 @@ const Meetings = () => {
     };
 
     try {
-      await axios.post('http://192.168.13.150:3001/add-booking-int', bookingData, { withCredentials: true });
+      await axios.post('${APIConnection.mainapi}/add-booking-int', bookingData, { withCredentials: true });
       handleLoginClose();
       Swal.fire('Success!', 'The meeting has been added successfully.', 'success');
 
