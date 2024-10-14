@@ -110,69 +110,117 @@ const Analytics = () => {
 
   return (
     <Box sx={{ padding: 2, backgroundColor: '#fff', minHeight: '80vh', borderRadius: '10px' }}>
-      <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3 }}>
-        Analytics Dashboard
-      </Typography>
+    <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3 }}>
+      Analytics Dashboard
+    </Typography>
 
-      <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Meetings</Typography>
-            <Typography variant="h6" sx={{ color: '#42a5f5' }}>
-              <CountUp end={totalMeetings} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedMeetings}</Typography>
-            <Typography variant="caption">Canceled: {canceledMeetings}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Sessions</Typography>
-            <Typography variant="h6" sx={{ color: '#ff9800' }}>
-              <CountUp end={totalSessions} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedSessions}</Typography>
-            <Typography variant="caption">Canceled: {canceledSessions}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Interviews</Typography>
-            <Typography variant="h6" sx={{ color: '#66bb6a' }}>
-              <CountUp end={totalInterviews} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedInterviews}</Typography>
-            <Typography variant="caption">Canceled: {canceledInterviews}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={3}>
-          <Paper sx={{ padding: 2, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Services</Typography>
-            <Typography variant="h6" sx={{ color: '#ab47bc' }}>
-              <CountUp end={totalServices} duration={1.5} />
-            </Typography>
-            <Typography variant="caption">Completed: {completedServices}</Typography>
-            <Typography variant="caption">Canceled: {canceledServices}</Typography>
-          </Paper>
+    {/* Total Counts (Meetings, Sessions, Interviews, Services) */}
+    <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+      <Grid item xs={12} sm={3}>
+        <Grid sx={{ padding: 1.5, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Meetings</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#42a5f5' }}>
+            <CountUp end={totalMeetings} duration={1.5} />
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#4caf50' }}>Completed: {completedMeetings}</Typography>
+          <br />
+          <Typography variant="caption" sx={{ color: '#f44336' }}>Canceled: {canceledMeetings}</Typography>
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
+      <Grid item xs={12} sm={3}>
+        <Grid sx={{ padding: 1.5, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Sessions</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
+            <CountUp end={totalSessions} duration={1.5} />
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#ff9800' }}>Completed: {completedSessions}</Typography>
+          <br />
+          <Typography variant="caption" sx={{ color: '#f44336' }}>Canceled: {canceledSessions}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid item xs={12} sm={3}>
+        <Grid sx={{ padding: 1.5, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Interviews</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#66bb6a' }}>
+            <CountUp end={totalInterviews} duration={1.5} />
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#4caf50' }}>Completed: {completedInterviews}</Typography>
+          <br />
+          <Typography variant="caption" sx={{ color: '#f44336' }}>Canceled: {canceledInterviews}</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid item xs={12} sm={3}>
+        <Grid sx={{ padding: 1.5, textAlign: 'center', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total Services</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#ab47bc' }}>
+            <CountUp end={totalServices} duration={1.5} />
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#ab47bc' }}>Completed: {completedServices}</Typography>
+          <br />
+          <Typography variant="caption" sx={{ color: '#f44336' }}>Canceled: {canceledServices}</Typography>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    {/* Donut Charts Section */}
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+      <Grid sx={{ padding: 1.5, minWidth: '22%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Meetings Status</Typography>
+        <Box sx={{ height: '180px', display: 'flex', justifyContent: 'center' }}>
+          <Doughnut data={meetingsDonutData} options={donutOptions(completedMeetings, totalMeetings)} />
+        </Box>
+      </Grid>
+
+      <Grid sx={{ padding: 1.5, minWidth: '22%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Sessions Status</Typography>
+        <Box sx={{ height: '180px', display: 'flex', justifyContent: 'center' }}>
+          <Doughnut data={sessionsDonutData} options={donutOptions(completedSessions, totalSessions)} />
+        </Box>
+      </Grid>
+
+      <Grid sx={{ padding: 1.5, minWidth: '22%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Interviews Status</Typography>
+        <Box sx={{ height: '180px', display: 'flex', justifyContent: 'center' }}>
+          <Doughnut data={interviewsDonutData} options={donutOptions(completedInterviews, totalInterviews)} />
+        </Box>
+      </Grid>
+
+      <Grid sx={{ padding: 1.5, minWidth: '22%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Services Status</Typography>
+        <Box sx={{ height: '180px', display: 'flex', justifyContent: 'center' }}>
+          <Doughnut data={servicesDonutData} options={donutOptions(completedServices, totalServices)} />
+        </Box>
+      </Grid>
+    </Box>
+
+    {/* Bar Chart and Line Chart in One Line */}
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
+      <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
+        <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Monthly Activities Overview</Typography>
+        <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
+          <Bar data={barChartData} options={chartOptions} />
+        </Box>
+      </Grid>
+
+      <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel>Category</InputLabel>
-          <Select value={selectedCategory} onChange={handleCategoryChange}>
+          <Select label='Category' value={selectedCategory} onChange={handleCategoryChange}>
             <MenuItem value="meetings">Meetings</MenuItem>
             <MenuItem value="sessions">Sessions</MenuItem>
             <MenuItem value="interviews">Interviews</MenuItem>
             <MenuItem value="services">Services</MenuItem>
           </Select>
         </FormControl>
-        <Line data={lineChartData} />
-      </Box>
+        <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
+          <Line data={lineChartData} options={chartOptions} />
+        </Box>
+      </Grid>
     </Box>
+  </Box>
   );
 };
 
