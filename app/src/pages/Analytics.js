@@ -197,7 +197,7 @@ const Analytics = () => {
     </Box>
 
     {/* Bar Chart and Line Chart in One Line */}
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
+    {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, marginTop: 4 }}>
       <Grid sx={{ padding: 1.5, width: '50%', backgroundColor: '#f9fbfd', borderRadius: '10px' }}>
         <Typography variant="body2" gutterBottom sx={{ fontWeight: 'bold' }}>Monthly Activities Overview</Typography>
         <Box sx={{ height: '220px', display: 'flex', justifyContent: 'center' }}>
@@ -219,7 +219,7 @@ const Analytics = () => {
           <Line data={lineChartData} options={chartOptions} />
         </Box>
       </Grid>
-    </Box>
+    </Box> */}
   </Box>
   );
 };
