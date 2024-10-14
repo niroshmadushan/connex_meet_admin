@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   AppBar, Toolbar, IconButton, Avatar, Menu, Box, 
   TextField, Button, Typography, CircularProgress, Dialog, 
-  DialogTitle, DialogContent, DialogActions, Snackbar, Alert 
+  DialogTitle, DialogContent, DialogActions, Snackbar, Alert, 
+  Stack 
 } from '@mui/material';
 import ReactTypingEffect from 'react-typing-effect';
 import axios from 'axios';
@@ -38,7 +39,6 @@ const Header = () => {
     return window.btoa(binary);
   };
 
-  // Fetch Profile Data from Backend
   useEffect(() => {
     const fetchProfileData = async () => {
       const userId = Cookies.get('id');  
@@ -174,17 +174,22 @@ const Header = () => {
         </IconButton>
 
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-          <Box sx={{ padding: 2, width: 300 }}>
-            <Avatar src={profileData?.profileImage || '/default-avatar.png'} sx={{ width: 100, height: 100, mb: 2 }} />
+          <Stack alignItems="center" spacing={2} sx={{ p: 3, width: 300 }}>
+            <Avatar src={profileData?.profileImage || '/default-avatar.png'} sx={{ width: 100, height: 100 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              {profileData?.name}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              {profileData?.email}
+            </Typography>
             <Button variant="outlined" component="label">
               Change Image
               <input type="file" hidden accept="image/*" onChange={handleProfileImageChange} />
             </Button>
-
             <Button fullWidth variant="outlined" startIcon={<LockIcon />} onClick={handlePasswordDialogOpen}>
               Change Password
             </Button>
-          </Box>
+          </Stack>
         </Menu>
       </Toolbar>
 
