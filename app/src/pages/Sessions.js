@@ -956,8 +956,8 @@ const Meetings = () => {
           backdropFilter: 'blur(5px)',  // Blur the background when modal is open
         }}
       >
-        {/* <Fade in={loginModalOpen}>
-          <Box
+        <Fade in={loginModalOpen}>
+          {/* <Box
             sx={{
               width: '500px',
               maxWidth: '95%',
@@ -1225,9 +1225,7 @@ const Meetings = () => {
             <Box sx={{ textAlign: 'right', mt: 3 }}>
 
             </Box>
-          </Box>
-        </Fade> */}
-        <Fade in={login2ModalOpen}>
+          </Box> */}
           <Box
             sx={{
               width: 400,
@@ -1274,6 +1272,7 @@ const Meetings = () => {
             </Button>
           </Box>
         </Fade>
+       
 
 
       </Modal>
