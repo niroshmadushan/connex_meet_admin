@@ -25,6 +25,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import AccessTimeIcon from '@mui/icons-material/AccessTime'; // Import the icon
 const themeColor = {
   primary: '#007aff',
   primaryDark: '#005bb5',
@@ -1262,7 +1263,7 @@ const Meetings = () => {
             {/* Close Button */}
             <Button
               variant="contained"
-              onClick={onClose}
+              onClick={handleLoginClose}
               sx={{
                 bgcolor: 'primary.main',
                 color: '#fff',
