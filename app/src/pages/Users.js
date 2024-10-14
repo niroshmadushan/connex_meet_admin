@@ -113,7 +113,7 @@ const Users = () => {
         Swal.fire('Success!', 'Admin added successfully!', 'success');
       }
     } catch (error) {
-      console.error('Error adding admin:', error);
+      handleClose();
       Swal.fire('Error!', `Failed to add admin: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
