@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Meetings from './pages/Meetings';
 import Sessions from './pages/Sessions';
 import Location from './pages/ManageLocations';
+import Visitor from './pages/visitor'
 import Events from './pages/Events';
 import Interviews from './pages/Interviews';
 import Services from './pages/Services';
@@ -43,6 +44,7 @@ const AppContent = () => {
             <Route path="/services" element={<PrivateRoute><Services /></PrivateRoute>} />
             <Route path="/location" element={<PrivateRoute><Location /></PrivateRoute>} />
             <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+            <Route path="/visitor" element={<PrivateRoute><Visitor /></PrivateRoute>} />
 
             {/* Catch-all route to handle invalid URLs */}
             <Route path="*" element={<Navigate to="/" />} />

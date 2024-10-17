@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import EventIcon from '@mui/icons-material/Event';
-import GroupIcon from '@mui/icons-material/Group';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import PersonIcon from '@mui/icons-material/Person';
-import RoomIcon from '@mui/icons-material/Room'; // New icon for Location
-import PeopleIcon from '@mui/icons-material/People'; // New icon for Users
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import TodayIcon from '@mui/icons-material/Today';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import BuildIcon from '@mui/icons-material/Build';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BadgeIcon from '@mui/icons-material/Badge';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { styled } from '@mui/system';
 import AdminLogo from '../assets/admin-logo.png'; // Assuming you have a logo image
 import DeveloperLogo from '../assets/developer-logo.png'; // Assuming you have a developer logo image
@@ -45,12 +45,13 @@ const Sidebar = () => {
   
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Meetings', icon: <EventIcon />, path: '/meetings' },
-    { text: 'Sessions', icon: <EventAvailableIcon />, path: '/sessions' },
-    { text: 'Interviews', icon: <GroupIcon />, path: '/interviews' },
-    { text: 'Services', icon: <PersonIcon />, path: '/services' },
-    { text: 'Location', icon: <RoomIcon />, path: '/location' }, // Updated Location Icon
-    { text: 'Users', icon: <PeopleIcon />, path: '/users' }, // Updated Users Icon
+    { text: 'Meetings', icon: <EventNoteIcon />, path: '/meetings' },
+    { text: 'Sessions', icon: <TodayIcon />, path: '/sessions' },
+    { text: 'Interviews', icon: <SupervisorAccountIcon />, path: '/interviews' },
+    { text: 'Services', icon: <BuildIcon />, path: '/services' },
+    { text: 'Location', icon: <LocationOnIcon />, path: '/location' },
+    { text: 'Visitor', icon: <BadgeIcon />, path: '/visitor' }, // Updated Visitor Icon
+    { text: 'Users', icon: <PeopleAltIcon />, path: '/users' }, // Updated Users Icon
   ];
 
   const handleClick = (index) => {
@@ -136,7 +137,7 @@ const Sidebar = () => {
           sx={{
             width: '120px',
             height: 'auto',
-            borderRadius:'10px',
+            borderRadius: '10px',
           }}
         />
       </Box>
