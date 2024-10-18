@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.1.0",
-  "homepage": "http://192.168.12.68:3001/",
+  "homepage": "https://project2.thebunnyhopkins.shop",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",

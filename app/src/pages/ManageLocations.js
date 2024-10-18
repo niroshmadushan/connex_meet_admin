@@ -12,7 +12,7 @@ import CountUp from 'react-countup';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import APIConnection from '../config';
-
+import Cookies from 'js-cookie'; // Import js-cookie for handling cookies
 import Swal from 'sweetalert2';
 
 // Custom styled blinking dot for availability
@@ -191,21 +191,25 @@ const ManageLocations = () => {
   // Function to handle the addition of a new location
   // Function to handle the addition of a new location and sending data to backend
   const handleAddLocation = async () => {
+    // Retrieve the orgId from cookies
+    const orgId = Cookies.get('oid'); // Assuming 'orgId' is the cookie name where it's stored
+  console.log(orgId);
     const formattedFrom = `${newLocation.availableFrom.hour}:${newLocation.availableFrom.minute} ${newLocation.availableFrom.period}`;
     const formattedTo = `${newLocation.availableTo.hour}:${newLocation.availableTo.minute} ${newLocation.availableTo.period}`;
-
-    // Prepare the data to be sent to the backend
+  
+    // Prepare the data to be sent to the backend, including orgId
     const locationData = {
       name: newLocation.name,
       address: newLocation.address,
       available_from: formattedFrom,
       available_to: formattedTo,
+      orgId: orgId, // Add orgId from cookies here
     };
-
+  
     try {
       // Make the POST request to add a new location
       const response = await axios.post(`${APIConnection.mainapi}/addlocations`, locationData, { withCredentials: true });
-
+      fetchData();
       if (response.status === 200) {
         setOpen(false);
         // Show success alert
@@ -215,13 +219,9 @@ const ManageLocations = () => {
           icon: 'success',
           confirmButtonText: 'OK',
         });
-
+  
         // Update the frontend state with the new location data
-
-
-
-
-
+        // Add your logic for state update if needed
       }
     } catch (error) {
       console.error('Failed to add location:', error);
