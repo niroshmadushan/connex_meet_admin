@@ -78,8 +78,8 @@ const Retakes = () => {
     fetchData();
   }, []);
 
-  // Handle Retake action
-  const handleRetake = (index) => {
+  // Handle Retake action with confirmation and API call
+  const handleRetake = async (index, id) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "Do you want to retake this booking?",
@@ -88,12 +88,27 @@ const Retakes = () => {
       confirmButtonColor: '#007aff',
       cancelButtonColor: '#f44336',
       confirmButtonText: 'Yes, retake it!',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const updatedData = [...data];
-        updatedData[index].status = '3'; // Assume '3' indicates that it's been retaked
-        setData(updatedData);
-        Swal.fire('Retaked!', 'The booking has been retaked.', 'success');
+        try {
+          // Send API request to retake status
+          await axios.post(`${APIConnection.mainapi}/updateretakestatus`, {
+            id: id,
+          }, {
+            withCredentials: true, // Ensure credentials are sent
+          });
+
+          // Update the local state to reflect the retake in UI
+          const updatedData = [...data];
+          updatedData[index].status = '5'; // Assuming '5' indicates retake completed
+          setData(updatedData);
+
+          // Show success message
+          Swal.fire('Retaked!', 'The booking has been retaked.', 'success');
+        } catch (error) {
+          console.error('Error updating retake status:', error);
+          Swal.fire('Error!', 'Failed to retake the booking.', 'error');
+        }
       }
     });
   };
@@ -168,7 +183,7 @@ const Retakes = () => {
                   <StyledTableCell>{row.vistor_id}</StyledTableCell>
                   <StyledTableCell>
                     {row.status === 2 ? ( // Show 'Retake' button only if status is 2
-                      <RetakeButton onClick={() => handleRetake(index)}>
+                      <RetakeButton onClick={() => handleRetake(index, row.id)}>
                         Retake
                       </RetakeButton>
                     ) : (

@@ -138,11 +138,11 @@ const History = () => {
                   <StyledTableCell>
                     <Typography
                       sx={{
-                        color: row.status === '5' ? '#4caf50' : '#f44336', // Green for Completed (status 5), Red otherwise
+                        color: row.status === 5 ? '#4caf50' : '#f44336', // Green for Completed (status 5), Red otherwise
                         fontWeight: 'bold',
                       }}
                     >
-                      {row.status === '5' ? 'Completed' : 'Incomplete'} {/* Display 'Completed' for 5 and 'Incomplete' otherwise */}
+                      {row.status === 5 ? 'Completed' : 'Incomplete'} {/* Display 'Completed' for 5 and 'Incomplete' otherwise */}
                     </Typography>
                   </StyledTableCell>
                 </StyledTableRow>

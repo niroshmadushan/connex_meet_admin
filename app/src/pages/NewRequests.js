@@ -78,34 +78,34 @@ const NewRequests = () => {
 
   // Fetch data from API on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${APIConnection.mainapi}/getnewdata`, {
-          withCredentials: true, // Assuming credentials are needed
-        });
-        const initialData = response.data.map((item) => ({
-          id: item.id,
-          bookingId: item.booking_id,
-          fullName: item.name,
-          visitorPassId: '', // Initially empty, to be filled by user
-        }));
-        setData(initialData);
-        setLoading(false); // Set loading to false once data is fetched
-      } catch (error) {
-        console.error('Error fetching requests data:', error);
-        setLoading(false);
-        Swal.fire({
-          title: 'Error!',
-          text: 'Failed to fetch data from server!',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
-      }
-    };
+
 
     fetchData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${APIConnection.mainapi}/getnewdata`, {
+        withCredentials: true, // Assuming credentials are needed
+      });
+      const initialData = response.data.map((item) => ({
+        id: item.id,
+        bookingId: item.booking_id,
+        fullName: item.name,
+        visitorPassId: '', // Initially empty, to be filled by user
+      }));
+      setData(initialData);
+      setLoading(false); // Set loading to false once data is fetched
+    } catch (error) {
+      console.error('Error fetching requests data:', error);
+      setLoading(false);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to fetch data from server!',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+  };
   // Handle change for Visitor Pass ID input
   const handleVisitorPassChange = (index, value) => {
     const updatedData = [...data];
@@ -129,29 +129,96 @@ const NewRequests = () => {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
-      // If any required field is missing, show error alert
+      // Show error if any Visitor Pass ID is missing
       Swal.fire({
         title: 'Error!',
         text: 'Please fill out all Visitor Pass IDs!',
         icon: 'error',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#f44336', // Red confirm button
+        confirmButtonColor: '#f44336',
       });
-    } else {
-      // Success alert if all fields are valid
+      return;
+    }
+  
+    try {
+      // Sequentially update each row in the table
+      for (const item of data) {
+        await axios.put(`${APIConnection.mainapi}/addpass`, {
+          id: item.id,
+          passid: item.visitorPassId
+        }, {
+          withCredentials: true // Ensures credentials are sent
+        });
+      }
+  
+      // Call the API to delete all temp data
+      await axios.delete(`${APIConnection.mainapi}/deletealltempdata`, {
+        withCredentials: true // Ensures credentials are sent
+      });
+  
+      // If WiFi password is requested, fetch and insert WiFi credentials into tempdata
+      if (wifiPassword) {
+        const wifiResponse = await axios.get(`${APIConnection.mainapi}/getwifi`, {
+          withCredentials: true // Ensures credentials are sent
+        });
+        const wifiCredentials = wifiResponse.data.data[0]; // Assuming there's only one record
+  
+        // Insert WiFi credentials into tempdata
+        await axios.post(`${APIConnection.mainapi}/inserttempdata`, {
+          key: 'USER NAME : ',
+          value: wifiCredentials.username
+        }, {
+          withCredentials: true // Ensures credentials are sent
+        });
+  
+        await axios.post(`${APIConnection.mainapi}/inserttempdata`, {
+          key: 'PASSWORD : ',
+          value: wifiCredentials.password
+        }, {
+          withCredentials: true // Ensures credentials are sent
+        });
+      }
+  
+      // Insert each visitor's name and pass ID into tempdata, this happens regardless of WiFi checkbox
+      for (const item of data) {
+        await axios.post(`${APIConnection.mainapi}/inserttempdata`, {
+          key: item.fullName,
+          value: `Pass ID: ${item.visitorPassId}`
+        }, {
+          withCredentials: true // Ensures credentials are sent
+        });
+      }
+
+      await axios.post(`${APIConnection.mainapi}/approve`, { }, {
+        withCredentials: true // Ensures credentials are sent
+      });
+  
+      // Show success message after all updates
       Swal.fire({
         title: 'Success!',
         text: `Form submitted successfully. WiFi password ${wifiPassword ? 'requested' : 'not requested'}.`,
         icon: 'success',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#007aff', // Blue confirm button
+        confirmButtonColor: '#007aff',
       });
-      setSubmitted(true); // Show submission animation
+      fetchData();
+      setSubmitted(true); // Trigger submission animation
       setTimeout(() => setSubmitted(false), 2000); // Reset after 2 seconds
+  
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred during submission!',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
+  
+  
 
   if (loading) {
     return (
