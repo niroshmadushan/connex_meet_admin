@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://192.168.13.150:3001'; // Fallback to localhost if not set in env
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001'; // Fallback to localhost if not set in env
 
 const config = {
     becomeapartnerapi: `${BACKEND_URL}/becomePartner`,
