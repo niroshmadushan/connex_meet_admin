@@ -337,7 +337,7 @@ const Services = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Meeting Name', width: 150 },
+    { field: 'name', headerName: 'Service Name', width: 150 },
     { field: 'date', headerName: 'Date', width: 120 },
     { field: 'startTime', headerName: 'Start Time', width: 120 },
     { field: 'endTime', headerName: 'End Time', width: 120 },
@@ -825,7 +825,7 @@ const Services = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={9}>
             <TextField
-              label="Search by Interview Name or Visitor Company"
+              label="Search by Service Name "
               variant="outlined"
               fullWidth
               value={searchTerm}
@@ -1261,7 +1261,7 @@ const Services = () => {
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
-              Add a New Interview
+              Add a New Service
             </Typography>
 
             <Divider sx={{ mb: 3 }} />

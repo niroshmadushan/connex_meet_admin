@@ -821,7 +821,7 @@ const Meetings = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={9}>
             <TextField
-              label="Search by Meeting Name or Visitor Company"
+              label="Search by Session Name"
               variant="outlined"
               fullWidth
               value={searchTerm}
