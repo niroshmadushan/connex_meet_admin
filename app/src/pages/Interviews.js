@@ -557,7 +557,7 @@ const Meetings = () => {
 
     try {
       // Send the booking data to the API endpoint
-      await axios.post('${APIConnection.mainapi}/add-booking', bookingData, {
+      await axios.post(`${APIConnection.mainapi}/add-booking`, bookingData, {
         withCredentials: true,
       });
       handleLogin2Close();
@@ -634,7 +634,7 @@ const Meetings = () => {
     };
 
     try {
-      await axios.post('${APIConnection.mainapi}/add-booking-int', bookingData, { withCredentials: true });
+      await axios.post(`${APIConnection.mainapi}/add-booking-int`, bookingData, { withCredentials: true });
       handleLoginClose();
       Swal.fire('Success!', 'The meeting has been added successfully.', 'success');
 
