@@ -33,21 +33,21 @@ const AppContent = () => {
         <Box sx={{ flexGrow: 1, mt: 2 }}>
           <Routes>
             {/* Public Route - Login Page */}
-            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+            <Route path="/connex_admin/" element={isAuthenticated ? <Navigate to="/connex_admin/dashboard" /> : <Login />} />
 
             {/* Protected Routes */}
-            <Route path="/dashboard" element={<PrivateRoute><Analytics /></PrivateRoute>} />
-            <Route path="/meetings" element={<PrivateRoute><Meetings /></PrivateRoute>} />
-            <Route path="/sessions" element={<PrivateRoute><Sessions /></PrivateRoute>} />
-            <Route path="/events" element={<PrivateRoute><Events /></PrivateRoute>} />
-            <Route path="/interviews" element={<PrivateRoute><Interviews /></PrivateRoute>} />
-            <Route path="/services" element={<PrivateRoute><Services /></PrivateRoute>} />
-            <Route path="/location" element={<PrivateRoute><Location /></PrivateRoute>} />
-            <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
-            <Route path="/visitor" element={<PrivateRoute><Visitor /></PrivateRoute>} />
+            <Route path="/connex_admin/dashboard" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+            <Route path="/connex_admin/meetings" element={<PrivateRoute><Meetings /></PrivateRoute>} />
+            <Route path="/connex_admin/sessions" element={<PrivateRoute><Sessions /></PrivateRoute>} />
+            <Route path="/connex_admin/events" element={<PrivateRoute><Events /></PrivateRoute>} />
+            <Route path="/connex_admin/interviews" element={<PrivateRoute><Interviews /></PrivateRoute>} />
+            <Route path="/connex_admin/services" element={<PrivateRoute><Services /></PrivateRoute>} />
+            <Route path="/connex_admin/location" element={<PrivateRoute><Location /></PrivateRoute>} />
+            <Route path="/connex_admin/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+            <Route path="/connex_admin/visitor" element={<PrivateRoute><Visitor /></PrivateRoute>} />
 
             {/* Catch-all route to handle invalid URLs */}
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/connex_admin/" />} />
           </Routes>
         </Box>
         {isAuthenticated && <Footer />} {/* Footer visible only if authenticated */}

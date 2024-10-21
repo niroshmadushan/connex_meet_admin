@@ -44,14 +44,14 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null); // Track which item is clicked
   
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Meetings', icon: <EventNoteIcon />, path: '/meetings' },
-    { text: 'Sessions', icon: <TodayIcon />, path: '/sessions' },
-    { text: 'Interviews', icon: <SupervisorAccountIcon />, path: '/interviews' },
-    { text: 'Services', icon: <BuildIcon />, path: '/services' },
-    { text: 'Location', icon: <LocationOnIcon />, path: '/location' },
-    { text: 'Visitor', icon: <BadgeIcon />, path: '/visitor' }, // Updated Visitor Icon
-    { text: 'Users', icon: <PeopleAltIcon />, path: '/users' }, // Updated Users Icon
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/connex_admin/' },
+    { text: 'Meetings', icon: <EventNoteIcon />, path: '/connex_admin/meetings' },
+    { text: 'Sessions', icon: <TodayIcon />, path: '/connex_admin/sessions' },
+    { text: 'Interviews', icon: <SupervisorAccountIcon />, path: '/connex_admin/interviews' },
+    { text: 'Services', icon: <BuildIcon />, path: '/connex_admin/services' },
+    { text: 'Location', icon: <LocationOnIcon />, path: '/connex_admin/location' },
+    { text: 'Visitor', icon: <BadgeIcon />, path: '/connex_admin/visitor' }, // Updated Visitor Icon
+    { text: 'Users', icon: <PeopleAltIcon />, path: '/connex_admin/users' }, // Updated Users Icon
   ];
 
   const handleClick = (index) => {
