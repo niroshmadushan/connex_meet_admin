@@ -125,7 +125,7 @@ const Analytics = () => {
       { label: 'Meetings', backgroundColor: '#42a5f5', data: meetings.map((month) => month.total || 0) },
       { label: 'Sessions', backgroundColor: '#ff9800', data: sessions.map((month) => month.total || 0) },
       { label: 'Interviews', backgroundColor: '#66bb6a', data: interviews.map((month) => month.total || 0) },
-      { label: 'Services', backgroundColor: '#ab47bc', data: services.map((month) => month.totalServices || 0) },
+      { label: 'Services', backgroundColor: '#ab47bc', data: services.map((month) => month.total || 0) },
     ],
   };
 
@@ -134,7 +134,7 @@ const Analytics = () => {
     meetings: meetings.map((month) => month.total || 0),
     sessions: sessions.map((month) => month.total || 0),
     interviews: interviews.map((month) => month.total || 0),
-    services: services.map((month) => month.totalServices || 0),
+    services: services.map((month) => month.total || 0),
   };
 
   const lineChartData = {
